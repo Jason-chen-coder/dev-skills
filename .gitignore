@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local Claude state (skills consume artifacts at the consuming project's path,
+# not this repo's. But guard against accidental commits from local testing.)
+.claude/artifacts/
+
+# Node (in case skills repo ever gains tooling)
+node_modules/
+*.log

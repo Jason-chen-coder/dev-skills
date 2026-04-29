@@ -1,0 +1,89 @@
+name: validate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify each SKILL.md has required frontmatter
+        run: |
+          set -e
+          missing=0
+          for f in skills/*/SKILL.md; do
+            echo "Checking $f"
+            if ! grep -q '^name:' "$f"; then
+              echo "  ❌ missing 'name' field"
+              missing=1
+            fi
+            if ! grep -q '^description:' "$f"; then
+              echo "  ❌ missing 'description' field"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Some SKILL.md files are missing required frontmatter."
+            exit 1
+          fi
+          echo "✅ All SKILL.md frontmatter OK"
+
+      - name: Verify dev-baseline copies are in sync
+        run: |
+          set -e
+          canonical_md5=$(md5sum references/dev-baseline.md | cut -d' ' -f1)
+          echo "Canonical: $canonical_md5"
+          drift=0
+          for f in skills/*/references/dev-baseline.md; do
+            copy_md5=$(md5sum "$f" | cut -d' ' -f1)
+            if [ "$copy_md5" != "$canonical_md5" ]; then
+              echo "❌ $f drifted from canonical (md5=$copy_md5)"
+              drift=1
+            else
+              echo "✓ $f"
+            fi
+          done
+          if [ "$drift" -ne 0 ]; then
+            echo "Re-sync via: cp references/dev-baseline.md skills/<skill>/references/dev-baseline.md"
+            exit 1
+          fi
+          echo "✅ All baseline copies in sync"
+
+      - name: Verify marketplace.json declares skills that exist on disk
+        run: |
+          set -e
+          if [ ! -f .claude-plugin/marketplace.json ]; then
+            echo "❌ .claude-plugin/marketplace.json missing"
+            exit 1
+          fi
+          # Extract paths from marketplace.json and check each exists
+          missing=0
+          for path in $(grep -oE '"path":\s*"[^"]+"' .claude-plugin/marketplace.json | sed -E 's/.*"path":\s*"([^"]+)".*/\1/'); do
+            if [ ! -d "$path" ] && [ ! -f "$path" ]; then
+              echo "❌ marketplace.json declares missing path: $path"
+              missing=1
+            else
+              echo "✓ $path"
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+          echo "✅ marketplace.json paths all exist"
+
+      - name: Verify CLAUDE.md.template exists (not CLAUDE.md)
+        run: |
+          if [ -f CLAUDE.md ]; then
+            echo "❌ CLAUDE.md should not exist at repo root — use CLAUDE.md.template instead"
+            exit 1
+          fi
+          if [ ! -f CLAUDE.md.template ]; then
+            echo "❌ CLAUDE.md.template missing"
+            exit 1
+          fi
+          echo "✅ CLAUDE.md.template present, no live CLAUDE.md polluting repo root"

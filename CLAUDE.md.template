@@ -1,0 +1,140 @@
+# CLAUDE.md — Team-level Always-On Guidelines
+
+> **这是一份模板文件(`CLAUDE.md.template`)。**
+>
+> 装完 dev-skills 后,把本文件**复制到你团队项目根目录并重命名为 `CLAUDE.md`**(去掉 `.template` 后缀),再按下方 `<!-- team:fill -->` 标记填团队真实情况。Claude Code / Cursor / Codex 等会自动把项目根的 `CLAUDE.md` 加入上下文,**team always-on 规则才会生效**。
+>
+> 留在 `dev-skills` 仓库根目录的 `.template` 副本只是模板源,**不会被消费**。
+>
+> ```bash
+> # 在你的项目根目录跑(只需做一次)
+> curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/main/CLAUDE.md.template
+> mv CLAUDE.md.template CLAUDE.md
+> ```
+>
+> ---
+>
+> 本文件是团队级**永远在上下文里**的工程约定。skill 是「场景触发」的检查点,本文件是「贯穿所有任务」的行为底色。
+>
+> 关系链:`dev-baseline.md`(通用 LLM 编码 hygiene) → `CLAUDE.md`(团队特有约定) → 各 skill(场景检查)。
+>
+> **本文件部分内容是模板**,需要团队 leader 按真实情况填写。带 `<!-- team:fill -->` 标记的段落是必须落实的;其余条目是建议默认值。
+
+---
+
+## 1. 不可破的硬规则
+
+下列规则**任何任务都生效**,与 dev-baseline 的四原则同级:
+
+- **不要在没有显式授权的情况下** `git push --force` / `git push --force-with-lease` 到 protected 分支。
+- **不要新增运行时依赖**(npm / pip / pub / cargo 等)未经讨论。如果需要,在 PR 描述里独立一段说明「为什么不能用现有 / stdlib 解决」。
+- **不要写裸 secret / API key / token / 个人路径** 到任何文件。`.env.example` 用占位符。
+- **不要修改与本任务无关的代码** —— 即使你觉得它丑(参见 dev-baseline 第 3 条)。
+- **不要用 LLM 生成的代码替换现有的、有 git blame 的代码而不说明** —— 在 commit message / PR 描述里要标注。
+
+---
+
+## 2. Workflow 约定
+
+### 设计前置(skill 工具链)
+<!-- team:fill — 团队是否强制以下流程,leader 拍板 -->
+- **复杂改动**(跨 ≥ 3 模块 / 涉及鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)**必须**先过 `dev-spec`(对齐需求)和 `dev-plan --deliberate`(获得 Critic 共识 + Pre-mortem + Expanded test plan),不得直接编码。
+- **常规改动**(单模块 / 中等复杂)建议先过 `dev-spec`,plan 可省略;不强制。
+- **一句话改动 / hotfix** 跳过 spec 和 plan,直接编码,但 commit 前**必须**过 `dev-commit-review`。
+- 中间产物(spec / plan)落 `.claude/artifacts/`,可加进 `.gitignore` 也可 commit,看团队偏好。
+
+### 分支
+<!-- team:fill -->
+- 默认分支:`main`(或 `master`)
+- 功能分支命名:`<type>/<short-desc>`,例如 `feat/user-export`、`fix/cart-overflow`
+- 长期分支:仅 `main`、`release/*`(若有)。其他都是 short-lived。
+
+### Commit
+- 单 commit 单一意图(参见 dev-commit-review 的 surgical 检查)。
+- 风格跟随仓库 `git log --oneline -20` 的样式;无明显风格时退回 conventional commits。
+- subject ≤ 72 chars,祈使语气,不加句号。
+
+### PR
+<!-- team:fill -->
+- PR **必须包含**:背景 / 改动摘要 / 测试说明 / 关联 issue。
+- 任何修改业务逻辑的 PR **必须有单测**;仅文档 / 配置 / 重命名可豁免。
+- PR 大小:**新增/删除 < 500 行** 为佳;超过先沟通拆分。
+- Reviewer ≥ 1 人 approval,涉及核心模块(如鉴权、支付)≥ 2 人。
+- **不允许** self-merge,除非 hotfix 流程明确允许。
+
+### 测试
+<!-- team:fill -->
+- 单测覆盖率底线:`<填团队基线,例如 70%>`
+- 新增公共 API **必须**带至少 1 个单测覆盖 happy path + 1 个边界 case。
+- E2E / 集成测试触发条件:`<填例如 release branch / 改动 X 模块时>`
+
+---
+
+## 3. Code patterns(团队偏好)
+
+下列是团队默认约定。与 lang-conventions.md 不冲突时以本节为准;冲突时本节优先。
+
+### 错误处理
+<!-- team:fill - 选一种风格全队统一 -->
+- [ ] 异常风格(throw / try-catch)
+- [ ] Result type 风格(Result<T, E>,显式返回)
+- [ ] 混合(boundary 用 Result,内部允许 throw)
+
+具体规则:`<例如:对外 API 一律返回 Result;对外只暴露已知 error code 枚举,不透传内部 stack>`
+
+### 日志
+<!-- team:fill -->
+- 统一 logger:`<例如 pino / structlog / logger 项目 wrapper>`
+- 禁止 `console.log` / `print` / `fmt.Println` 进入主分支(dev-commit-review 会拦)。
+- 日志级别约定:`<error/warn/info/debug 各自的判定标准>`
+
+### 配置 / Feature flag
+<!-- team:fill -->
+- 新功能默认走 feature flag,初始 0% 开启。
+- 配置中心:`<例如 LaunchDarkly / 内部 config-service / env vars>`
+
+### 命名
+- 跟随同文件 / 同模块邻居 —— 改动的命名必须和周围一致。
+- 禁止单字母变量(`i / j / k` 在 loop 内例外)。
+
+---
+
+## 4. Forbidden patterns(就是不要)
+
+<!-- team:fill — 列出团队曾经踩坑过的具体反模式 -->
+
+- 在 `build()` / render 路径里做副作用(网络请求、状态修改、日志写入)。
+- 在循环里 `await` 而不是并行(除非有依赖关系)。
+- `JSON.parse` 用户输入而不 try-catch。
+- 用魔法字符串作为 ID / 状态枚举(必须用常量 / 枚举类型)。
+- ...
+
+---
+
+## 5. AI 协作专属护栏
+
+适用于团队成员**让 LLM 帮写代码**时:
+
+- **写完先自己读一遍** —— LLM 生成的代码进入 PR 前,你要能解释每一行。
+- **不接受不能解释的简写** —— LLM 生成了你不认识的 API / 库 / 模式,要么查清楚要么换写法。
+- **PR 描述里标注 LLM 协作程度** —— 例如 `[AI-assisted]` 或 `[AI-generated, human-reviewed]`。这不是道德要求,是**让 reviewer 知道该多查什么**。
+- **大段 LLM 生成的代码必须有测试**(LLM 写的代码统计上 bug 率高于人类微改)。
+
+---
+
+## 6. 当 skill 与 CLAUDE.md 冲突
+
+- skill 局部规则 > CLAUDE.md > dev-baseline。
+- 若发现 skill 输出与 CLAUDE.md 冲突,**以 CLAUDE.md 为准**,并在 PR 里报这个 bug,后续修 skill。
+
+---
+
+## 7. 当用户(团队成员)指令与本文件冲突
+
+- **优先服从用户当下指令**,但**先一句话提示冲突**:「这与 CLAUDE.md 第 X 条不一致,你确认要这么做吗?」
+- 用户确认后照办,但在 commit / PR 描述里记录例外原因。
+- 不记录的例外 = 默认违反规范。
+
+---
+
+> 本文件由团队 leader 维护,任何修改走 PR + ≥ 1 人 approval。变更需在 CHANGELOG.md 留条目。

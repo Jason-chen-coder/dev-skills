@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json.schemastore.org/claude-plugin-marketplace.json",
+  "name": "dev-skills",
+  "description": "团队 git 工作流 skill 套件:dev-spec(需求对齐)→ dev-plan(实施方案 + Critic 共识)→ 写代码 → dev-commit-review(5 轴评审)/ dev-commit-writer(commit message)。共享行为基线源自 Karpathy 对 LLM 编码 pitfall 的观察。",
+  "version": "0.4.0",
+  "author": "Jason-chen-coder",
+  "homepage": "https://github.com/Jason-chen-coder/dev-skills",
+  "license": "MIT",
+  "tags": [
+    "git-workflow",
+    "code-review",
+    "spec",
+    "planning",
+    "commit-message",
+    "team-standard"
+  ],
+  "skills": [
+    {
+      "name": "dev-commit-review",
+      "path": "skills/dev-commit-review",
+      "description": "提交前对 git working tree 做 5 轴评审(规范/功能/闭环/注释/废码),按 P0/P1/P2 分级,READY 时附带 commit message。",
+      "tags": ["review", "pre-commit", "code-quality"]
+    },
+    {
+      "name": "dev-commit-writer",
+      "path": "skills/dev-commit-writer",
+      "description": "基于分支 commits 风格,针对当前 git 修改生成 commit message。意图歧义时输出多候选,不评审代码。",
+      "tags": ["commit-message", "git"],
+      "status": "draft"
+    },
+    {
+      "name": "dev-spec",
+      "path": "skills/dev-spec",
+      "description": "把模糊需求转成结构化设计文档,支持多 wave 渐进访谈 + 数学化清晰度评分(--quick / 默认 / --deep),Ontology 收敛追踪。",
+      "tags": ["spec", "requirements", "interview"],
+      "status": "draft"
+    },
+    {
+      "name": "dev-plan",
+      "path": "skills/dev-plan",
+      "description": "把 spec 转成 Critic-approved 实施 plan,内置 Planner → Architect → Critic 共识循环,RALPLAN-DR 结构(--quick / 默认 / --deliberate)。",
+      "tags": ["plan", "consensus", "ralplan", "adr"],
+      "status": "draft"
+    }
+  ],
+  "shared_references": [
+    {
+      "path": "references/dev-baseline.md",
+      "description": "四条贯穿所有 skill 的行为基线(不假设 / 最小代码 / 外科手术式改动 / 可验证成功标准)。每个 skill 内部携带副本,本路径是 canonical 编辑源。"
+    },
+    {
+      "path": "references/team-conventions.md",
+      "description": "团队对具体语言 / 工具的偏好模板。"
+    },
+    {
+      "path": "references/calibration-cases.md",
+      "description": "10 个季度 calibration 用例(commit-review × 6 / spec × 2 / plan × 2)。"
+    }
+  ],
+  "post_install_notes": [
+    "Skill 安装到 `.claude/skills/`(项目级)或 `~/.claude/skills/`(全局)。",
+    "团队 always-on 约束在 `CLAUDE.md.template` 文件内,**消费方需要手动复制到自己项目根目录并改名为 `CLAUDE.md`** 才生效。详见仓库 README 的「安装 CLAUDE.md 模板」段落。",
+    "中间产物路径:dev-spec → `.claude/artifacts/designs/<feature>.md`;dev-plan → `.claude/artifacts/plans/<feature>.md`(均为消费方项目根)。",
+    "skill 之间松耦合,不互相调用 —— 衔接由用户主动触发。"
+  ]
+}
