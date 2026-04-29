@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "dev-skills",
+  "version": "0.4.0",
+  "description": "团队 git 工作流 skill 套件:dev-spec / dev-plan / dev-commit-review / dev-commit-writer。共享 Karpathy 行为基线 + RALPLAN-DR 共识机制。",
+  "author": "Jason-chen-coder",
+  "homepage": "https://github.com/Jason-chen-coder/dev-skills",
+  "license": "MIT",
+  "skills": "./skills"
+}

@@ -35,33 +35,51 @@
 ## 安装
 
 > 默认假设你 fork 到 `Jason-chen-coder/dev-skills`。如果你团队 fork 到别的位置,把下方命令里的 `Jason-chen-coder` 替换成你团队 GitHub `<owner>`。
+>
+> 三种装法**任选一种**即可。**Claude Code 用户首选方式 A**(原生 `/plugin install`,装得最干净);跨 agent CLI 用户走方式 B;内网 / 无 npx 场景用方式 C。
 
-### 方式 1:全量安装(推荐)
+### 方式 A — Claude Code 原生 plugin install(推荐)
+
+在 Claude Code 里**逐行**执行(两条命令一起粘贴会失败):
+
+```
+/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills
+```
+
+```
+/plugin install dev-skills
+```
+
+会把整个 plugin(含 4 个 skill + 共享 references)装到 Claude Code 的 plugin 目录,自动识别。
+
+### 方式 B — `npx skills` CLI(跨 agent CLI 通用,不限 Claude Code)
 
 ```bash
-# 装到当前项目(.claude/skills/)— 项目级,提交版本控制,团队共享
+# 全量装到当前项目(.claude/skills/)— 项目级,提交版本控制,团队共享
 npx skills add Jason-chen-coder/dev-skills
 
 # 或装到全局(~/.claude/skills/)— 个人开发机所有项目都能用
 npx skills add Jason-chen-coder/dev-skills --global
-```
 
-会把仓库里所有 skill 都安装到本地。
-
-### 方式 2:按需安装
-
-只装你当前需要的 skill(可以多个 `--skill` 叠加):
-
-```bash
+# 按需装(可叠加 --skill)
 npx skills add Jason-chen-coder/dev-skills --skill dev-commit-review
 npx skills add Jason-chen-coder/dev-skills --skill dev-spec --skill dev-plan
-```
 
-### 方式 3:列出仓库可装的 skill(不实际安装)
-
-```bash
+# 仅列出可装的 skill,不实际安装
 npx skills add Jason-chen-coder/dev-skills --list
 ```
+
+`npx skills` 是 [vercel-labs/skills](https://github.com/vercel-labs/skills),支持 Claude Code / Cursor / Codex / Gemini CLI 等 50+ 个 agent CLI,跨工具通用。
+
+### 方式 C — 手动 git clone(任何工具都能用)
+
+```bash
+git clone https://github.com/Jason-chen-coder/dev-skills.git ~/.claude/skills/dev-skills
+# 或针对单个项目
+git clone https://github.com/Jason-chen-coder/dev-skills.git <project>/.claude/skills/dev-skills
+```
+
+适合公司内网无法用 npx / Claude Code 但能 clone GitHub 的场景。
 
 ### 安装 CLAUDE.md 模板(强烈建议)
 

@@ -37,12 +37,18 @@
 - **`docs/onboarding.md`** 安装命令同步更新,2 处 lang-conventions.md 路径更新为 `skills/dev-commit-review/references/lang-conventions.md`。
 
 ### Added
-- **`.claude-plugin/marketplace.json`** —— 显式声明仓库提供的 4 个 skill + 3 个共享 references + post-install notes。这让 `npx skills add ... --list` 输出整齐,marketplace 网站(claudemarketplaces.com 等)可自动收录。
+- **`.claude-plugin/marketplace.json`** —— Claude Code 原生 marketplace manifest。声明本仓库提供 1 个 plugin(`dev-skills`),plugin 内含 4 个 skill。owner / plugins[] 结构对齐 Claude Code 官方 schema,支持 `/plugin marketplace add` + `/plugin install` 流程。
+- **`.claude-plugin/plugin.json`** —— Claude Code plugin manifest。声明 plugin metadata(name / version / description / skills 路径),配合 marketplace.json 让 `/plugin install dev-skills` 能拿到完整 plugin 描述。
 - **`.github/workflows/validate.yml`** —— GitHub Actions CI,推 PR / push 主分支时自动验证:
    - 每个 SKILL.md 有 `name` + `description` 必填项
    - 5 处 dev-baseline.md 副本 md5 一致(防漂移)
-   - marketplace.json 声明的 skill / reference 路径都真实存在
+   - `.claude-plugin/marketplace.json` 和 `plugin.json` 结构合法(top-level `name` / `owner.name` / `plugins[]`,plugin 必有 `name` + `source`)
+   - 4 个预期 skill 目录都存在(skills/dev-commit-review 等)
    - 仓库根没有 live `CLAUDE.md` 污染(必须是 `.template`)
+- **README 安装段重写为 A/B/C 三种方式**:
+   - A — Claude Code 原生 `/plugin marketplace add` + `/plugin install dev-skills`(推荐 Claude Code 用户)
+   - B — `npx skills add Jason-chen-coder/dev-skills`(跨 agent CLI 通用,Cursor / Codex / Gemini 等)
+   - C — 手动 `git clone` 到 `.claude/skills/`(无 npx / 内网场景兜底)
 
 ### Notes
 - 5 个 baseline 副本 md5 重新对齐到 `487fb5f8...`。

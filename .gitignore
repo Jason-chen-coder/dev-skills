@@ -11,6 +11,9 @@
 # not this repo's. But guard against accidental commits from local testing.)
 .claude/artifacts/
 
+# oh-my-claudecode local state (session / memory / cooldown caches)
+.omc/
+
 # Node (in case skills repo ever gains tooling)
 node_modules/
 *.log

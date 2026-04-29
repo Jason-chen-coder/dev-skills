@@ -54,27 +54,57 @@ jobs:
           fi
           echo "✅ All baseline copies in sync"
 
-      - name: Verify marketplace.json declares skills that exist on disk
+      - name: Verify .claude-plugin manifests are valid JSON
         run: |
           set -e
           if [ ! -f .claude-plugin/marketplace.json ]; then
-            echo "❌ .claude-plugin/marketplace.json missing"
+            echo "❌ .claude-plugin/marketplace.json missing (needed for /plugin marketplace add)"
             exit 1
           fi
-          # Extract paths from marketplace.json and check each exists
+          if [ ! -f .claude-plugin/plugin.json ]; then
+            echo "❌ .claude-plugin/plugin.json missing (needed for /plugin install)"
+            exit 1
+          fi
+          # Parse both files; fail if not valid JSON
+          python3 -c "import json; json.load(open('.claude-plugin/marketplace.json'))" || (echo "❌ marketplace.json is not valid JSON" && exit 1)
+          python3 -c "import json; json.load(open('.claude-plugin/plugin.json'))" || (echo "❌ plugin.json is not valid JSON" && exit 1)
+          echo "✅ Both .claude-plugin manifests are valid JSON"
+
+      - name: Verify marketplace.json structure (Claude Code schema)
+        run: |
+          set -e
+          python3 <<'PY'
+          import json, sys
+          m = json.load(open('.claude-plugin/marketplace.json'))
+          errors = []
+          if 'name' not in m: errors.append("missing top-level 'name'")
+          if 'owner' not in m or not isinstance(m.get('owner'), dict) or 'name' not in m['owner']:
+              errors.append("missing top-level 'owner.name'")
+          if 'plugins' not in m or not isinstance(m.get('plugins'), list) or not m['plugins']:
+              errors.append("missing or empty 'plugins' array")
+          for i, p in enumerate(m.get('plugins', [])):
+              if 'name' not in p: errors.append(f"plugins[{i}] missing 'name'")
+              if 'source' not in p: errors.append(f"plugins[{i}] missing 'source'")
+          if errors:
+              for e in errors: print(f"❌ {e}")
+              sys.exit(1)
+          print("✅ marketplace.json structure OK")
+          PY
+
+      - name: Verify expected skill directories exist
+        run: |
+          set -e
           missing=0
-          for path in $(grep -oE '"path":\s*"[^"]+"' .claude-plugin/marketplace.json | sed -E 's/.*"path":\s*"([^"]+)".*/\1/'); do
-            if [ ! -d "$path" ] && [ ! -f "$path" ]; then
-              echo "❌ marketplace.json declares missing path: $path"
+          for skill in dev-commit-review dev-commit-writer dev-spec dev-plan; do
+            if [ ! -f "skills/$skill/SKILL.md" ]; then
+              echo "❌ skills/$skill/SKILL.md missing"
               missing=1
             else
-              echo "✓ $path"
+              echo "✓ skills/$skill"
             fi
           done
-          if [ "$missing" -ne 0 ]; then
-            exit 1
-          fi
-          echo "✅ marketplace.json paths all exist"
+          if [ "$missing" -ne 0 ]; then exit 1; fi
+          echo "✅ All 4 expected skills present"
 
       - name: Verify CLAUDE.md.template exists (not CLAUDE.md)
         run: |
