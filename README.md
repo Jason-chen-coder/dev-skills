@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="images/logo.png" alt="dev-skills logo" width="160" />
+</p>
+
 # dev-skills
 
 > 团队 git 工作流 skill 套件,覆盖 **需求对齐 → 实施方案 → 提交评审 → commit message** 整条链路。
