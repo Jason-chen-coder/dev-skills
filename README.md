@@ -12,6 +12,7 @@
 |---|---|---|
 | [`dev-spec`](./skills/dev-spec/) | 多 wave 渐进访谈 + 数学化清晰度评分,把模糊需求转成结构化 spec | 写代码前对齐需求 |
 | [`dev-plan`](./skills/dev-plan/) | Planner → Architect → Critic 共识循环 + RALPLAN-DR,把 spec 转成 Critic-approved 实施 plan | 需求已对齐、写代码前 |
+| [`dev-fix`](./skills/dev-fix/) | Hypothesis-driven 调试 + 修复:复现 → 假设 → 反向追溯 → 修 root cause → defense-in-depth → red→green→red 验证 + 强制 regression test + pattern analysis | 修 bug / 排查 / RCA |
 | [`dev-commit-review`](./skills/dev-commit-review/) | 提交前 5 轴评审(规范/功能/闭环/注释/废码),P0/P1/P2 分级,READY 时附带 commit message | 准备 commit |
 | [`dev-commit-writer`](./skills/dev-commit-writer/) | 跟随仓库 git log 风格生成 commit message,意图歧义时输出多候选 | 改动已过审、只要 message |
 
@@ -49,17 +50,22 @@ mv CLAUDE.md.template CLAUDE.md   # 按 <!-- team:fill --> 标记填团队约定
 ## 工作流
 
 ```
-[模糊需求]
-    ▼  dev-spec        → .claude/artifacts/designs/<feature>.md
-    ▼  dev-plan(可选,复杂功能推荐)→ .claude/artifacts/plans/<feature>.md
-    ▼  写代码
-    ▼  二选一:
-       ├─ dev-commit-review   评审 + commit message
-       └─ dev-commit-writer   只要 commit message
-    ▼  git commit + push
+[新需求]                           [bug 报告]
+    ▼  dev-spec                       ▼  dev-fix   → .claude/artifacts/fixes/<slug>.md
+    ▼  dev-plan(可选,复杂功能推荐)         (锁定 root cause 后,大改动可选过 dev-plan)
+    ▼  写代码                          ▼  修代码 + regression test
+    └────────────────┬─────────────────┘
+                     ▼  二选一:
+                     ├─ dev-commit-review   评审 + commit message
+                     └─ dev-commit-writer   只要 commit message
+                     ▼  git commit + push
 ```
 
-**复杂改动**(跨多模块 / 鉴权 / 支付 / 数据迁移 / 公开 API)建议 `dev-spec` + `dev-plan --deliberate`(自带 pre-mortem + expanded test plan)。**一句话 hotfix** 跳过 spec/plan,但 commit 前必须过 `dev-commit-review`。
+中间产物路径:`dev-spec` → `.claude/artifacts/designs/<feature>.md`;`dev-plan` → `.claude/artifacts/plans/<feature>.md`;`dev-fix` → `.claude/artifacts/fixes/<slug>.md`。
+
+**复杂新功能**(跨多模块 / 鉴权 / 支付 / 数据迁移 / 公开 API)建议 `dev-spec` + `dev-plan --deliberate`(自带 pre-mortem + expanded test plan)。
+**间歇性 / 跨系统 / 生产事故 bug** 建议 `dev-fix --deep`(强制 3-5 hypothesis + 反向 call-stack 追溯 + tagged instrument + defense-in-depth + pattern analysis + 完整 RCA)。
+**一句话 hotfix** 跳过 spec/plan,但 commit 前必须过 `dev-commit-review`。
 
 ---
 
@@ -87,7 +93,7 @@ skill 准入 4 标准:**一句话讲清触发** / **流程标准化(≥ 5 步)**
 
 ## Status
 
-**0.4.0** · 4 个 skill 全部已发布 · GitHub Actions CI 自动验证 frontmatter / baseline 同步 / manifest(详见 [`.github/workflows/validate.yml`](./.github/workflows/validate.yml))
+**0.5.1** · 5 个 skill 全部已发布 · GitHub Actions CI 自动验证 frontmatter / baseline 同步 / manifest(详见 [`.github/workflows/validate.yml`](./.github/workflows/validate.yml))
 
 ---
 

@@ -16,6 +16,79 @@
 
 ---
 
+## [0.5.1] — 2026-04-30
+
+dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 examples 的清晰度、一致性、准确性。
+
+### Fixed
+- **M1**:Step 1 line 49 引用了不存在的「Step 1.5」(死链)。改为「直接向用户追问补全,不要自己猜」。
+- **M2**:Step 1 模式表过时的「完整 6 阶段」措辞(实际是 0-8 共 9 phase)。重写为按 phase 描述差异,不用步数。
+- **M3**:Step 1 模式表只描述 Hypothesis 差异,缺 Instrument / Defense-in-depth / RCA 列。补全 4 列 + 任何模式都不能跳的硬门槛说明。
+- **M4**:Step 5 escalation 规则与默认模式 hypothesis 上限(2 个)不兼容(默认根本到不了「3 个证伪」的状态)。改为**累计跨模式跨轮**的双计数器(`hypothesis_busted_count` 仅计 H 高置信 + `fix_attempt_failed_count` Step 6+7 完整跑过仍 RED),阶梯式触发(2 触发升模式建议、3 触发架构升级)。
+- **M5**:Step 4 / 7d 的 instrumentation tag 用 `# #region DEBUG  -- bug-<slug>`(双空格依赖,易踩坑)。改为单一锚点 `bug-<slug>` 字符串作为 grep 凭据,不依赖空格 / 注释风格 / region 关键字。Step 4 / Step 7d / examples 例 3 同步更新。
+
+### Changed
+- **S1**:Step 3 hypothesis 模板加 `预测观察` 字段(可证伪锚点)—— 每个假设必须能预测「如果 H 成立,test/log 应当呈现什么」。examples 例 3 的 5 个 hypothesis 全部按新格式改写。
+- **S2**:Step 3 评分单位统一 —— 删除「概率 60%」措辞,统一为「**置信度 H/M/L + 优先级序号**」。
+- **S3**:Step 6 加「Stop & handoff to dev-plan」段。fix 涉及结构性改动(≥ 2 文件公共接口 / DB schema / 跨服务消息格式 / 类继承层级)时,**立刻 STOP** dev-fix,artifact 标 `Status: NEEDS_DESIGN_CHANGE`,把决策权交回用户;不要勉强写小补丁。
+- **S4**:Step 7c「wider suite」原本只写「同模块全测试」太模糊。补 5 种语言具体命令(pytest / pnpm / go test / cargo test / gradle)。
+- **S5**:artifact 中 `AC-1 / AC-2 / AC-3 / AC-4` 改为 `V-1 / V-2 / V-3 / V-4`(verification log,避免与 dev-spec 的 acceptance criteria 混淆)。examples 例 1 同步。
+- **S6**:小数序号 `Step 6.5` 改为 `Step 6b`(整数序号 + 子段语义,避免被误读为「6.5 = Step 7 之前可省一半」)。SKILL.md 全文 + examples 例 3 + Hard rules 引用全部同步。
+
+### Added
+- **P2 模式自动升级建议**:Step 1 加新段。如果用户输入 `--quick` 但 Capture 阶段出现以下任一信号,主动建议升 `--deep`(等用户确认):
+  - Severity 是 blocker / 财务影响 / 数据破坏
+  - First seen 含「间歇性 / 偶发 / ~N% 概率 / heisenbug」
+  - Symptom 跨服务 / 跨进程 / 跨线程 / 跨 host
+  - Step 2c repro flaky(< 3/3 失败)
+
+### Notes
+- SKILL.md 行数:379 → 440(主要因 4 列模式表 + Escalation 阶梯表 + 7c 多语言示例 + Stop & handoff 段)。
+- examples.md 行数:432(基本不变,只重写例 3 hypothesis 格式)。
+- Hard rules 数量保持 13 条,内容微调对齐新 Step 编号 / escalation 规则。
+- 6 个 baseline 副本 md5 不变(本次只改 dev-fix 本身,baseline 未触)。
+- 不破坏其他 4 个 skill,无版本冲突。
+
+---
+
+## [0.5.0] — 2026-04-29
+
+### Added
+- **新 skill `dev-fix`** —— Hypothesis-driven 调试 + 修复工作流。借鉴 oh-my-claudecode 的 `/debug`、社区 `systematic-debugging` / `claude-code-debug-mode`,以及 **obra/superpowers 的 5 个 debug 子 skill**(systematic-debugging / root-cause-tracing / defense-in-depth / condition-based-waiting / verification-before-completion),融合为单一 dev-skills 风格 skill:
+   - 三档模式:`--quick`(简单 bug 跳形式化但仍 verify 三步)/ 默认(完整 8 阶段,1-2 hypothesis)/ `--deep`(强制 3-5 hypothesis 跨多维度 + tagged debug instrument + defense-in-depth + pattern analysis + 完整 RCA artifact)
+   - 8 步硬流程:Triage → Reproduce(failing test + condition-based-waiting)→ Hypothesize → Instrument(deep)→ Diagnose(**含反向 call-stack 追溯**)→ Fix(只动 root cause)→ **Step 6.5 Defense-in-depth(deep 可选)** → Verify(red→green→red 三步循环)→ Write artifact(含 **Pattern analysis 必填段**)
+   - 铁律 **No fixes without root cause**:confirm 不了根因就标 `BELOW_CONFIDENCE_THRESHOLD` 让用户决策,禁止 symptom-patch
+   - **3 次失败 = 架构问题升级**(借自 superpowers):3 个高置信 hypothesis 全证伪,或 3 次 fix attempt 后仍 RED → 停止假设循环,升级到用户决策 / `dev-plan`,不硬猜
+   - **反向 call-stack 追溯**(借自 superpowers `root-cause-tracing`):不在第一个可疑帧修,反向追到 bad value 被首次引入的那一帧
+   - **Defense-in-depth**(借自 superpowers `defense-in-depth`,`--deep` 可选):root cause 修完后**有针对性地**在多层边界加 validation;严格区分 defense vs refactor
+   - **Condition-based-waiting**(借自 superpowers):时序 / race repro 用 `waitFor(predicate)` 替代固定 sleep,解决 flaky
+   - **Evidence before claims**(借自 superpowers `verification-before-completion`):artifact 任何 passed / fixed / verified 声明必须**本轮真跑过命令读过 output**,没跑别声称
+   - **「找不到 root cause」≠ 没有 root cause**(superpowers 口号):95% 是 investigation 不完整,升 `--deep` 多列假设、反向追溯,比放弃更可能找到
+   - **Pattern analysis**:artifact 必填段,grep 仓库找同类隐患(本次不修,作为 follow-up)
+   - **强制 regression test** + **强制 stash 反向证明**(fix 后 stash 一次 test 必须重新 RED)
+   - 输出至 `.claude/artifacts/fixes/<bug-slug>.md`
+- `skills/dev-fix/SKILL.md`(8 步流程 + 13 条 Hard rules)
+- `skills/dev-fix/examples.md`(4 个完整样例:`--quick` off-by-one / 默认 session TTL / `--deep` race + **反向追溯 + Defense-in-depth + Pattern analysis** 完整演示 / 反例 Verify 7b 失败)
+- `skills/dev-fix/references/dev-baseline.md`(自包含副本)
+
+### Changed
+- README skills 表新增 `dev-fix` 行(放 dev-plan 之后、dev-commit-review 之前,反映工作流位置)。
+- README 工作流图重做为**双入口分支**:`[新需求] → dev-spec/plan` 和 `[bug 报告] → dev-fix` 两条平行路径,在「写代码」节点合流后共用 commit-review/writer。
+- README 工作流图下方说明新增「间歇性 / 跨系统 / 生产事故 bug 建议 `dev-fix --deep`」一条。
+- README Status 段:版本 0.4.0 → 0.5.0,skill 数 4 → 5。
+- `.claude-plugin/marketplace.json` + `plugin.json` 版本 0.4.0 → 0.5.0,description 加 dev-fix + 提及反向追溯 / defense-in-depth / pattern analysis,keywords / tags 加 `debug` / `bug-fix` / `rca` / `regression-test`。
+- `CONTRIBUTING.md` baseline 同步副本清单从「四处」改为「五处」,新增 `skills/dev-fix/references/dev-baseline.md`。
+- `references/dev-baseline.md`(canonical)同上。
+- `.github/workflows/validate.yml` 期望 skill 列表加入 `dev-fix`(从 4 → 5)。
+
+### Notes
+- 6 个 baseline 副本(canonical + 5 skills)md5 对齐到 `447b314f...`。
+- 不破坏现有 4 个 skill 行为,仅新增。
+- dev-fix 与 dev-spec 是**平行入口**(新需求 vs bug 报告),不调用其他 skill,松耦合保留。
+- skill 名 `dev-fix`(而非 `dev-bug`)强调输出是「fix」工作流;artifact 路径 `.claude/artifacts/fixes/` 与名一致。
+
+---
+
 ## [0.4.0] — 2026-04-29
 
 发布就绪版本。修复 4 类阻塞性问题让仓库能被 `npx skills add` / Claude Code 正常安装,并补齐 marketplace 清单 / GitHub Actions 验证。

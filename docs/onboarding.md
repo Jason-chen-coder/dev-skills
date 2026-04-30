@@ -70,17 +70,19 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 ---
 
-## 四个 skill 怎么选
+## 五个 skill 怎么选
 
 | 我想… | 用哪个 |
 |---|---|
 | 写代码前对模糊需求做对齐 | `dev-spec` |
 | 需求已对齐,要把 spec 转成 Critic-approved 的实施 plan(尤其复杂功能 / 高风险改动) | `dev-plan` |
+| 修 bug:复现 + 假设 + 反向追溯 + 修 root cause + defense-in-depth + regression test + pattern analysis | `dev-fix` |
 | 写完代码,commit 前要严格把关 | `dev-commit-review` |
 | 改动很简单 / 已自审过,只想要个 commit message | `dev-commit-writer` |
 
 `dev-commit-review` 和 `dev-commit-writer` 是**二选一**,不要都跑。
 `dev-spec → dev-plan` 是松耦合衔接 —— spec 写完后用户决定要不要进 plan,简单功能可直接进编码,不强制。
+`dev-fix` 与 `dev-spec` 是**平行入口** —— 新需求走 dev-spec,bug 报告走 dev-fix。两条路径在「写代码」节点合流后共用 commit-review/writer。
 
 ---
 

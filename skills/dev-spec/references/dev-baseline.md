@@ -3,7 +3,7 @@
 本仓库所有 skill 在执行前**必须先加载本文件**。以下四条行为准则在 skill 全程生效。
 准则源自 Andrej Karpathy 对 LLM 编码 pitfall 的观察(forrestchang/andrej-karpathy-skills),针对 dev-skills 工具链做了本地化与精炼。
 
-> 本文件是仓库根目录 `/references/dev-baseline.md` 的**编辑源**。同样内容会复制到每个 skill 的 `skills/<skill>/references/dev-baseline.md`,以保证 skill 单独安装时仍自包含。**修改时改根目录版本,然后同步到四处 skill 副本**(skills/dev-commit-review / dev-commit-writer / dev-spec / dev-plan)。
+> 本文件是仓库根目录 `/references/dev-baseline.md` 的**编辑源**。同样内容会复制到每个 skill 的 `skills/<skill>/references/dev-baseline.md`,以保证 skill 单独安装时仍自包含。**修改时改根目录版本,然后同步到五处 skill 副本**(skills/dev-commit-review / dev-commit-writer / dev-spec / dev-plan / dev-fix)。
 
 ---
 

@@ -4,14 +4,14 @@
   "owner": {
     "name": "Jason-chen-coder"
   },
-  "description": "团队 git 工作流 skill 套件:dev-spec(需求对齐)→ dev-plan(实施方案 + Critic 共识)→ 写代码 → dev-commit-review(5 轴评审)/ dev-commit-writer(commit message)。共享行为基线源自 Karpathy 对 LLM 编码 pitfall 的观察。",
-  "version": "0.4.0",
+  "description": "团队 git 工作流 skill 套件:dev-spec(需求对齐)→ dev-plan(实施方案 + Critic 共识)→ 写代码 → dev-commit-review(5 轴评审)/ dev-commit-writer(commit message);bug 路径走 dev-fix(hypothesis-driven 调试 + 反向追溯 + defense-in-depth + 强制 regression test + pattern analysis)。共享行为基线源自 Karpathy 对 LLM 编码 pitfall 的观察。",
+  "version": "0.5.0",
   "plugins": [
     {
       "name": "dev-skills",
       "source": "./",
-      "description": "覆盖 git 工作流的 4 个 skill(dev-commit-review / dev-commit-writer / dev-spec / dev-plan),共享 Karpathy 行为基线。",
-      "version": "0.4.0",
+      "description": "覆盖 git 工作流 + bug 修复的 5 个 skill(dev-spec / dev-plan / dev-fix / dev-commit-review / dev-commit-writer),共享 Karpathy 行为基线。",
+      "version": "0.5.0",
       "author": "Jason-chen-coder",
       "homepage": "https://github.com/Jason-chen-coder/dev-skills",
       "repository": "https://github.com/Jason-chen-coder/dev-skills",
@@ -23,6 +23,9 @@
         "spec",
         "planning",
         "commit-message",
+        "debug",
+        "bug-fix",
+        "rca",
         "team-standard"
       ],
       "tags": [
@@ -31,7 +34,10 @@
         "spec",
         "plan",
         "ralplan",
-        "consensus"
+        "consensus",
+        "debug",
+        "rca",
+        "regression-test"
       ],
       "skills": "./skills"
     }
