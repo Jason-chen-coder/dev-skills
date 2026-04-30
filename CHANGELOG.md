@@ -50,9 +50,17 @@
    - B — `npx skills add Jason-chen-coder/dev-skills`(跨 agent CLI 通用,Cursor / Codex / Gemini 等)
    - C — 手动 `git clone` 到 `.claude/skills/`(无 npx / 内网场景兜底)
 
+### Promoted from draft to stable
+- `dev-commit-writer` / `dev-spec` / `dev-plan` 三个 skill 在 0.2.0–0.3.0 期间标记为 draft。**0.4.0 起统一去掉 draft 标签**,4 个 skill 全部以 stable 状态发布。原因:
+   - SKILL.md 已完整(Step 0-N 定义清晰)
+   - 每个 skill 都有 examples.md(2-5 个真实样例)
+   - calibration-cases.md 覆盖 4 个 skill 的判定边界
+   - 共享 baseline + 团队治理文档完整
+- 仍欢迎在真实工作流中提 issue —— stable 不意味着「不会再改」,而是「可以放心装来用」。
+
 ### Notes
 - 5 个 baseline 副本 md5 重新对齐到 `487fb5f8...`。
-- skill 内容、行为逻辑无变化 —— 只是结构和 metadata 调整。
+- skill 内容、行为逻辑无变化 —— 只是结构和 metadata 调整 + 状态标签从 draft → stable。
 - 升级用户(从 0.3.x 到 0.4.0)需要重新跑一次 `npx skills add`,因为 skill 路径变了。
 
 ---
