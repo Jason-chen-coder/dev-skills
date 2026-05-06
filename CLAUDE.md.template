@@ -38,10 +38,25 @@
 
 ### 设计前置(skill 工具链)
 <!-- team:fill — 团队是否强制以下流程,leader 拍板 -->
+
+**新功能路径**:
 - **复杂改动**(跨 ≥ 3 模块 / 涉及鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)**必须**先过 `dev-spec`(对齐需求)和 `dev-plan --deliberate`(获得 Critic 共识 + Pre-mortem + Expanded test plan),不得直接编码。
 - **常规改动**(单模块 / 中等复杂)建议先过 `dev-spec`,plan 可省略;不强制。
 - **一句话改动 / hotfix** 跳过 spec 和 plan,直接编码,但 commit 前**必须**过 `dev-commit-review`。
-- 中间产物(spec / plan)落 `.claude/artifacts/`,可加进 `.gitignore` 也可 commit,看团队偏好。
+
+**Bug 路径**:
+- **生产事故 / 间歇性 / 跨系统 bug** **必须**走 `dev-fix --deep`(强制 3-5 hypothesis + 反向 call-stack 追溯 + tagged instrument + Pattern analysis + 完整 RCA)。
+- **常规 bug**(中等复杂)走 `dev-fix --default`,简单 off-by-one 可走 `dev-fix --quick`。
+- 任何 bug 修复**必须**有 regression test,Verify 三步循环(red→green→red)不许跳。
+
+**入口推荐器**:
+- 不知道走哪条路径 / 卡在某 phase / 失败恢复时,跑 `dev-workflow`(默认 / `--status` / `--next` / `--recover`),它**只指路不调起任何 skill**,用户仍自己执行。
+
+**中间产物路径**(consumer 项目根的 `.claude/artifacts/` 下):
+- `designs/<feature>.md`(dev-spec)
+- `plans/<feature>.md`(dev-plan)
+- `fixes/<bug-slug>.md`(dev-fix)
+- 可加进 `.gitignore` 也可 commit,看团队偏好。
 
 ### 分支
 <!-- team:fill -->
@@ -68,6 +83,10 @@
 - 新增公共 API **必须**带至少 1 个单测覆盖 happy path + 1 个边界 case。
 - E2E / 集成测试触发条件:`<填例如 release branch / 改动 X 模块时>`
 
+> **取舍参考**:
+> - **覆盖率底线**:60-70% 是常见起点;< 50% 通常意味着 P0 bug 漏网风险高;> 90% 通常意味着团队在凑数(测琐碎 getter/setter)。**关键路径 100% + 全局 70%** 比单一全局值更有意义
+> - **E2E 触发**:每次 push 跑 E2E 太重(慢 + flaky),只在 release / 改动核心模块时跑是常见折衷。但 critical path(支付 / 鉴权)应每次 PR 跑
+
 ---
 
 ## 3. Code patterns(团队偏好)
@@ -79,6 +98,11 @@
 - [ ] 异常风格(throw / try-catch)
 - [ ] Result type 风格(Result<T, E>,显式返回)
 - [ ] 混合(boundary 用 Result,内部允许 throw)
+
+> **取舍参考**:
+> - **异常风格**:开发快、stack trace 直观,但**容易漏 catch**(类型系统不强制),错误传播路径靠人维护
+> - **Result type**:错误传播显式、类型安全,但**boilerplate 多**,与异步/await 配合需要项目级辅助函数
+> - **混合**:大多数中大型项目落点。boundary 强制 Result(让调用方必须处理失败),内部允许 throw(读起来流畅)。Rust / Go 工程倾向纯 Result,JS/Python 工程倾向混合
 
 具体规则:`<例如:对外 API 一律返回 Result;对外只暴露已知 error code 枚举,不透传内部 stack>`
 
@@ -92,6 +116,11 @@
 <!-- team:fill -->
 - 新功能默认走 feature flag,初始 0% 开启。
 - 配置中心:`<例如 LaunchDarkly / 内部 config-service / env vars>`
+
+> **取舍参考**:
+> - **LaunchDarkly / Optimizely**(SaaS):功能全(渐进 rollout / segment / experiment),但**月费 + vendor lock-in**
+> - **自研 config-service**:控制力强,但**初期成本高**,小团队不值
+> - **env vars + 重启**:0 成本,但**改一次要重启**,不适合实时切流
 
 ### 命名
 - 跟随同文件 / 同模块邻居 —— 改动的命名必须和周围一致。

@@ -110,6 +110,50 @@ git log -5 --pretty=format:"%H%n%s%n%n%b%n---END---"   # 完整 message 采样,�
 
 ---
 
+## Step 4b — Artifact references 检测(自动追溯)
+
+在 commit message footer 自动加 `Refs:` 行,关联 dev-spec / dev-plan / dev-fix 产物。
+
+### 扫描流程
+
+```bash
+ls .claude/artifacts/designs/   # spec
+ls .claude/artifacts/plans/     # plan
+ls .claude/artifacts/fixes/     # fix
+```
+
+按以下规则:
+
+| 找到的 artifact 数量 | 行为 |
+|---|---|
+| 0 个 | 不加 Refs(可能是 docs / chore / 不走流程的小改) |
+| 1 个 | **自动加 Refs**,例 `Refs: spec/user-export` 或 `Refs: fix/cart-total-off-by-one` |
+| 同 slug 的 spec + plan | 两条都加:`Refs: spec/<slug>` + `Refs: plan/<slug>` |
+| 多个不同 slug | **回问用户**:「我看到这些 in-flight: [...],这次 commit 关联哪个?(可多选 / 或不关联)」 |
+
+### Footer 格式
+
+```
+<subject>
+
+<body 可选>
+
+Refs: spec/<slug>
+Refs: plan/<slug>
+```
+
+- 一行一个 Refs(便于 `git log --grep="Refs:"` 检索)
+- type 用 `spec` / `plan` / `fix`(对应 designs/plans/fixes 目录)
+- 如果用户回答「不关联」(例如 docs commit),不加
+
+### 不加 Refs 的场景
+
+- 用户显式说「这个 commit 不关联 artifact」
+- 改动只涉及 README / CHANGELOG / 配置等流程外文件
+- `.claude/artifacts/` 目录不存在(用户没用过 dev-skills)
+
+---
+
 ## Step 5 — Output
 
 ### 默认输出(单一意图,无歧义,无 scope creep)

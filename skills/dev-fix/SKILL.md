@@ -354,7 +354,7 @@ grep -rn "bug-<slug>" .             # 期望:0 条匹配
 ```markdown
 # Bug: <一句话标题>
 
-> Status: FIXED | BELOW_CONFIDENCE_THRESHOLD
+> Status: FIXED | BELOW_CONFIDENCE_THRESHOLD | NEEDS_DESIGN_CHANGE
 > Mode: --quick | (default) | --deep
 > Severity: blocker | functional | minor
 > Author: <user>

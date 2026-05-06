@@ -210,6 +210,9 @@ Commit
   <type>(<scope>): <subject ≤72 chars>
   <空行>
   <body 可选,列要点;无要点则省略 body>
+  <空行>
+  Refs: spec/<slug>      ← 自动追溯,见规则 11
+  Refs: plan/<slug>      ← 同 slug 的 spec + plan 都列
 ```
 
 ### 模板填写规则(非常重要)
@@ -227,6 +230,12 @@ Commit
 8. Commit message 格式:跟随仓库 `git log --oneline -10` 观察到的风格;仓库无明显风格时退回 conventional commits(`feat|fix|refactor|docs|test|chore|perf|ci|style|build`)。subject 不加句号,祈使语气,≤72 字符。
 9. 同一文件多个 finding 按行号升序排列。跨文件按 P0 → P1 → P2 排列,同级别内按文件路径字典序。
 10. 报告**全文** ≤ 60 行;超过则压缩 Findings 描述,不要省略 Verdict / Axis / Cleanup 结构。
+11. **Refs 自动追溯**(仅 Verdict = `✅ READY` 时):扫 `.claude/artifacts/{designs,plans,fixes}/`,按以下规则在 commit message footer 自动加 `Refs:` 行:
+    - 0 个 in-flight artifact → 不加 Refs
+    - 1 个 → 自动加(`Refs: <type>/<slug>`,type ∈ {spec, plan, fix})
+    - 同 slug 的 spec + plan 都存在 → 两条都加
+    - 多个不同 slug → **不擅自选**,在 Commit 段下方加一行 `> 检测到多个 in-flight artifact: [...],请告诉我这次 commit 关联哪个,我会把 Refs 加进去`
+    - `.claude/artifacts/` 目录不存在 → 不加(用户没用 dev-skills 流程)
 
 ### 极简示例(用户参考用,实际填真实数据)
 

@@ -16,6 +16,102 @@
 
 ---
 
+## [0.6.2] — 2026-05-06
+
+全项目第二轮 audit 修复 + 新增 commit↔artifact 追溯 + dev-spec STUCK 终止状态。5 项改动(应改 2 + 建议 3)。无 skill 数量变化,但加了 2 个新行为(Refs footer / STUCK status)和 3 处 governance 文档收敛。
+
+### Added
+- **G1 — commit message footer 自动追溯 artifact**(在 `dev-commit-writer` 加 Step 4b,在 `dev-commit-review` READY verdict 加规则 11):commit message 末尾自动加 `Refs: <type>/<slug>` 行(type ∈ {spec, plan, fix})。决策表:
+  - 0 个 in-flight → 不加
+  - 1 个 → 自动加
+  - 同 slug spec + plan → 两条都加
+  - 多 slug → 询问用户而非擅自选
+  - `.claude/artifacts/` 不存在 → 跳过(用户没用 dev-skills 流程)
+  - 后续可用 `git log --grep="Refs:"` 检索 commit ↔ artifact 关联
+- **G2 — `dev-spec` 加 STUCK 终止状态**(对齐 dev-plan 的 BELOW_CONSENSUS_THRESHOLD / dev-fix 的 BELOW_CONFIDENCE_THRESHOLD 同形):达 wave 上限仍 ambiguity > 阈值时,spec status 标 `STUCK`,要求 Open questions 段写**具体阻塞了什么**(不是泛泛「需要更多信息」)。`dev-workflow` Step 3 phase 表加 `designs/<slug>.md status STUCK → Phase 1-blocked`,`--recover` 决策表加 STUCK 恢复路径(去拿外部信息后回来跑 `dev-spec --deep <slug>` 续 wave)。
+
+### Changed
+- **G3 — `CONTRIBUTING.md` 「新 skill 提议模板」拆为两类**:
+  - 类型 A:**原子工作步骤 skill**(默认,绝大多数)—— 沿用 7 问模板
+  - 类型 B:**Orchestrator / Recommender skill**(特殊例外,目前只有 dev-workflow)—— 准入标准对照表 + 4 条硬约束(不调起其他 skill / 不持久化 state / 不产 artifact / 不深读其他 skill 的 artifact 内容);不满足 4 条就**应改成 README 文档而非 skill**
+- **G4 — `CLAUDE.md.template` 给关键 placeholder 加「取舍参考」短注**:
+  - `§3 错误处理`:异常 / Result type / 混合 三选一的 tradeoff(开发速度 vs 类型安全 vs boilerplate)
+  - `§3 配置 / Feature flag`:LaunchDarkly / 自研 / env vars 三选一的 tradeoff(成本 vs 控制力 vs 实时性)
+  - `§2 测试`:覆盖率底线 / E2E 触发的合理范围
+  - 帮助新 leader 做选择,而不是只给空 placeholder
+- **G5 — `dev-workflow` examples 加显式 `[slug]` 参数演示**:例 3 (`--next`) 和例 4 (`--recover`) 都显式带 slug,避免新用户不知道这个用法
+
+### Notes
+- `references/dev-baseline.md` 7 副本 md5 不变(本次只改 dev-spec / dev-commit-review / dev-commit-writer / dev-workflow 的 SKILL.md,baseline 未触)。
+- 不破坏现有 skill 行为,**仅添加新行为**:
+  - dev-commit-writer / dev-commit-review 的 Refs footer 是**自动行为**,但 0 个 artifact 时不加,完全 backward-compatible
+  - dev-spec STUCK 是**新 status 值**,只在达 wave 上限仍 ambiguity 高时设置;之前不会触发
+- README Status 0.6.1 → 0.6.2,marketplace.json + plugin.json 同步。
+
+---
+
+## [0.6.1] — 2026-05-06
+
+dev-workflow 第一轮 audit 修复 + 跨 skill 一致性收敛。10 项改动(必修 4 + 应改 6)。无 skill 行为质变,但消除了 dev-workflow phase 推断的 bug,统一了 Status 命名,补齐了 governance 文档同步。
+
+### Fixed(必修,影响功能正确性)
+- **A1**:`dev-fix` Step 8 artifact template Status enum 缺 `NEEDS_DESIGN_CHANGE`(Step 6 stop & handoff 段已用此 status,但 template 只列 2 个 → 自相矛盾)。补上。
+- **A2**:`dev-spec` Status 用小写(`draft / aligned / implemented`)与其他 skill 大写不一致 → **统一为大写**(`DRAFT / ALIGNED / IMPLEMENTED`)。SKILL.md template + examples 同步。
+- **A3**:`dev-spec` 没有自动 `DRAFT → ALIGNED` 转换机制,导致 dev-workflow 原 Phase 1 vs Phase 2 推断永远卡 Phase 1(用户不会主动改 status)→ **简化 dev-workflow phase 推断**:**只看文件存在性 + terminal status 信号**(BELOW / NEEDS_DESIGN_CHANGE 等阻塞信号)。spec lifecycle status 留给用户手动管理,不影响 dev-workflow。
+- **W1**:`dev-workflow` Step 3 自动推断 slug 但不让用户确认。Phase 0 新需求时容易选错(「用户自助导出」可能 → user-export / user-self-export / gdpr-export 等)→ **加 Phase 0 propose-then-confirm 流程**,绝不跳过用户确认。
+
+### Changed(应改,提升用户体验)
+- **W2**:`dev-workflow --recover` 输入太模糊时(用户只说「失败了」)无 fallback,会硬猜失败信号 → 加 **Step 7.0 输入清晰度检查**,缺 skill 名 + 失败信号时回问。
+- **W3**:`dev-workflow` Hotfix 升级警告太模糊(只说「警告并建议升级」)→ 给具体话术示例,明确 hotfix 路径会让 commit-review 抓 P0 阻塞。
+- **W4**:`dev-workflow` `--status` / `--next` / `--recover` 加 `[slug]` 参数支持,description 同步声明。多 in-flight 项目时可显式指定。
+- **W5**:`dev-workflow` Step 4 推荐链表 hotfix 行 cell 内容怪(「升 moderate feature/bug」语法上不通顺)→ 改为 `n/a — 升 feature/bug moderate` 等清晰表述。
+- **A4**:`references/calibration-cases.md` 加 4 个 case:Cases 11-12(dev-fix:escalation 决策 + Defense-in-depth 边界),Cases 13-14(dev-workflow:path/complexity 分类 + `--recover` 决策)。Calibration session 流程加两个 15 分钟 slot。
+- **A5**:`CLAUDE.md.template` §2 Workflow 段补 dev-fix(bug 路径)+ dev-workflow(入口推荐器)+ 中间产物路径表。原本 0.5.0 / 0.6.0 加 skill 时漏了 governance doc 同步。
+
+### Notes
+- `references/dev-baseline.md` 7 个副本 md5 不变(本次只改 dev-workflow 内部 + dev-spec/dev-fix template 的 status enum,baseline 未触)。
+- README 同步更新 calibration-cases 描述(10 → 14 个 case)+ Status 段(0.6.0 → 0.6.1)。
+- `docs/onboarding.md` calibration 推荐数同步(10 → 14)。
+- 不破坏现有 skill 行为,仅:
+  - dev-spec / dev-fix 的 Status enum 字符串值变(用户已写过的 artifact 不强制升级,但新写的会用新值)
+  - dev-workflow phase 推断逻辑简化(Phase 1 / 2 含义微调,但用户体验更顺)
+
+---
+
+## [0.6.0] — 2026-05-06
+
+### Added
+- **新 skill `dev-workflow`** —— 松耦合入口推荐器。**不调起其他 skill**(保留 dev-skills 松耦合原则),只读 `.claude/artifacts/{designs,plans,fixes}/` 推断当前 phase,然后输出三段:
+   - **完整推荐链**:对应 path(feature / bug / hotfix)+ 复杂度(simple / moderate / complex)的 skill 序列 + 模式参数
+   - **当前位置**:你在 phase N(只读存在性 + frontmatter Status 字段,不深读)
+   - **下一步**:精确命令(可复制粘贴)+ 一句 rationale
+- 4 种模式:**默认**(完整推荐)/ **`--status`**(只定位)/ **`--next`**(只下一步,极简)/ **`--recover`**(失败恢复表 8 种场景:dev-spec / dev-plan / dev-fix / dev-commit-review 各自的失败信号 → 推荐回到哪 + 为什么 + 操作建议)
+- 路径覆盖:**feature** + **bug** + **hotfix** 三条主路径,unclear 时列选项问用户(不假设)
+- 推荐链对照表(path × complexity 9 种组合)
+- 严格触发条件:description 锁定为「用户显式要 workflow / 串起来 / 完整跑」,避免和具体 skill 抢触发
+- 不产 artifact(每次调用从仓库现状重扫,无 state file)
+- `skills/dev-workflow/SKILL.md`(7 步 + 10 条 Hard rules)
+- `skills/dev-workflow/examples.md`(5 个完整样例:complex feature 完整链 / `--status` 中途定位 / `--next` 极简 / `--recover` 处理 FIX P1 / unclear 路径列选项)
+- `skills/dev-workflow/references/dev-baseline.md`(自包含副本)
+
+### Changed
+- README skills 表新增 `dev-workflow` 行(放最前,作为可选入口)。
+- README 工作流图加入 `dev-workflow` 头部分支,标注「可选入口,不调起任何 skill」,保持原有 feature/bug 双入口结构不变。
+- README Status:版本 0.5.1 → 0.6.0,skill 数 5 → 6。
+- `.claude-plugin/marketplace.json` + `plugin.json` 版本 0.5.1 → 0.6.0,description 加 dev-workflow,keywords 加 `workflow` / `orchestration`,tags 加 `workflow` / `guide`。
+- `CONTRIBUTING.md` baseline 同步副本清单从「五处」改为「六处」,新增 `skills/dev-workflow/references/dev-baseline.md`。
+- `references/dev-baseline.md`(canonical)同上。
+- `.github/workflows/validate.yml` 期望 skill 列表加入 `dev-workflow`(从 5 → 6),success log 同步。
+- `docs/onboarding.md` 「五个 skill 怎么选」表 → 六个,加 `dev-workflow` 行作为入口推荐器。
+
+### Notes
+- 7 个 baseline 副本(canonical + 6 skills)md5 对齐到 `28ca783e...`。
+- 不破坏现有 5 个 skill —— dev-workflow 只指路,不实际调用任何 skill,松耦合原则保留。
+- `dev-workflow` 是**可选**入口,用户也可继续直接跑 `dev-spec` / `dev-fix` / 等等,不强制走 workflow。
+- 没有「skill orchestrator」,因此其他 skill 的「不要主动调起其他 skill」Hard rule 仍 100% 有效。
+
+---
+
 ## [0.5.1] — 2026-04-30
 
 dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 examples 的清晰度、一致性、准确性。

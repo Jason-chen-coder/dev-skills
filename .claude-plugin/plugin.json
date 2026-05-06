@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "dev-skills",
-  "version": "0.5.0",
-  "description": "团队 git 工作流 + bug 修复 skill 套件:dev-spec / dev-plan / dev-fix / dev-commit-review / dev-commit-writer。共享 Karpathy 行为基线 + RALPLAN-DR 共识机制 + hypothesis-driven 调试(含反向追溯 / defense-in-depth / pattern analysis)。",
+  "version": "0.6.2",
+  "description": "团队 git 工作流 + bug 修复 skill 套件:dev-workflow / dev-spec / dev-plan / dev-fix / dev-commit-review / dev-commit-writer。共享 Karpathy 行为基线 + RALPLAN-DR 共识机制 + hypothesis-driven 调试(含反向追溯 / defense-in-depth / pattern analysis)。dev-workflow 是松耦合入口推荐器,不调起其他 skill,只指路。",
   "author": "Jason-chen-coder",
   "homepage": "https://github.com/Jason-chen-coder/dev-skills",
   "license": "MIT",

@@ -61,7 +61,7 @@
 ```markdown
 # user-export Spec
 
-> Status: draft
+> Status: DRAFT
 > Author: gli
 > Last updated: 2026-04-29
 

@@ -70,10 +70,11 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 ---
 
-## 五个 skill 怎么选
+## 六个 skill 怎么选
 
 | 我想… | 用哪个 |
 |---|---|
+| 我有个需求 / 不知道下一步该跑哪个 / 失败了想恢复 | `dev-workflow`(入口推荐器,只指路) |
 | 写代码前对模糊需求做对齐 | `dev-spec` |
 | 需求已对齐,要把 spec 转成 Critic-approved 的实施 plan(尤其复杂功能 / 高风险改动) | `dev-plan` |
 | 修 bug:复现 + 假设 + 反向追溯 + 修 root cause + defense-in-depth + regression test + pattern analysis | `dev-fix` |
@@ -83,6 +84,7 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 `dev-commit-review` 和 `dev-commit-writer` 是**二选一**,不要都跑。
 `dev-spec → dev-plan` 是松耦合衔接 —— spec 写完后用户决定要不要进 plan,简单功能可直接进编码,不强制。
 `dev-fix` 与 `dev-spec` 是**平行入口** —— 新需求走 dev-spec,bug 报告走 dev-fix。两条路径在「写代码」节点合流后共用 commit-review/writer。
+`dev-workflow` 是**可选入口推荐器**,不调起任何 skill,只读 `.claude/artifacts/` 推断当前 phase 并建议下一步。也支持 `--status` / `--next` / `--recover`。
 
 ---
 
@@ -134,7 +136,7 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 - 至少跑 3 次 `dev-commit-review`,熟悉报告格式。
 - 至少跑 1 次 `dev-spec`,体验 Step 1 的歧义清单(很多人这一步会「啊原来我没想清楚」)。
-- 把 [`references/calibration-cases.md`](../references/calibration-cases.md) 的 10 个 case 自己跑一遍(dev-commit-review × 6 / dev-spec × 2 / dev-plan × 2),对照 canonical answer,**这是最快内化 baseline 的方式**。
+- 把 [`references/calibration-cases.md`](../references/calibration-cases.md) 的 14 个 case 自己跑一遍(dev-commit-review × 6 / dev-spec × 2 / dev-plan × 2 / dev-fix × 2 / dev-workflow × 2),对照 canonical answer,**这是最快内化 baseline 的方式**。
 
 ---
 

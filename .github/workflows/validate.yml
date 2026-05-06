@@ -95,7 +95,7 @@ jobs:
         run: |
           set -e
           missing=0
-          for skill in dev-commit-review dev-commit-writer dev-spec dev-plan dev-fix; do
+          for skill in dev-commit-review dev-commit-writer dev-spec dev-plan dev-fix dev-workflow; do
             if [ ! -f "skills/$skill/SKILL.md" ]; then
               echo "❌ skills/$skill/SKILL.md missing"
               missing=1
@@ -104,7 +104,7 @@ jobs:
             fi
           done
           if [ "$missing" -ne 0 ]; then exit 1; fi
-          echo "✅ All 5 expected skills present"
+          echo "✅ All 6 expected skills present"
 
       - name: Verify CLAUDE.md.template exists (not CLAUDE.md)
         run: |

@@ -123,8 +123,21 @@ Ontology: User, Order, ExportJob (vs Wave {n-1}: 1 stable, 1 renamed, 1 new — 
 - `--default`: ambiguity ≤ 0.30
 - `--deep`: ambiguity ≤ 0.20
 - 或:用户在 Wave 3+ 说「够了 / 直接来」(给 warning,显示当前未达标维度)
-- 或:达到模式上限(default 3 / deep 6)—— 给 warning 后进 Step 2,未达标项进 Open questions
+- 或:达到模式上限(default 3 / deep 6)—— 给 warning 后进 Step 2,未达标项进 Open questions,**spec status 标 STUCK**(见下)
 - 或:Ontology 连续 2 轮 stability ≥ 90%(核心概念稳定到这种程度通常说明大问题已聊清)
+
+**STUCK 终止状态**(借鉴 dev-plan / dev-fix 的 terminal status 模式):
+
+如果达 wave 上限(default 3 / deep 6)仍 ambiguity > 阈值,spec 视为「卡住」 —— 不是失败,只是**信息不足以继续**(通常需要外部澄清:产品 / 设计 / 数据 / stakeholder)。这时:
+
+- spec **照常生成**(不要丢弃用户已经回答的)
+- artifact 顶部 `Status: STUCK`(而不是 DRAFT)
+- `## Open questions` 段必须列出**具体阻塞了什么**(不是泛泛「需要更多信息」),例:
+  - 「需要产品确认:是给 admin 还是 self-service?」
+  - 「需要数据团队提供:历史导出量级,决定是否需要异步」
+- 在 chat 给用户:「spec 标 STUCK,需要外部信息。建议先去拿:[列出具体 unblock 项],拿到后回来跑 `dev-spec --deep <slug>` 续 wave。」
+
+dev-workflow 看到 spec status STUCK → Phase 1-blocked → 推荐用户处理 Open questions 而非进 dev-plan。
 
 ### Step 1.3 — Challenge modes(`--deep` only)
 
@@ -237,7 +250,7 @@ AC-N  ...
 ```markdown
 # <feature 名> Spec
 
-> Status: draft | aligned | implemented
+> Status: DRAFT | ALIGNED | IMPLEMENTED | STUCK
 > Author: <user>
 > Last updated: <YYYY-MM-DD>
 

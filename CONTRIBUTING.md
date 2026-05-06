@@ -20,7 +20,11 @@
 
 ## 新增 skill 的提议模板
 
-在 issue 里回答以下 7 个问题。**任何一项答不上来就不该做这个 skill。**
+新增 skill 分**两类**,准入标准不同:
+
+### 类型 A:原子工作步骤 skill(默认)
+
+绝大多数 skill 属于这类(dev-spec / dev-plan / dev-fix / dev-commit-review / dev-commit-writer 都是)。在 issue 里回答以下 7 个问题。**任何一项答不上来就不该做这个 skill。**
 
 1. **触发时机一句话** —— 用户说什么 / 处于什么状态时应该用这个 skill?
 2. **和现有 skill 的边界** —— 会不会和 `dev-commit-review` / `dev-commit-writer` / `dev-spec` 抢触发?
@@ -29,6 +33,29 @@
 5. **输出格式** —— 报告 / 文档 / message?固定模板长什么样?
 6. **可验证的成功标准** —— skill 跑完怎么算「做对了」?
 7. **反向边界** —— 哪些情况**不该**用这个 skill?
+
+### 类型 B:Orchestrator / Recommender skill(特殊例外)
+
+只有**极少数** skill 属于这类(目前只有 `dev-workflow`)。**这类 skill 不产 artifact、不持久化 state、不调起其他 skill,只指路**。准入标准不同:
+
+| 7 问 | 原子 skill 标准 | Orchestrator skill 标准 |
+|---|---|---|
+| 触发时机 | 同 | **必须严格限制**只在用户显式要求 workflow / overview 时触发(不与原子 skill 抢) |
+| 边界 | 不抢现有 skill | **绝对不调起**其他 skill,只输出建议 |
+| 频次 | 每周 ≥ 1 次 | 每周 ≥ 1 次(同) |
+| 流程步骤 | ≥ 5 步可复现 | ≥ 5 步**决策步骤**(分类 / 扫现状 / 推荐 / 失败恢复 等) |
+| 输出格式 | 固定模板 | **固定模板 + 多种模式**(默认 / status / next / recover) |
+| 成功标准 | skill 跑完产出 X | 用户拿到推荐能正确选下一步 |
+| 反向边界 | 列禁用场景 | **必须**列「不该做 orchestrator 的反例」(状态机 / 真 orchestrator / state file 等) |
+
+**Orchestrator skill 的硬约束**(所有提议都必须满足):
+
+- ❌ 不调起其他 skill —— 任何 `Skill()` 调用就降为「真 orchestrator」,违反 dev-skills 松耦合原则
+- ❌ 不持久化 state —— 每次调用从仓库现状重扫
+- ❌ 不产 artifact 文件 —— 输出只到 chat
+- ❌ 不深读其他 skill 的 artifact 内容 —— 只看存在性 + frontmatter status
+
+如果提议不能同时满足以上 4 条,**不该做成 skill**(应该改成 README 文档 / `docs/workflow.md` 静态指南)。
 
 ---
 
@@ -54,12 +81,13 @@
 
 1. **issue 必填**:为什么要改、改了之后所有 skill 的行为变化预期、是否需要同步改 SKILL.md。
 2. **PR 描述必含**:before / after 对比、影响哪些 skill、是否需要 calibration session 重做。
-3. **同步副本**:改根目录 `/references/dev-baseline.md` 后,**必须**同步到五处 skill 副本:
+3. **同步副本**:改根目录 `/references/dev-baseline.md` 后,**必须**同步到六处 skill 副本:
    - `skills/dev-commit-review/references/dev-baseline.md`
    - `skills/dev-commit-writer/references/dev-baseline.md`
    - `skills/dev-spec/references/dev-baseline.md`
    - `skills/dev-plan/references/dev-baseline.md`
    - `skills/dev-fix/references/dev-baseline.md`
+   - `skills/dev-workflow/references/dev-baseline.md`
 4. **CHANGELOG 必填**:在 `CHANGELOG.md` 加 entry。
 5. **通知**:merge 后在团队群通知,并附 PR 链接。
 
