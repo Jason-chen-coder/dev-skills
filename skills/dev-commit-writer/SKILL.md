@@ -1,6 +1,6 @@
 ---
 name: dev-commit-writer
-description: Use when the user has finished making changes and wants a commit message generated, without going through full review. Triggers on phrases like "帮我写 commit / 给个 commit message / 生成 commit / write a commit / 这次 commit 怎么写". Reads the current git working tree (or staged subset) and produces a commit message in the style of the branch's existing commit history. Does NOT review code quality — that is dev-code-review's job. Does NOT mutate the working tree. Optional arguments — `--staged` for staged-only; `--path=<glob>` for scope filter.
+description: Use ONLY when the user EXPLICITLY asks for ONLY a commit message and EXPLICITLY skips review. Triggers on phrases like "帮我写 commit message / 给个 commit message / 生成 commit message / write a commit message / 这次 commit message 怎么写 / skip review just give me the message / 跳过 review 只要 message / 我自审过了只要 message / only message no review". **AMBIGUOUS phrases like "帮我 commit / commit 一下 / I want to commit" do NOT trigger this skill — they go to `dev-code-review` (safer default, since team policy requires review before commit per CLAUDE.md.template §2)**. This skill exists for the explicit-skip case only (small change already self-reviewed, hotfix where user accepts review-skip risk). Reads the current git working tree (or staged subset) and produces a commit message in the style of the branch's existing commit history. Does NOT review code quality — that is dev-code-review's job. Does NOT mutate the working tree. Optional arguments — `--staged` for staged-only; `--path=<glob>` for scope filter.
 ---
 
 # Dev Commit Writer
@@ -19,6 +19,24 @@ baseline 与本 skill 的关联点:
 - **不假设** —— 当 diff 意图存在多解,**输出 2–3 个候选 message 让用户选**,或反问「主轴是 A 还是 B」,绝不默默挑一个写。
 - **外科手术式改动** —— 在生成 message 前先做 **scope check**:diff 是否含与主改动无关的内容(格式化、邻近重构、无关注释)?若有,要么单独成 commit 建议拆,要么在 body 用 `Incidental:` 段落显式列出,不能埋在 subject 里。
 - **最小代码** —— commit message 自身也要最小:subject ≤ 72 chars,body 仅在需要解释 *why* 时出现,**禁止 AI 套话**(「This commit refactors...」「We will now...」「Comprehensive improvements...」)。
+
+---
+
+## Step 0.5 — 用户意图确认(防止误派)
+
+**触发本 skill 之前的入门检查**:如果用户原话是**模糊表达**(例 `帮我 commit`、`commit 一下`、`commit 这个改动`、`I want to commit`),并不是显式说「skip review / 跳过 review / 只要 message」,**先回问意图**:
+
+```
+你是想要:
+  (a) 完整流程 — 先过 dev-code-review 评审,READY 后顺带出 commit message(默认推荐,符合团队约定 CLAUDE.md.template §2)
+  (b) 只要 commit message,跳过 review(我自审过了 / 是 hotfix / 改动很小)
+
+回答 a / b。如果 a,我退出,你跑 dev-code-review;如果 b,我继续生成 message。
+```
+
+**模糊请求默认走 a 路径**(让用户改换 dev-code-review),不要替用户选 b 跳过 review。这是 baseline「不假设」的硬性落地。
+
+仅当用户原话**显式**表达 b 意图(关键词:「skip review」「跳过 review」「我自审过了」「only message」「hotfix 不要 review」),才直接进 Step 1。
 
 ---
 

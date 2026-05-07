@@ -16,6 +16,34 @@
 
 ---
 
+## [0.7.1] — 2026-05-07
+
+修一个 trigger 路由 bug:模糊的 commit 请求(「**帮我 commit**」「**commit 一下**」)会误派到 `dev-commit-writer` 跳过 review,违反团队约定「commit 前必须过 dev-code-review」(`CLAUDE.md.template` §2)。
+
+### Fixed
+
+- **「帮我 commit」trigger 路由 bug**:中文里最自然的 commit 请求短语「帮我 commit」/「commit 一下」字面最接近 `dev-commit-writer` 的「帮我**写** commit」(只差一个「写」字)。原 trigger phrase 设计没覆盖,模糊匹配可能误派 → **跳过 review 直接生成 message**,违反团队约定。
+- **修法 3 处**:
+  1. `dev-code-review` description **加触发词**:「帮我 commit / 我要 commit / commit 一下 / commit 这个改动 / I want to commit / let's commit」。把模糊的 commit 请求**优先匹配到 review**(safer default — review 完 READY 自带 commit message,自然衔接)。
+  2. `dev-commit-writer` description **收紧**:明确说「**只在用户 EXPLICITLY 说 skip review 时触发**」,「帮我 commit」之类**模糊表达不触发**本 skill。新增触发词必须显式含「skip review / 跳过 review / 我自审过了 / only message / hotfix 不要 review」。
+  3. `dev-commit-writer` 加 **Step 0.5 用户意图确认**:即使被误派触发,Step 0.5 也回问意图,默认引导用户走 dev-code-review。仅当用户**显式**确认要 skip review 才进 Step 1。
+
+### Why this matters
+
+这是 LLM 行为偏差的另一种形态 —— **trigger phrase 设计要假设最自然的用户表达,而不是文档里的规范说法**。
+
+「帮我 commit」是中文 commit 请求**最自然**的短语,但原设计两个 commit 相关 skill 的 trigger 都没覆盖它。LLM 在歧义边缘做 fuzzy match,大概率走错路径(因为 dev-commit-writer 的「帮我**写** commit」更近)→ 用户用最自然的话,反而触发了团队禁止的「跳过 review」路径。
+
+这类 gap 不是 SKILL.md 内部逻辑错误,是**自然语言入口**与**设计意图**之间的语义错位。Path A 真任务跑下去可能还会发现类似的语义错位(例:「我要 push 了」「快速 commit」「commit 这个改动」),届时一并修。
+
+### Notes
+
+- 不破坏现有行为:用户**显式**说「跳过 review」「只要 message」仍能正常触发 dev-commit-writer
+- 不需要重装 skill —— description 改动通过 `/plugin update dev-skills` 或 `npx skills update` 即生效
+- baseline 7 副本 md5 不变(本次只改两个 skill 的 description + 一个 Step,baseline 未触)
+
+---
+
 ## [0.7.0] — 2026-05-07
 
 ### ⚠️ BREAKING — Skill 重命名
