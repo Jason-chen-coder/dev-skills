@@ -59,9 +59,9 @@ baseline 与本 skill 的关联:
 
 ```
 你的需求路径不确定,请选一种:
-  (a) 新功能 / 增强(走 dev-spec → 可选 dev-plan → 写代码 → dev-commit-review)
-  (b) 修 bug(走 dev-fix → 写代码 → dev-commit-review)
-  (c) Hotfix 紧急(跳过 spec/plan,只过 dev-commit-review)
+  (a) 新功能 / 增强(走 dev-spec → 可选 dev-plan → 写代码 → dev-code-review)
+  (b) 修 bug(走 dev-fix → 写代码 → dev-code-review)
+  (c) Hotfix 紧急(跳过 spec/plan,只过 dev-code-review)
   (d) 其他:你说
 ```
 
@@ -92,6 +92,22 @@ ls -la .claude/artifacts/fixes/     # dev-fix 产物
 **Slug 命名空间约定**:
 - `designs/<slug>.md` 和 `plans/<slug>.md` **同名 = 同一个 feature**(spec → plan 链路)
 - `fixes/<slug>.md` 是**独立工作单元**(每个 bug 一个 slug),不与 feature slug 共享命名空间
+
+**命名空间冲突检测**:扫描时如果**同一 slug** 同时出现在 `designs/` 和 `fixes/` 两处(例如 designs/auth-refresh.md + fixes/auth-refresh.md 共存)→ **报错并要求用户改名**:
+
+```
+检测到 slug 命名空间冲突:
+  - .claude/artifacts/designs/<slug>.md (feature 路径)
+  - .claude/artifacts/fixes/<slug>.md   (bug 路径)
+
+这两条记录会让 phase 推断混乱(同时是 Phase 1 和 Phase 3)。
+请改其中一个的名字让它们分开,例如:
+  fixes/<slug>.md → fixes/<slug>-bug.md
+
+改完再来跑 dev-workflow。
+```
+
+**绝不擅自合并或假设语义**(它们可能是同一工作单元的两面,也可能是凑巧重名)。让用户拍板。
 
 **Slug 推断 + 确认流程**:
 
@@ -169,9 +185,9 @@ Slug   : <feature-slug>(自动推断,你可以纠正)
 
 | 路径 \ 复杂度 | simple | moderate | complex |
 |---|---|---|---|
-| **feature** | dev-spec --quick → 写代码 → dev-commit-review | dev-spec --default → 写代码 → dev-commit-review | dev-spec --default → **dev-plan --deliberate** → 写代码 → dev-commit-review |
-| **bug** | dev-fix --quick → 写代码 → dev-commit-review(或 dev-commit-writer) | dev-fix --default → 写代码 → dev-commit-review | **dev-fix --deep** → 写代码 → dev-commit-review |
-| **hotfix** | 跳过 spec/plan,直接写代码 → dev-commit-review | n/a — 升 feature/bug moderate | n/a — complex 不允许 hotfix,升 feature/bug complex |
+| **feature** | dev-spec --quick → 写代码 → dev-code-review | dev-spec --default → 写代码 → dev-code-review | dev-spec --default → **dev-plan --deliberate** → 写代码 → dev-code-review |
+| **bug** | dev-fix --quick → 写代码 → dev-code-review(或 dev-commit-writer) | dev-fix --default → 写代码 → dev-code-review | **dev-fix --deep** → 写代码 → dev-code-review |
+| **hotfix** | 跳过 spec/plan,直接写代码 → dev-code-review | n/a — 升 feature/bug moderate | n/a — complex 不允许 hotfix,升 feature/bug complex |
 
 **关键规则**:
 
@@ -187,7 +203,7 @@ Slug   : <feature-slug>(自动推断,你可以纠正)
 你标了 hotfix,但 symptoms 含 [具体信号:跨服务 / 鉴权 / 数据迁移 / ...],
 实际是 [moderate/complex]。
 
-Hotfix 路径会跳过 dev-spec / dev-plan,**很可能让 dev-commit-review 抓出 P0 阻塞**
+Hotfix 路径会跳过 dev-spec / dev-plan,**很可能让 dev-code-review 抓出 P0 阻塞**
 (常见 P0:闭环失败 / 边界没考虑 / 跨模块未对齐),反而比走完整路径更慢。
 
 建议改走:
@@ -237,10 +253,10 @@ $ <skill> <args>
 
 ```
 要给你恢复建议,我需要两条信息:
-  1. 你刚跑了哪个 skill?(dev-spec / dev-plan / dev-fix / dev-commit-review / dev-commit-writer)
+  1. 你刚跑了哪个 skill?(dev-spec / dev-plan / dev-fix / dev-code-review / dev-commit-writer)
   2. 它的输出关键信号是什么?(贴 Verdict / Status / 错误摘要那一行就行)
 
-例如:「dev-commit-review 给我 Verdict = ⚠ FIX P1,有 2 处 console.log 残留」
+例如:「dev-code-review 给我 Verdict = ⚠ FIX P1,有 2 处 console.log 残留」
 或:「dev-fix 跑了 deep,3 假设全 fail,Status: BELOW_CONFIDENCE_THRESHOLD」
 ```
 
@@ -260,8 +276,8 @@ $ <skill> <args>
 | dev-fix | deep 模式 3 高置信 hypothesis 全 fail / 3 fix attempt fail | 升 `dev-plan --deliberate` 评估架构改动,plan 通过后回 dev-fix Step 6 |
 | dev-fix | NEEDS_DESIGN_CHANGE | 同上,转 `dev-plan --deliberate` |
 | dev-fix | Verify 7b stash 后仍 GREEN(test 没真测到 bug) | 回 dev-fix Step 2,重写 test 用更精确断言 |
-| dev-commit-review | Verdict = BLOCK(P0 / secret 泄漏 / 闭环失败) | 回写代码 step 修 P0,**不允许 commit** |
-| dev-commit-review | Verdict = FIX P1 | 回写代码 step 处理 P1,或在 PR 描述里**显式覆盖 + 解释**(参见 CLAUDE.md.template) |
+| dev-code-review | Verdict = BLOCK(P0 / secret 泄漏 / 闭环失败) | 回写代码 step 修 P0,**不允许 commit** |
+| dev-code-review | Verdict = FIX P1 | 回写代码 step 处理 P1,或在 PR 描述里**显式覆盖 + 解释**(参见 CLAUDE.md.template) |
 | dev-commit-writer | 输出多候选(意图歧义) | 回写代码 step 拆 commit;或者用户选定一个候选继续 |
 
 输出形式:

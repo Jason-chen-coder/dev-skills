@@ -7,7 +7,7 @@ description: Use when the user reports a bug, asks to investigate why something 
 
 Hypothesis-driven debugging & fix workflow with **No fix without root cause**. Replaces guess-and-patch with: reproduce → hypothesize → diagnose (backward trace) → fix → defense-in-depth → verify → regress.
 
-This skill **only debugs and fixes**. It does not gather requirements (that's `dev-spec`), does not plan large refactors (that's `dev-plan`), and does not write commit messages on its own (that's `dev-commit-review` / `dev-commit-writer` after the fix is in).
+This skill **only debugs and fixes**. It does not gather requirements (that's `dev-spec`), does not plan large refactors (that's `dev-plan`), and does not write commit messages on its own (that's `dev-code-review` / `dev-commit-writer` after the fix is in).
 
 ---
 
@@ -119,9 +119,22 @@ condition polling 让 test 等**真实状态**,不是凭运气等够时间。
 H<n>: <一句话 root cause 假设>
    预测观察:<如果 H<n> 成立,test / log / behavior 应当呈现什么>
    证据收集方式:<怎么验证 — log / breakpoint / git bisect / 阅读 X 函数>
-   置信度:H / M / L
+   置信度(confidence):H / M / L  ← 你看到 evidence 后,觉得这条多大可能是真
+   prior probability:<在看到任何 evidence 之前,这条假设有多大可能成立> ←0-100% 估值
    优先级:1, 2, 3...(本轮 diagnose 顺序,从 H 优先)
 ```
+
+**confidence vs prior 区分**:
+- `confidence` 是「**已经看了一些 evidence 之后**的判断」—— 通常 H1 confidence 较高,因为是你最直觉的假设
+- `prior` 是「**完全没看 evidence 时**这条假设的客观可能性」—— 反映场景多样性
+- 区分两者可以**揭穿凑数 hypothesis**:列了 H4「环境差异」prior < 10%(因为代码是同环境跑的)只是为了凑「跨多维度」 → 这种就是凑数
+
+### Hypothesis 质量门(`--deep` 必查)
+
+`--deep` 列了 3-5 个 hypothesis 后,自检 prior probability 分布:
+
+- 如果 ≥ 3 个 hypothesis 的 prior < 20% → **假设池质量不够**,回 Step 3 重列
+- contrarian 视角不能放 prior < 10% 的「凑数项」 —— 必须是真有可能,只是不是第一直觉
 
 ### `--quick` 模式
 
@@ -269,6 +282,16 @@ if (!user?.email) return;
 | 加一条 unit test 覆盖刚 fix 的 case 的相邻 case | 把整个 test 套件从 jest 迁到 vitest |
 
 **判定标准**:加的每一行都能直接关联到「**防止本次 root cause 类型问题再现**」。否则就是 refactor,不许加。
+
+**行数硬上限(防 LLM 把 refactor 包装成 defense)**:
+
+- Defense-in-depth 加的代码行数 ≤ **root cause fix 代码行数 × 2**
+- 例:fix 改了 8 行,defense 最多加 16 行
+- 超过这个比例,**强制拒绝**,把多余的丢进 Follow-up(`dev-plan` 评估架构)
+
+理由:LLM 在「想让代码更好」的状态下容易把整个调用链加 schema 校验、把整个相关函数加 logging 等说成 defense。**用客观行数门把判断转成可量化阈值**,断绝主观开脱空间。
+
+> 例外:仅 **DB constraint / type schema** 这类「单条声明性配置」(例如 `ALTER TABLE ... ADD CONSTRAINT`)即使逻辑上重要也只算 1 行 effective。不要为了卡上限砍掉真正必要的 constraint。
 
 ### 典型 defense layers(选 1–3 层加,不要全加)
 
@@ -437,4 +460,4 @@ grep -rn "bug-<slug>" .             # 期望:0 条匹配
 - **Evidence before claims**:在 artifact 任何「passed / fixed / verified」声明,必须**在本轮真实跑过对应命令**并读过 output。没跑就别声称 —— 没有「应该过」,只有「跑了 + 看了 output + 真过」。
 - **「找不到 root cause」≠ 没有 root cause**(借鉴 obra/superpowers):95% 是 investigation 不完整 —— 升 `--deep` 多列假设、加 instrument、反向追溯,**比放弃更可能找到**。真正放下的标准是 Step 5 escalation 三次失败,不是「我看了一会觉得没有」。
 - **不要** 把 dev-fix artifact 写得像「日志流水账」—— 模板里每段必填,Hypothesis 表必有 verdict + evidence,Pattern analysis 段必须实际 grep 过仓库。
-- **不要** 主动调起其他 skill —— dev-skills 间松耦合,修完用户自己决定下一步(走 dev-commit-review / 直接 commit / 是否需要 dev-plan)。
+- **不要** 主动调起其他 skill —— dev-skills 间松耦合,修完用户自己决定下一步(走 dev-code-review / 直接 commit / 是否需要 dev-plan)。

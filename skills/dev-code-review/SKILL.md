@@ -1,9 +1,9 @@
 ---
-name: dev-commit-review
+name: dev-code-review
 description: Use when the user is preparing to commit code or asks to review the current git working tree before committing. Triggers on phrases like "准备 commit / 准备提交 / pre-commit / 提交前检查 / 这次改动 review 一下 / 看下这次修改 / commit 前看一下 / check before commit / review my changes". Reviews uncommitted changes along 5 axes (规范/功能/闭环/注释/废码), flags issues by severity, and only emits a commit message when verdict is ready. Does NOT mutate the working tree. Use BEFORE commit only. For other workflow stages, route to the matching skill instead — `dev-commit-writer` for writing only a commit message without review; `dev-spec` for fuzzy requirements alignment before any code; `dev-plan` for turning a spec into a Critic-approved implementation plan. Optional arguments — `--staged` to limit to staged changes only; `--path=<glob>` to limit scope.
 ---
 
-# Dev Commit Review
+# Dev Code Review
 
 Focused review on the **current git working tree** right before a commit.
 Goal: catch 规范、功能、闭环、注释、废代码 problems **before** they enter history.
@@ -129,6 +129,8 @@ For every new public symbol introduced in this diff (function / class / method /
 git grep -n "<symbol>" -- ':!<defining_file>'
 ```
 
+**Evidence before claims(必做)**:必须**真正调用 bash 跑 `git grep`**,**在报告里展示 command + output**(完整粘贴,或简洁引用「N matches in M files: ...」),不能只说「grep 验证通过」。这是 baseline「Evidence before claims」在闭环轴的最严落地 —— **没真跑 grep 就不算闭环检查**。
+
 Decision tree:
 
 1. **Has external callers** → ✓ closed loop
@@ -183,7 +185,7 @@ Comments should explain **why**, not **what**. Flag:
 输出语言跟随用户提问语言(中文提问出中文报告)。**严格按下列模板**,不要加寒暄、不要复述用户原话、不要解释自己在做什么。
 
 ```
-━━━ Dev Commit Review ━━━
+━━━ Dev Code Review ━━━
 Verdict   : ✅ READY  /  ⚠ FIX P1  /  ❌ BLOCK
 Scope     : <N> files · +<added> / −<removed> · <staged|unstaged|both>
 Intent    : <一句话,基于 diff 自己判断改动在做什么>
@@ -240,7 +242,7 @@ Commit
 ### 极简示例(用户参考用,实际填真实数据)
 
 ```
-━━━ Dev Commit Review ━━━
+━━━ Dev Code Review ━━━
 Verdict   : ⚠ FIX P1
 Scope     : 3 files · +84 / −12 · staged
 Intent    : 给 prepAll transfer 增加 aspirate 流速参数并透传到底层 SDK

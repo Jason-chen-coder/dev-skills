@@ -4,7 +4,7 @@
 
 本文件分五部分:
 
-- **Cases 1-6**:`dev-commit-review` 的 P0 / P1 / P2 判定校准。
+- **Cases 1-6**:`dev-code-review` 的 P0 / P1 / P2 判定校准。
 - **Cases 7-8**:`dev-spec` 的 ambiguity 维度评分校准。
 - **Cases 9-10**:`dev-plan` 的 Critic verdict(APPROVED / REVISE / REJECT)校准。
 - **Cases 11-12**:`dev-fix` 的 escalation 决策(BELOW vs continue)+ Defense-in-depth 边界判断。
@@ -15,7 +15,7 @@
 ## 用法
 
 1. 团队成员各自打开本文件,**只看 diff 段,不要先看 canonical 答案**。
-2. 想象你正在跑 dev-commit-review,默写 verdict + axis check + findings。
+2. 想象你正在跑 dev-code-review,默写 verdict + axis check + findings。
 3. 全员写完再翻到答案区,对比差异。
 4. 在 retro 里讨论:**和 canonical 不同的人,你的判断依据是什么**?baseline / CLAUDE.md / 个人偏好?
 5. 收敛后,如有需要修 SKILL.md 或 baseline,走 CONTRIBUTING 流程。
@@ -381,7 +381,7 @@ Commit
 - **Complexity:moderate**(2-3 个模块:前端上传组件 / 后端 API / S3 wrapper;不涉及鉴权/支付/迁移/PII 这些 complex 信号)
 - **Slug 推断**:`user-avatar-upload`(propose 让用户确认)
 
-**推荐链**:`dev-spec --default user-avatar-upload → 写代码 → dev-commit-review`
+**推荐链**:`dev-spec --default user-avatar-upload → 写代码 → dev-code-review`
 
 **关键判断**:**moderate feature 不强制 dev-plan**(plan 可选,但 moderate 一般不需要 Critic 共识)。
 
@@ -394,9 +394,9 @@ Commit
 
 ## Case 14 — dev-workflow `--recover` 决策(BLOCK vs FIX P1)
 
-**场景 A**:用户跑 dev-commit-review,Verdict = ❌ **BLOCK**,理由 = 「P0:secret 泄漏,生产 .env 入了 git」。
+**场景 A**:用户跑 dev-code-review,Verdict = ❌ **BLOCK**,理由 = 「P0:secret 泄漏,生产 .env 入了 git」。
 
-**场景 B**:用户跑 dev-commit-review,Verdict = ⚠ **FIX P1**,理由 = 「P1:console.log 残留(2 处),P1:边界 case 未处理(1 处)」。
+**场景 B**:用户跑 dev-code-review,Verdict = ⚠ **FIX P1**,理由 = 「P1:console.log 残留(2 处),P1:边界 case 未处理(1 处)」。
 
 **关键问**:两种场景 dev-workflow `--recover` 推荐路径**有何不同**?
 
@@ -413,7 +413,7 @@ Commit
     2. 立刻把 .env 从 git index 移除(git rm --cached)
     3. 加进 .gitignore
     4. **立刻 rotate 所有暴露的 secret**(不论是否 push,只要本地 commit 过就视作已泄漏)
-    5. 改完重跑 dev-commit-review,期望 Verdict = ✅ READY
+    5. 改完重跑 dev-code-review,期望 Verdict = ✅ READY
 ```
 
 **场景 B(FIX P1)**:
@@ -425,7 +425,7 @@ Commit
   操作建议:
     1. 删除 console.log
     2. 边界 case 加守卫 + 写 unit test 覆盖
-    3. 改完重跑 dev-commit-review,期望 Verdict = ✅ READY
+    3. 改完重跑 dev-code-review,期望 Verdict = ✅ READY
   
   如果你认为 P1 是误报,在 commit message body 显式覆盖 + 解释,
   并 issue 反馈给 calibration session 重新校准。
@@ -437,7 +437,7 @@ Commit
 
 **常见误判**:
 - 场景 A 推荐「commit message 里说明就行」→ **严重错**。secret 泄漏不可被「说明」绕过。
-- 场景 B 推荐「再跑一次 dev-commit-review 看看」→ 错。代码没改,跑 100 次结果一样。
+- 场景 B 推荐「再跑一次 dev-code-review 看看」→ 错。代码没改,跑 100 次结果一样。
 - 两个场景给同样的恢复建议(都说「修 P0/P1」)→ 错,**严重度差一个量级**,处理方式必须区分。
 
 ---
@@ -445,7 +445,7 @@ Commit
 ## Calibration session 流程(每季度)
 
 1. **独立答题**(各 skill 分开计时):
-   - dev-commit-review 6 个 case:30 分钟,默写 verdict + axis check + findings
+   - dev-code-review 6 个 case:30 分钟,默写 verdict + axis check + findings
    - dev-spec 2 个 case:15 分钟,默写 dimension 打分 + 下一目标
    - dev-plan 2 个 case:15 分钟,默写 Critic verdict + 拒收/通过依据
    - dev-fix 2 个 case:15 分钟,默写 escalation 决策 + defense 边界判断

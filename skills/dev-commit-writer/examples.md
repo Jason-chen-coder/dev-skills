@@ -187,4 +187,4 @@ f5e6a8b 文档:补充 README 部署说明
 - ❌ **subject 加句号** —— 祈使语气不带句号。
 - ❌ **加 emoji 除非仓库就这风格** —— 不要单方面引入 commit emoji 风(`✨ feat: ...`)。
 - ❌ **声称仓库风格但其实没采样** —— git log < 3 条规整 message 时必须显式说明退回默认。
-- ❌ **替用户评审代码** —— 这是 dev-commit-review 的事,本 skill 只写 message。
+- ❌ **替用户评审代码** —— 这是 dev-code-review 的事,本 skill 只写 message。

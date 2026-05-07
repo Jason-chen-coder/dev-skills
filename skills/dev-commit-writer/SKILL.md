@@ -1,13 +1,13 @@
 ---
 name: dev-commit-writer
-description: Use when the user has finished making changes and wants a commit message generated, without going through full review. Triggers on phrases like "帮我写 commit / 给个 commit message / 生成 commit / write a commit / 这次 commit 怎么写". Reads the current git working tree (or staged subset) and produces a commit message in the style of the branch's existing commit history. Does NOT review code quality — that is dev-commit-review's job. Does NOT mutate the working tree. Optional arguments — `--staged` for staged-only; `--path=<glob>` for scope filter.
+description: Use when the user has finished making changes and wants a commit message generated, without going through full review. Triggers on phrases like "帮我写 commit / 给个 commit message / 生成 commit / write a commit / 这次 commit 怎么写". Reads the current git working tree (or staged subset) and produces a commit message in the style of the branch's existing commit history. Does NOT review code quality — that is dev-code-review's job. Does NOT mutate the working tree. Optional arguments — `--staged` for staged-only; `--path=<glob>` for scope filter.
 ---
 
 # Dev Commit Writer
 
 Generate a commit message for the current git working tree, in the style of the branch's existing history.
 
-This skill **only writes the message**, it does not evaluate code quality. If the user wants a quality check, route them to `dev-commit-review` instead.
+This skill **only writes the message**, it does not evaluate code quality. If the user wants a quality check, route them to `dev-code-review` instead.
 
 ---
 
@@ -127,9 +127,20 @@ ls .claude/artifacts/fixes/     # fix
 | 找到的 artifact 数量 | 行为 |
 |---|---|
 | 0 个 | 不加 Refs(可能是 docs / chore / 不走流程的小改) |
-| 1 个 | **自动加 Refs**,例 `Refs: spec/user-export` 或 `Refs: fix/cart-total-off-by-one` |
+| 1 个 + **subject 与 slug 语义匹配** | **自动加 Refs**,例 `Refs: spec/user-export` 或 `Refs: fix/cart-total-off-by-one` |
+| 1 个 + **subject 与 slug 语义不匹配** | **不擅自加**,回问:「我看到唯一 in-flight 是 `<slug>`,但 commit 主题像是 `<subject>`(语义不重叠)。这个 commit 关联吗?(yes / no / 你给的关联)」 |
 | 同 slug 的 spec + plan | 两条都加:`Refs: spec/<slug>` + `Refs: plan/<slug>` |
 | 多个不同 slug | **回问用户**:「我看到这些 in-flight: [...],这次 commit 关联哪个?(可多选 / 或不关联)」 |
+
+### 语义匹配判断(关键!)
+
+判断 commit subject 与 slug 是否语义匹配,看以下 signal:
+
+- **关键词重叠**:`subject` 含 slug 中的核心名词 / 动词?(例 subject `feat: add CSV export` ↔ slug `user-export` ✓ 重叠 export)
+- **改动文件路径相关性**:diff 涉及的目录 / 模块和 slug 暗示的功能区相关?(例 slug `auth-refresh-token` ↔ 改 `src/auth/`/✓ 相关)
+- **commit type 反向信号**:subject 类型 `fix(auth)` 但 slug 是 `user-export` 这种 feature → 大概率不关联(用户在 feature 开发期间顺手修了无关 bug)
+
+**任一信号显示不匹配时,不要硬加 Refs** —— 错误的 Refs 比没 Refs 更糟糕(误导后续追溯)。宁愿问一下用户。
 
 ### Footer 格式
 
@@ -190,7 +201,7 @@ Refs: plan/<slug>
 ## Hard rules
 
 - **不要** mutate working tree(不 `git add` / `git commit` / `git stash`)。
-- **不要** 评审代码质量 —— 那是 dev-commit-review 的职责。本 skill 只写 message。
+- **不要** 评审代码质量 —— 那是 dev-code-review 的职责。本 skill 只写 message。
 - **不要** 在意图不明时强行输出最终 message —— 必须先要用户确认。
 - **不要** 假装识别出仓库风格 —— 若 `git log` 不足 3 条或风格混乱,显式说「采样不足,使用 conventional commits 默认」。
 - **不要** 输出超长 message —— 简单改动用单行 subject 就够,没要求别加 body。

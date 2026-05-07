@@ -1,4 +1,4 @@
-# dev-commit-review · Examples
+# dev-code-review · Examples
 
 具体反例集。SKILL.md 描述了规则,本文件给真实的 before/after,让实际报告对齐这里的笔法。
 
@@ -33,7 +33,7 @@ git grep -n "OrderService" -- ':!lib/services/order_service.dart'
 **期望报告**
 
 ```
-━━━ Dev Commit Review ━━━
+━━━ Dev Code Review ━━━
 Verdict   : ❌ BLOCK
 Scope     : 1 file · +18 / −0 · staged
 Intent    : 新增下单服务
@@ -84,7 +84,7 @@ Findings
 **期望报告**
 
 ```
-━━━ Dev Commit Review ━━━
+━━━ Dev Code Review ━━━
 Verdict   : ⚠ FIX P1
 Scope     : 1 file · +14 / −13 · staged
 Intent    : 修复 cart 总价 off-by-one
@@ -115,7 +115,7 @@ Findings
 **期望报告(节选)**
 
 ```
-━━━ Dev Commit Review ━━━
+━━━ Dev Code Review ━━━
 Verdict   : ⚠ FIX P1
 Scope     : 2 files · +120 / −34 · both
 Intent    : ⚠ 意图不明 —— 同时改了 auth 和 payment,二者无明显耦合
@@ -155,7 +155,7 @@ export function formatCurrency(n: number): string {
 **期望报告**
 
 ```
-━━━ Dev Commit Review ━━━
+━━━ Dev Code Review ━━━
 Verdict   : ⚠ FIX P1
 Scope     : 1 file · +3 / −0 · staged
 Intent    : 新增 formatCurrency 工具函数
@@ -185,7 +185,7 @@ Cleanup
 **期望报告**
 
 ```
-━━━ Dev Commit Review ━━━
+━━━ Dev Code Review ━━━
 Verdict   : ✅ READY
 Scope     : 2 files · +14 / −1 · staged
 Intent    : 修复 README 拼写,补一条单测

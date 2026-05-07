@@ -309,4 +309,4 @@ Option A + 强约束:**独立 worker pool + 单任务超时 + 限流(单用户 2
 - ❌ **3 次迭代后还硬循环** —— 达上限就 BELOW_CONSENSUS_THRESHOLD 收手,不要无限磨。
 - ❌ **deliberate 模式漏 pre-mortem / expanded test plan** —— Critic 必须 REJECT,这是 deliberate 模式的最小定义。
 - ❌ **Implementation steps 写「重构 X 模块」** —— 必须 cite 具体文件 / 行号,80% 起。
-- ❌ **替用户调起其他 skill** —— plan 完成就停,不要 invoke `dev-commit-review` 或别的。dev-skills 松耦合。
+- ❌ **替用户调起其他 skill** —— plan 完成就停,不要 invoke `dev-code-review` 或别的。dev-skills 松耦合。

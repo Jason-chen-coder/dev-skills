@@ -1,13 +1,13 @@
 ---
 name: dev-plan
-description: Use when a spec or scoped requirement exists and the user wants a concrete implementation plan with cross-perspective validation BEFORE writing code. Triggers on phrases like "出个 plan / 做个实施方案 / 怎么做这件事 / 给我个方案 / plan this / make a plan / consensus plan / ralplan". Produces a plan with RALPLAN-DR structure (principles, drivers, ≥2 viable options, ADR) via an in-context Planner → Architect → Critic loop. Does NOT gather requirements (that's dev-spec) and does NOT review code (that's dev-commit-review). Output goes to `.claude/artifacts/plans/<feature>.md`. Optional arguments — `--quick` for single-pass small change, `--deliberate` for high-risk plans (adds pre-mortem + expanded test plan); default is full Planner → Architect → Critic loop.
+description: Use when a spec or scoped requirement exists and the user wants a concrete implementation plan with cross-perspective validation BEFORE writing code. Triggers on phrases like "出个 plan / 做个实施方案 / 怎么做这件事 / 给我个方案 / plan this / make a plan / consensus plan / ralplan". Produces a plan with RALPLAN-DR structure (principles, drivers, ≥2 viable options, ADR) via an in-context Planner → Architect → Critic loop. Does NOT gather requirements (that's dev-spec) and does NOT review code (that's dev-code-review). Output goes to `.claude/artifacts/plans/<feature>.md`. Optional arguments — `--quick` for single-pass small change, `--deliberate` for high-risk plans (adds pre-mortem + expanded test plan); default is full Planner → Architect → Critic loop.
 ---
 
 # Dev Plan
 
 Convert a spec / scoped requirement into a **Critic-approved implementation plan** before coding. Single-agent in-context consensus loop:**Planner → Architect → Critic**, with iteration cap.
 
-This skill **only plans**. It does not gather requirements (`dev-spec` does that) and does not review or write code (`dev-commit-review` / your editor / a coding skill do that).
+This skill **only plans**. It does not gather requirements (`dev-spec` does that) and does not review or write code (`dev-code-review` / your editor / a coding skill do that).
 
 ---
 
@@ -163,6 +163,10 @@ baseline 与本 skill 的关联点:
 REVISE / REJECT 时:
 - 列出**具体待改项**(对应 plan 的 section)
 - 拒收原因(一句话)
+
+### Reservations(必填,即使 APPROVED 也要列 ≥ 1 条)
+- <对 plan 某 section 的具体保留意见,带 file/section 引用>
+- ...
 ```
 
 **Critic 的硬约束**:
@@ -170,6 +174,10 @@ REVISE / REJECT 时:
 - 不许接受 vague risks(「可能性能不好」)。
 - 不许接受弱 verification(「跑一下看看」)。
 - deliberate 模式额外检查 pre-mortem 和 expanded test plan,缺则 REJECT。
+- **至少 1 条 RESERVATION**(防 Critic 软通过)—— 即使最终 verdict = APPROVED,也**必须列出 ≥ 1 条「我对此项仍有保留」**。例:
+   - 「Plan 用了 Redis 做幂等存储。我有保留:Redis 单点故障时幂等失效。Mitigation 段没具体说怎么 fallback。」
+   - 「Implementation step 3 `services/cart.ts:88-92` —— 我没看到回滚路径如果 step 4 失败。」
+- **拿不出 ≥ 1 条 RESERVATION 时,verdict 强制改为 REVISE**(说明 Critic 没真在挑刺,要么再过一遍要么承认本 plan 有未发现的隐患)。这是反 LLM「礼貌倾向 / 自洽倾向」的硬性矫正。
 
 ---
 
@@ -207,7 +215,7 @@ REVISE / REJECT 时:
 - **Follow-ups**: 本次明确不做但应该做的后续(进 spec 的 Open questions / 进 backlog)
 ```
 
-ADR 是最终决定的**单一入口**,后续 dev-commit-review 评审时如果 diff 与 ADR 不符,应作为 P1 finding。
+ADR 是最终决定的**单一入口**,后续 dev-code-review 评审时如果 diff 与 ADR 不符,应作为 P1 finding。
 
 ---
 
@@ -305,5 +313,5 @@ ADR 是最终决定的**单一入口**,后续 dev-commit-review 评审时如果 
 ## 与其他 skill 的协作
 
 - **上游**:`dev-spec` 的 spec(`.claude/artifacts/designs/<feature>.md`)是本 skill 的最佳输入。
-- **下游**:本 skill 的 plan(`.claude/artifacts/plans/<feature>.md`)是 `dev-commit-review` 的对齐参考(若存在,审查时应检查 diff 是否落实了 plan 的 AC 与 ADR;但触发 dev-commit-review 仍由用户主动)。
+- **下游**:本 skill 的 plan(`.claude/artifacts/plans/<feature>.md`)是 `dev-code-review` 的对齐参考(若存在,审查时应检查 diff 是否落实了 plan 的 AC 与 ADR;但触发 dev-code-review 仍由用户主动)。
 - **不调用**:本 skill 不主动 invoke 其他 skill —— 跨 skill 的衔接由用户控制。

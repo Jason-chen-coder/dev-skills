@@ -95,7 +95,7 @@ jobs:
         run: |
           set -e
           missing=0
-          for skill in dev-commit-review dev-commit-writer dev-spec dev-plan dev-fix dev-workflow; do
+          for skill in dev-code-review dev-commit-writer dev-spec dev-plan dev-fix dev-workflow; do
             if [ ! -f "skills/$skill/SKILL.md" ]; then
               echo "❌ skills/$skill/SKILL.md missing"
               missing=1

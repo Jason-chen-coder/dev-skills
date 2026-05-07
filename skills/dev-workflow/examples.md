@@ -7,7 +7,7 @@
 - 例 1:**默认模式 + complex feature**(用户 0 起步,需要完整链)
 - 例 2:**`--status` + 中途**(用户跑完 spec 来问位置)
 - 例 3:**`--next` + 极简**(用户只要下一句命令)
-- 例 4:**`--recover` + 失败**(dev-commit-review 给 FIX P1,推荐回写代码 step)
+- 例 4:**`--recover` + 失败**(dev-code-review 给 FIX P1,推荐回写代码 step)
 - 例 5:**unclear 路径**(列选项让用户选)
 
 ---
@@ -35,7 +35,7 @@ Slug   : user-export(自动推断,你可纠正)
   1. dev-spec --default user-export      把模糊需求拆成结构化 spec(带 AC)
   2. dev-plan --deliberate user-export   complex 需求强制走 deliberate(pre-mortem + expanded test plan)
   3. 写代码                                你的编辑器 / agent
-  4. dev-commit-review                    commit 前 5 轴评审
+  4. dev-code-review                    commit 前 5 轴评审
 
 当前位置
   Phase 0:尚未开始
@@ -99,13 +99,13 @@ $ dev-plan --deliberate user-export
 
 ---
 
-## 例 4 — `--recover` 处理 dev-commit-review FIX P1
+## 例 4 — `--recover` 处理 dev-code-review FIX P1
 
-**用户**:「`dev-workflow --recover user-export` —— 我跑 dev-commit-review 给我 FIX P1,说有个 console.log 残留 + 一处 cart edge case 没处理。怎么办?」(显式 slug 让 recover 输出能精确指出 commit 该关联哪个 spec/plan,有助于修完后重跑 dev-commit-review 自动加 Refs)
+**用户**:「`dev-workflow --recover user-export` —— 我跑 dev-code-review 给我 FIX P1,说有个 console.log 残留 + 一处 cart edge case 没处理。怎么办?」(显式 slug 让 recover 输出能精确指出 commit 该关联哪个 spec/plan,有助于修完后重跑 dev-code-review 自动加 Refs)
 
 **dev-workflow 内部**:
 
-- 失败 skill:dev-commit-review
+- 失败 skill:dev-code-review
 - 失败信号:Verdict = FIX P1(2 处问题)
 - 路径决策:**不该 commit**,但也**不该回 dev-plan**(plan 没问题,代码漏了);回写代码 step
 
@@ -113,16 +113,16 @@ $ dev-plan --deliberate user-export
 
 ```
 ━━━ Recover ━━━
-失败 skill : dev-commit-review
+失败 skill : dev-code-review
 失败信号   : Verdict = FIX P1(2 处:console.log 残留 / cart edge case 未处理)
 
 推荐恢复:
   → 回写代码 step
   原因   :P1 是「应修」级别,不阻塞 commit 但建议处理。当前不该硬 commit。
   操作建议:
-    1. 删除 console.log(参考 dev-commit-review 的 Cleanup 段定位)
+    1. 删除 console.log(参考 dev-code-review 的 Cleanup 段定位)
     2. 在 cart 边界 case 处理 + 写一个 unit test 覆盖
-    3. 改完重跑 dev-commit-review,期望 Verdict = ✅ READY
+    3. 改完重跑 dev-code-review,期望 Verdict = ✅ READY
 
 如果上述方式无效:
   - 如果 P1 你认为不该改(误报),在 commit message body 显式覆盖 + 解释,
@@ -130,7 +130,7 @@ $ dev-plan --deliberate user-export
 ```
 
 注意:
-- **绝不建议「再跑一次 dev-commit-review 看看」** —— 不修代码再跑结果一样
+- **绝不建议「再跑一次 dev-code-review 看看」** —— 不修代码再跑结果一样
 - **明确说「不该硬 commit」** —— 防止用户绕过 review
 
 ---
@@ -155,7 +155,7 @@ $ dev-plan --deliberate user-export
   (b) 修 inventory 的某个 bug
       → dev-fix(先复现)→ ...
   (c) 现有 inventory 代码我准备改 / 已改完想 review
-      → 直接 dev-commit-review(改完 commit 前)
+      → 直接 dev-code-review(改完 commit 前)
   (d) 想了解 inventory 现状(不修改)
       → 这不在 dev-skills scope,自己 grep / 读代码
 

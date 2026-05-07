@@ -24,10 +24,10 @@
 
 ### 类型 A:原子工作步骤 skill(默认)
 
-绝大多数 skill 属于这类(dev-spec / dev-plan / dev-fix / dev-commit-review / dev-commit-writer 都是)。在 issue 里回答以下 7 个问题。**任何一项答不上来就不该做这个 skill。**
+绝大多数 skill 属于这类(dev-spec / dev-plan / dev-fix / dev-code-review / dev-commit-writer 都是)。在 issue 里回答以下 7 个问题。**任何一项答不上来就不该做这个 skill。**
 
 1. **触发时机一句话** —— 用户说什么 / 处于什么状态时应该用这个 skill?
-2. **和现有 skill 的边界** —— 会不会和 `dev-commit-review` / `dev-commit-writer` / `dev-spec` 抢触发?
+2. **和现有 skill 的边界** —— 会不会和 `dev-code-review` / `dev-commit-writer` / `dev-spec` 抢触发?
 3. **频次** —— 团队成员每周用几次?低于 1 次就不该做。
 4. **流程步骤** —— 至少 5 步,每步是什么。低于 5 步说明这件事不够 standardized,直接放 CLAUDE.md 即可。
 5. **输出格式** —— 报告 / 文档 / message?固定模板长什么样?
@@ -82,7 +82,7 @@
 1. **issue 必填**:为什么要改、改了之后所有 skill 的行为变化预期、是否需要同步改 SKILL.md。
 2. **PR 描述必含**:before / after 对比、影响哪些 skill、是否需要 calibration session 重做。
 3. **同步副本**:改根目录 `/references/dev-baseline.md` 后,**必须**同步到六处 skill 副本:
-   - `skills/dev-commit-review/references/dev-baseline.md`
+   - `skills/dev-code-review/references/dev-baseline.md`
    - `skills/dev-commit-writer/references/dev-baseline.md`
    - `skills/dev-spec/references/dev-baseline.md`
    - `skills/dev-plan/references/dev-baseline.md`

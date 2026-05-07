@@ -16,12 +16,101 @@
 
 ---
 
+## [0.7.0] — 2026-05-07
+
+### ⚠️ BREAKING — Skill 重命名
+
+**`dev-commit-review` 重命名为 `dev-code-review`**。
+
+理由:原名暗示「只在 commit 时跑」,实际职责是「代码评审」(可在 commit / PR / hotfix 任何时候触发,不绑定 commit 节点)。新名更准确反映 skill 职责。
+
+### Migration(已装 0.6.x 的用户必看)
+
+升级路径取决于安装方式:
+
+**Claude Code(`/plugin install`)**:
+
+```
+/plugin update dev-skills
+```
+
+如果不生效,卸载重装兜底:
+
+```
+/plugin uninstall dev-skills
+/plugin install dev-skills
+```
+
+**`npx skills`**:
+
+```bash
+# 删旧名 skill
+npx skills remove dev-commit-review
+
+# 重装(会拿到新名 dev-code-review)
+npx skills add Jason-chen-coder/dev-skills@v0.7.0 --force
+```
+
+**git clone**:
+
+```bash
+cd <install-path>/dev-skills
+git pull
+git checkout v0.7.0
+# 旧 dev-commit-review 目录可能残留,手动 rm -rf 即可
+```
+
+### 用户行为变化
+
+- 触发短语**不变**:「准备 commit / 提交前检查 / review my changes」等仍能触发,因为 description 里关键词没改,只 skill name 变了
+- 但 chat / commit message footer / artifact 里**显示文本变了**:
+  - 原 `━━━ Dev Commit Review ━━━` → `━━━ Dev Code Review ━━━`
+  - 原 `Refs: <type>/<slug>` 不变(因为 type 是 `spec`/`plan`/`fix`,不含 review)
+- 原仓库的 `Refs:` 历史 commit 不受影响,因为 dev-code-review 不产 artifact 不在 Refs type 中
+
+### Changed
+- 仓库内 **103 处 `dev-commit-review` 引用全部替换为 `dev-code-review`**(含 SKILL.md 频道、README、CONTRIBUTING、CHANGELOG 历史 entry、所有 examples、calibration cases、validate.yml、marketplace.json、plugin.json、docs/onboarding 等)
+- **9 处显示标题** `Dev Commit Review` → `Dev Code Review`(SKILL.md `# title` + 报告分隔线 `━━━ ... ━━━` + onboarding example)
+- 目录 `skills/dev-commit-review/` 改名为 `skills/dev-code-review/`
+
+### Notes
+- baseline 7 副本 md5 同步更新(canonical + 6 skills)
+- CI 期望 skill 列表更新到 `dev-code-review`
+- CHANGELOG 历史 entry(0.1.0 ~ 0.6.3)的 `dev-commit-review` 也一并替换为 `dev-code-review`(取「内部一致」优于「历史精确」),想看真实历史可看 git log 各 tag 时点的状态
+
+---
+
+## [0.6.3] — 2026-05-06
+
+**LLM 行为偏差矫正层**。Path B 自测(设计层对抗性 review)发现 8 个 gap —— SKILL.md 指令读起来 OK 但实操可能被 LLM 已知行为偏差(礼貌 / 自洽 / 模板化 / 凑数 / 假装跑过)绕过。本版本把这些用**硬性可量化判据**修死。无 skill 数量变化,无 artifact 路径变化,只是各 SKILL.md 的硬约束加严。
+
+### Fixed(HIGH severity — 不修会让 skill 输出与设计意图发生质性偏差)
+- **G1 — `dev-plan` Critic 软通过 risk**:Critic 和 Planner 是同一 LLM 不同身份,LLM 训练倾向自洽 → Critic 不会真心 REJECT 自己 30 秒前写的 plan。**修法**:Step 5 加硬约束「**至少 1 条 RESERVATION**」,即使 verdict = APPROVED 也要列出对 plan 某 section 的具体保留意见。拿不出 ≥ 1 条 → verdict 强制改为 REVISE。
+- **G2 — `dev-code-review` 闭环轴 `git grep` 不真跑**:LLM 倾向默念检查后报告结果(违反 baseline「Evidence before claims」)。**修法**:Step 1 闭环段加显式要求「**必须真正 invoke bash 跑 git grep,在报告里展示 command + output**」,不能只说「grep 验证通过」。
+- **G3 — `dev-spec` ambiguity 评分往阈值收敛**:LLM 在用户施压「够了快点」时倾向 rationalize 调高分数让 ambiguity 假性达标。**修法**:Step 1.2 评分加 anchor 要求 —— 每维度的分数必须列出具体证据;拿不出 anchor 列表评分上限 0.6;用户施压时不调高分数,走 STUCK 路径。
+
+### Fixed(MEDIUM severity)
+- **G4 — `dev-fix --deep` hypothesis 凑数**:为了凑「跨多维度」LLM 会列 3-5 个,但其中 2-3 个是 prior < 10% 的弱假设。**修法**:Step 3 hypothesis 模板加 `prior probability` 字段(区分 confidence vs prior),`--deep` 后自查若 ≥ 3 个 prior < 20% 则**回 Step 3 重列**(假设池质量不够)。
+- **G5 — `dev-commit-writer` Refs 自动加可能错配**:用户做 feature 期间顺手修了 unrelated bug,自动追加错误 Refs 比没 Refs 更糟糕。**修法**:Step 4b 加语义匹配检查 —— 看 commit subject 与 slug 是否关键词重叠 / 文件路径相关 / commit type 一致。任一 signal 不匹配 → **不擅自加,回问用户**。
+- **G6 — `dev-fix` Defense-in-depth 塞 refactor**:LLM 写完 fix 后兴奋,容易把整个调用链加 logging 等说成 defense。**修法**:Step 6b 加客观行数门 —— **defense 加的代码 ≤ root cause fix × 2 行**,超过强制拒绝丢 Follow-up。DB constraint / type schema 这类单行声明性配置例外。
+- **G7 — `dev-spec` STUCK 触发概率低**:类似 G1,LLM 倾向降低判断标准凑出 ALIGNED。**修法**:Step 1.2 加 STUCK 客观判据 —— 4 条硬条件任一满足强制标 STUCK(Goal anchor 缺失 / Open questions 含外部决策项 / Scope 未对齐 / Ontology 未收敛)。Open questions 写空话(「需要更多信息」)视为 STUCK 不通过。
+
+### Fixed(LOW severity — 边界 case)
+- **G8 — `dev-workflow` slug 命名空间冲突**:同 slug 同时出现在 `designs/` 和 `fixes/` 时 phase 推断混乱。**修法**:Step 3 加冲突检测,要求用户改名,绝不擅自合并 / 假设语义。
+
+### Notes
+- 7 个 baseline 副本 md5 不变(本次只改 4 个 SKILL.md 的硬约束章节,baseline 未触)。
+- **不破坏现有行为**,仅加严约束。已经在用 0.6.2 的用户**升级后会更挑剔**(Critic 不再软通过 / grep 真跑 / Refs 不乱加),这是设计意图。
+- 这一层修复主要针对**真实 LLM 行为**(我作为 LLM 自己识别的偏差),Path A(用户真任务自验证)是下一步,可能再发现一层不同维度的 gap。
+
+---
+
 ## [0.6.2] — 2026-05-06
 
 全项目第二轮 audit 修复 + 新增 commit↔artifact 追溯 + dev-spec STUCK 终止状态。5 项改动(应改 2 + 建议 3)。无 skill 数量变化,但加了 2 个新行为(Refs footer / STUCK status)和 3 处 governance 文档收敛。
 
 ### Added
-- **G1 — commit message footer 自动追溯 artifact**(在 `dev-commit-writer` 加 Step 4b,在 `dev-commit-review` READY verdict 加规则 11):commit message 末尾自动加 `Refs: <type>/<slug>` 行(type ∈ {spec, plan, fix})。决策表:
+- **G1 — commit message footer 自动追溯 artifact**(在 `dev-commit-writer` 加 Step 4b,在 `dev-code-review` READY verdict 加规则 11):commit message 末尾自动加 `Refs: <type>/<slug>` 行(type ∈ {spec, plan, fix})。决策表:
   - 0 个 in-flight → 不加
   - 1 个 → 自动加
   - 同 slug spec + plan → 两条都加
@@ -42,9 +131,9 @@
 - **G5 — `dev-workflow` examples 加显式 `[slug]` 参数演示**:例 3 (`--next`) 和例 4 (`--recover`) 都显式带 slug,避免新用户不知道这个用法
 
 ### Notes
-- `references/dev-baseline.md` 7 副本 md5 不变(本次只改 dev-spec / dev-commit-review / dev-commit-writer / dev-workflow 的 SKILL.md,baseline 未触)。
+- `references/dev-baseline.md` 7 副本 md5 不变(本次只改 dev-spec / dev-code-review / dev-commit-writer / dev-workflow 的 SKILL.md,baseline 未触)。
 - 不破坏现有 skill 行为,**仅添加新行为**:
-  - dev-commit-writer / dev-commit-review 的 Refs footer 是**自动行为**,但 0 个 artifact 时不加,完全 backward-compatible
+  - dev-commit-writer / dev-code-review 的 Refs footer 是**自动行为**,但 0 个 artifact 时不加,完全 backward-compatible
   - dev-spec STUCK 是**新 status 值**,只在达 wave 上限仍 ambiguity 高时设置;之前不会触发
 - README Status 0.6.1 → 0.6.2,marketplace.json + plugin.json 同步。
 
@@ -85,7 +174,7 @@ dev-workflow 第一轮 audit 修复 + 跨 skill 一致性收敛。10 项改动(�
    - **完整推荐链**:对应 path(feature / bug / hotfix)+ 复杂度(simple / moderate / complex)的 skill 序列 + 模式参数
    - **当前位置**:你在 phase N(只读存在性 + frontmatter Status 字段,不深读)
    - **下一步**:精确命令(可复制粘贴)+ 一句 rationale
-- 4 种模式:**默认**(完整推荐)/ **`--status`**(只定位)/ **`--next`**(只下一步,极简)/ **`--recover`**(失败恢复表 8 种场景:dev-spec / dev-plan / dev-fix / dev-commit-review 各自的失败信号 → 推荐回到哪 + 为什么 + 操作建议)
+- 4 种模式:**默认**(完整推荐)/ **`--status`**(只定位)/ **`--next`**(只下一步,极简)/ **`--recover`**(失败恢复表 8 种场景:dev-spec / dev-plan / dev-fix / dev-code-review 各自的失败信号 → 推荐回到哪 + 为什么 + 操作建议)
 - 路径覆盖:**feature** + **bug** + **hotfix** 三条主路径,unclear 时列选项问用户(不假设)
 - 推荐链对照表(path × complexity 9 种组合)
 - 严格触发条件:description 锁定为「用户显式要 workflow / 串起来 / 完整跑」,避免和具体 skill 抢触发
@@ -168,7 +257,7 @@ dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 ex
 - `skills/dev-fix/references/dev-baseline.md`(自包含副本)
 
 ### Changed
-- README skills 表新增 `dev-fix` 行(放 dev-plan 之后、dev-commit-review 之前,反映工作流位置)。
+- README skills 表新增 `dev-fix` 行(放 dev-plan 之后、dev-code-review 之前,反映工作流位置)。
 - README 工作流图重做为**双入口分支**:`[新需求] → dev-spec/plan` 和 `[bug 报告] → dev-fix` 两条平行路径,在「写代码」节点合流后共用 commit-review/writer。
 - README 工作流图下方说明新增「间歇性 / 跨系统 / 生产事故 bug 建议 `dev-fix --deep`」一条。
 - README Status 段:版本 0.4.0 → 0.5.0,skill 数 4 → 5。
@@ -190,20 +279,20 @@ dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 ex
 发布就绪版本。修复 4 类阻塞性问题让仓库能被 `npx skills add` / Claude Code 正常安装,并补齐 marketplace 清单 / GitHub Actions 验证。
 
 ### Changed (BREAKING — 仓库结构变更)
-- **4 个 skill 全部移到 `skills/` 子目录**(`dev-commit-review` / `dev-commit-writer` / `dev-spec` / `dev-plan`)。
+- **4 个 skill 全部移到 `skills/` 子目录**(`dev-code-review` / `dev-commit-writer` / `dev-spec` / `dev-plan`)。
    - 原:`./<skill-name>/SKILL.md`
    - 现:`./skills/<skill-name>/SKILL.md`
    - 这与 vercel-labs/skills CLI 的 canonical layout 一致(`discoverSkills()` 优先扫 `skills/` 子目录)。
    - 仓库根目录现在只放 docs / governance / metadata,不混 skill。
 - **`CLAUDE.md` 重命名为 `CLAUDE.md.template`**。原文件是模板,但放在 repo 根会让用户误以为已经生效。重命名 + README 醒目说明:**消费方需手动复制到自己项目根并改名为 `CLAUDE.md`** 才会被 Claude Code / Cursor 自动加入上下文。
 - **README 安装命令完整重写**:
-   - 修语法错误:`npx skills add <user>/dev-skills@dev-commit-review` → `npx skills add <user>/dev-skills --skill dev-commit-review`(`@<skill>` 后缀不被 `npx skills` 识别)。
+   - 修语法错误:`npx skills add <user>/dev-skills@dev-code-review` → `npx skills add <user>/dev-skills --skill dev-code-review`(`@<skill>` 后缀不被 `npx skills` 识别)。
    - 占位符 `<your-username>` 替换为真实 owner `Jason-chen-coder`,加一句「fork 到别处时替换」说明。
    - 新增「项目级 vs 全局」对比、`--list` 用法、CLAUDE.md.template post-install 说明。
 - **4 个 SKILL.md frontmatter 移除非标准字段** `user-invocable: true` 和 `argument-hint: "..."`(oh-my-claudecode 自定义,Claude Code / `npx skills` 都不识别)。参数说明从 frontmatter 移到 description 文末作为可读 hint。
 - **CONTRIBUTING.md baseline 同步副本路径**全部更新为 `skills/<skill>/references/dev-baseline.md`。
 - **`references/dev-baseline.md` (canonical)** 内的副本路径说明更新为 `skills/<skill>/`。
-- **`docs/onboarding.md`** 安装命令同步更新,2 处 lang-conventions.md 路径更新为 `skills/dev-commit-review/references/lang-conventions.md`。
+- **`docs/onboarding.md`** 安装命令同步更新,2 处 lang-conventions.md 路径更新为 `skills/dev-code-review/references/lang-conventions.md`。
 
 ### Added
 - **`.claude-plugin/marketplace.json`** —— Claude Code 原生 marketplace manifest。声明本仓库提供 1 个 plugin(`dev-skills`),plugin 内含 4 个 skill。owner / plugins[] 结构对齐 Claude Code 官方 schema,支持 `/plugin marketplace add` + `/plugin install` 流程。
@@ -212,7 +301,7 @@ dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 ex
    - 每个 SKILL.md 有 `name` + `description` 必填项
    - 5 处 dev-baseline.md 副本 md5 一致(防漂移)
    - `.claude-plugin/marketplace.json` 和 `plugin.json` 结构合法(top-level `name` / `owner.name` / `plugins[]`,plugin 必有 `name` + `source`)
-   - 4 个预期 skill 目录都存在(skills/dev-commit-review 等)
+   - 4 个预期 skill 目录都存在(skills/dev-code-review 等)
    - 仓库根没有 live `CLAUDE.md` 污染(必须是 `.template`)
 - **README 安装段重写为 A/B/C 三种方式**:
    - A — Claude Code 原生 `/plugin marketplace add` + `/plugin install dev-skills`(推荐 Claude Code 用户)
@@ -241,18 +330,18 @@ dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 ex
 ### Fixed
 - 9 处「三处 / 三个 skill」stale references 全部改为「四处 / 四个」并补 `dev-plan`(`README.md` / `CONTRIBUTING.md` / `CHANGELOG.md` 0.3.0 entry / `docs/onboarding.md` / 5 处 `dev-baseline.md` 副本)。
 - `CONTRIBUTING.md` 第 57-62 行 baseline 同步副本清单补 `dev-plan/references/dev-baseline.md`(原本只列 3 处)。
-- `docs/onboarding.md` 修两处 broken path:`references/lang-conventions.md` → `dev-commit-review/references/lang-conventions.md`(该文件只在 dev-commit-review 子目录,不在仓库根)。
+- `docs/onboarding.md` 修两处 broken path:`references/lang-conventions.md` → `dev-code-review/references/lang-conventions.md`(该文件只在 dev-code-review 子目录,不在仓库根)。
 - `docs/onboarding.md` 「三个 skill 怎么选」表格补 `dev-plan` 行,标题改为「四个 skill 怎么选」。
-- `dev-commit-review/SKILL.md` description 过时排除条款改为反映当前 skill landscape(指向 dev-commit-writer / dev-spec / dev-plan)。
+- `dev-code-review/SKILL.md` description 过时排除条款改为反映当前 skill landscape(指向 dev-commit-writer / dev-spec / dev-plan)。
 - `references/dev-baseline.md` line 58 措辞改为「在 `Step 0 — Load baseline` 段引用」(原写「在 Step 1 之前」与 SKILL.md 实际的 Step 0 名称不一致)。
 
 ### Added
 - `dev-commit-writer/examples.md` 新增。5 个样例覆盖单一意图、意图歧义多候选、scope creep + Incidental 段、风格采样不足退回 conventional commits、中文项目跟随仓库语言。补齐唯一缺 examples.md 的 skill。
 - `references/calibration-cases.md` 新增 4 个 case:7-8 是 dev-spec ambiguity 评分校准(完整需求低分 / 模糊需求高分 + Goal 最弱),9-10 是 dev-plan Critic verdict 校准(应 APPROVED 的好 plan / 应 REJECT 的典型坏 plan)。Calibration session 流程同步改为分 skill 计时(commit-review 30min / spec 15min / plan 15min)。
-- `CLAUDE.md` §2 Workflow 新增「设计前置(skill 工具链)」段:复杂改动必须过 dev-spec + dev-plan --deliberate;常规改动建议过 dev-spec;一句话改动跳过但必须过 dev-commit-review。
+- `CLAUDE.md` §2 Workflow 新增「设计前置(skill 工具链)」段:复杂改动必须过 dev-spec + dev-plan --deliberate;常规改动建议过 dev-spec;一句话改动跳过但必须过 dev-code-review。
 
 ### Changed
-- `dev-commit-review/SKILL.md` argument-hint 改为 `--flag` 风格:`[--staged] [--path=<glob>]`(原 positional `[optional: 'staged' or path]`)。Step 1 Scope rules 同步识别 `--staged` 和 `--path=<glob>`。
+- `dev-code-review/SKILL.md` argument-hint 改为 `--flag` 风格:`[--staged] [--path=<glob>]`(原 positional `[optional: 'staged' or path]`)。Step 1 Scope rules 同步识别 `--staged` 和 `--path=<glob>`。
 - `dev-commit-writer/SKILL.md` argument-hint 同上改为 `[--staged] [--path=<glob>]`。Step 1 Scope rules 同步。
 - 4 个 SKILL.md 的 argument-hint 风格现已统一为 `--flag` 格式。
 - `README.md` 更新:
@@ -260,7 +349,7 @@ dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 ex
   - 顶部加入新成员 / 团队 leader 双指引。
   - Skills 段标题加「(当前 4 个)」明示数量。
   - 设计原则段补充反向标准条目(链 CONTRIBUTING.md)。
-  - 团队治理表加入 `dev-commit-review/references/lang-conventions.md` 行(原本只在 SKILL.md 内引用)。
+  - 团队治理表加入 `dev-code-review/references/lang-conventions.md` 行(原本只在 SKILL.md 内引用)。
   - 加载顺序拆为「规范加载顺序」 + 「行为优先级」两条,后者新增对接 CLAUDE.md §6。
   - 文末新增 `## Status` 段(版本 / 发布状态 / draft 列表),置于 License 之前。
 
@@ -290,7 +379,7 @@ dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 ex
 
 ### Notes
 - 不破坏 baseline,baseline 文件未改。
-- 不修改 `dev-commit-review` / `dev-commit-writer`(保持紧凑 scope)。dev-commit-review 评审时若发现仓库存在相关 plan,**用户**可手动指给它作为意图参考;skill 本身不自动加载 plan。
+- 不修改 `dev-code-review` / `dev-commit-writer`(保持紧凑 scope)。dev-code-review 评审时若发现仓库存在相关 plan,**用户**可手动指给它作为意图参考;skill 本身不自动加载 plan。
 - 四个 skill 之间仍然松耦合,中间产物落 `.claude/artifacts/`,任何衔接由用户主动触发。
 
 ---
@@ -315,7 +404,7 @@ dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 ex
 
 ### Notes
 - 本次改动不破坏 baseline,baseline 文件未改。
-- 不涉及 dev-commit-review / dev-commit-writer。
+- 不涉及 dev-code-review / dev-commit-writer。
 - 用户安装的 `dev-spec` 副本要求重新拉取或同步 `references/dev-baseline.md` 不变。
 
 ---
@@ -324,14 +413,14 @@ dev-fix 第二轮审计修复。无 skill 行为变更,只提升 SKILL.md 和 ex
 
 ### Added
 - 初始 scaffold,3 个 skill:
-  - `dev-commit-review`(commit 前 5 轴评审 + commit message 生成)
+  - `dev-code-review`(commit 前 5 轴评审 + commit message 生成)
   - `dev-commit-writer` *(draft)*(只生成 commit message,不评审)
   - `dev-spec` *(draft)*(模糊需求 → 结构化设计文档)
 - 共享行为基线 `references/dev-baseline.md`(Karpathy 四原则本地化:不假设 / 最小代码 / 外科手术式改动 / 可验证成功标准)。
 - 每个 skill 携带 baseline 副本,保证单独安装时自包含。
-- `dev-commit-review/examples.md`(5 个真实场景报告样例)。
+- `dev-code-review/examples.md`(5 个真实场景报告样例)。
 - `dev-spec/examples.md`(3 个 fuzzy → spec 样例)。
-- `dev-commit-review/references/lang-conventions.md`(10 种语言的规范检查点)。
+- `dev-code-review/references/lang-conventions.md`(10 种语言的规范检查点)。
 
 ### Governance
 - `CLAUDE.md`(团队级 always-on 工程约定模板)。

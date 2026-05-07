@@ -18,7 +18,7 @@ This skill **must surface ambiguities first** and let the user resolve them, the
 baseline 与本 skill 的关联点(本 skill 的核心):
 - **不假设** —— 这是本 skill 的**入口动作**。Step 1 的全部职责就是把模糊点显式化。
 - **最小代码** —— spec 必须有一段 `Out of scope`,强制写出「这次明确不做的东西」,对抗顺手设计「未来灵活性」的倾向。
-- **可验证成功标准** —— spec 以**可验证的验收条件**收尾,不是泛泛描述方案。这些验收条件后续会成为 dev-commit-review「功能」轴的对齐真值。
+- **可验证成功标准** —— spec 以**可验证的验收条件**收尾,不是泛泛描述方案。这些验收条件后续会成为 dev-code-review「功能」轴的对齐真值。
 
 ---
 
@@ -68,6 +68,23 @@ git ls-files | head -30
 | Context Clarity | — | 0.10 | 这次改动落在系统哪里、影响哪些已有部分? |
 
 `ambiguity = 1 - Σ(score × weight)`
+
+**评分必须给 anchor**(防 LLM 往阈值方向收敛):**每个维度的分数必须列出具体证据**,例:
+
+```
+Goal: 0.85
+  anchor: 用户已回答「自助导出 vs 后台代导」「字段白名单」「同步 vs 异步」3 个核心问题
+Scope: 0.4
+  anchor: in scope 仅「单用户导出 + 邮件链接」明确;out of scope 完全没列
+AC: 0.5
+  anchor: 有 2 条 AC(行数 / 字段),但 P95 延迟 / 失败重试 / 超时阈值 0 个数字目标
+Context: 0.6
+  anchor: 已确认接现有 notification-service,但没说 S3 bucket 权限模型
+```
+
+**拿不出 anchor 列表的维度,评分上限 0.6**。这是反 LLM「自评宽松倾向」的硬性矫正。
+
+**用户施压「够了快点」时**,**不调高分数**让 ambiguity 假性达标。正确做法走「提前退出 + 标 STUCK」路径(见 退出条件 f)。
 
 **b. 找最弱维度** —— 哪一项分数最低,作为下一题的瞄准对象。
 
@@ -138,6 +155,17 @@ Ontology: User, Order, ExportJob (vs Wave {n-1}: 1 stable, 1 renamed, 1 new — 
 - 在 chat 给用户:「spec 标 STUCK,需要外部信息。建议先去拿:[列出具体 unblock 项],拿到后回来跑 `dev-spec --deep <slug>` 续 wave。」
 
 dev-workflow 看到 spec status STUCK → Phase 1-blocked → 推荐用户处理 Open questions 而非进 dev-plan。
+
+### STUCK 触发的客观判据(防 LLM 软通过)
+
+达 wave 上限时,**强制对照以下硬条件**。任一项满足 → 自动标 STUCK,**不允许标 ALIGNED 凑出通过**:
+
+- **Goal anchor 缺失**:Goal 维度 ≥ 2 个 acceptance criteria 写不出
+- **Open questions 含外部决策项**:Open questions 段 ≥ 1 条以「需要产品 / 设计 / 数据 / stakeholder 决策」开头
+- **Scope 未对齐**:`In scope` 或 `Out of scope` 段任一为空
+- **Ontology 未收敛**:连续 2 wave stability < 50%(核心概念漂移持续)
+
+**Open questions 段的反模式**(LLM 倾向):写「需要更多信息」「细节后续再定」这种空话 —— 不算具体阻塞,**视作 STUCK 不通过**。必须每条**点名具体待澄清项 + 找谁拿**。
 
 ### Step 1.3 — Challenge modes(`--deep` only)
 
@@ -311,7 +339,7 @@ AC-N  ...
 ---
 > **Next step**: 本 spec 已完成需求对齐。复杂功能建议下一步跑 `dev-plan`,
 > 把本 spec 转成 Critic-approved 的实施 plan(产出至 `.claude/artifacts/plans/<feature>.md`);
-> 简单功能可直接进入编码,commit 前用 `dev-commit-review` 把关。
+> 简单功能可直接进入编码,commit 前用 `dev-code-review` 把关。
 ```
 
 只是提示,不主动调起 dev-plan(skill 之间松耦合)。
