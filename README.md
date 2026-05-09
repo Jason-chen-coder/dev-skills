@@ -1,23 +1,16 @@
-<p align="center">
-  <img src="images/logo.png" alt="dev-skills logo" width="380" height="380" />
-</p>
-
-<h1 align="center">dev-skills</h1>
-
-<p align="center">
-  6 个 skill 覆盖团队 git 工作流 ·<br/>
-  <b>需求对齐 → 实施方案 → 修 bug → 代码评审 → commit message</b>
-</p>
+<div align="center">
+  <img src="images/logo.png" alt="dev-skills logo" width="340" height="340" />
+  <p>
+    6 个 skill 覆盖团队 git 工作流 ·<br/>
+    <b>需求对齐 → 实施方案 → 缺陷修复 → 代码评审 → 提交信息</b>
+  </p>
+</div>
 
 <p align="center">
   <img src="https://img.shields.io/badge/version-0.7.1-blue" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
   <img src="https://img.shields.io/badge/CI-passing-brightgreen" alt="ci" />
   <img src="https://img.shields.io/badge/skills-6-orange" alt="skills" />
-</p>
-
-<p align="center">
-  <sub>灵感来自 <a href="https://github.com/forrestchang/andrej-karpathy-skills">karpathy-skills</a> · <a href="https://github.com/yeachan-heo/oh-my-claudecode">oh-my-claudecode</a></sub>
 </p>
 
 ---
@@ -54,6 +47,31 @@ mv CLAUDE.md.template CLAUDE.md
 ```
 
 <sub>完整安装 / 兜底方案 / 升级路径 → <a href="./docs/onboarding.md">docs/onboarding.md</a></sub>
+
+---
+
+## 💡 使用
+
+直接在对话里按需触发 skill,或先跑 `dev-workflow` 让它指路:
+
+```text
+/dev-workflow                # 不知道下一步,先问它
+/dev-spec    新需求描述...    # 需求对齐 → 产出 spec
+/dev-plan    spec 路径        # spec → 实施 plan
+/dev-fix     bug 现象...       # hypothesis-driven 修 bug
+/dev-code-review              # 提交前 5 轴评审
+/dev-commit-writer            # 改动已过审,只要 commit message
+```
+
+<sub>典型链路:`dev-spec` →(可选)`dev-plan` → 写代码 → `dev-code-review` → `git commit`</sub>
+
+---
+
+## 🗺 架构总览
+
+<p align="center">
+  <img src="images/架构图.png" alt="dev-skills 架构图" width="780" />
+</p>
 
 ---
 
@@ -124,31 +142,18 @@ mv CLAUDE.md.template CLAUDE.md
 
 ---
 
-## 📚 文档
+## 📜 版本历史
 
-| 我想… | 看哪 |
-|---|---|
-| 30 分钟跑通第一次 | [`docs/onboarding.md`](./docs/onboarding.md) |
-| 团队 always-on 约定模板 | [`CLAUDE.md.template`](./CLAUDE.md.template) |
-| 团队语言 / 工具偏好 | [`references/team-conventions.md`](./references/team-conventions.md) |
-| Karpathy 行为基线(4 准则) | [`references/dev-baseline.md`](./references/dev-baseline.md) |
-| 季度 calibration(14 个用例,防判定漂移) | [`references/calibration-cases.md`](./references/calibration-cases.md) |
-| 提议新 skill / 改 baseline | [`CONTRIBUTING.md`](./CONTRIBUTING.md) |
-| 版本历史 | [`CHANGELOG.md`](./CHANGELOG.md) |
-
-<sub><b>规范优先级</b>:项目 lint > team-conventions > lang-conventions > dev-baseline<br/>
-<b>行为优先级</b>:skill 局部 > CLAUDE.md > dev-baseline</sub>
+详见 [`CHANGELOG.md`](./CHANGELOG.md)。
 
 ---
 
 <p align="center">
   <sub>
-    <b>类型 A</b>(原子,5 个) + <b>类型 B</b>(orchestrator,1 个 = dev-workflow) · 详见 <a href="./CONTRIBUTING.md">CONTRIBUTING</a>
+    MIT License · <a href="./CHANGELOG.md">CHANGELOG</a> · <a href="./CONTRIBUTING.md">Contributing</a> · <a href="https://github.com/Jason-chen-coder/dev-skills/issues">Issues</a>
   </sub>
 </p>
 
 <p align="center">
-  <sub>
-    MIT License · <a href="./CHANGELOG.md">CHANGELOG</a> · <a href="./CONTRIBUTING.md">Contributing</a> · <a href="https://github.com/Jason-chen-coder/dev-skills/issues">Issues</a>
-  </sub>
+  <sub>灵感来自 <a href="https://github.com/forrestchang/andrej-karpathy-skills">karpathy-skills</a> · <a href="https://github.com/yeachan-heo/oh-my-claudecode">oh-my-claudecode</a></sub>
 </p>
