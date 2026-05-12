@@ -32,19 +32,32 @@
 
 ## 🚀 安装
 
+Claude Code 和 Codex 的安装方式**不一样**:
+
+- Claude Code 走本仓库的 `.claude-plugin/` manifest,用 `/plugin marketplace add` + `/plugin install`。
+- Codex 目前先把 `skills/*` 安装到 `$CODEX_HOME/skills`(默认 `~/.codex/skills`)。等本仓库补齐 `.codex-plugin/` 后,会再提供 Codex plugin 方式。
+
 ```bash
 # Claude Code(推荐)— 在 Claude Code 里逐行执行
 /plugin marketplace add https://github.com/Jason-chen-coder/dev-skills
 /plugin install dev-skills
 
+# Codex(当前兼容方式)— 在 shell 里执行
+git clone https://github.com/Jason-chen-coder/dev-skills.git
+cd dev-skills
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
+
 # 或 npx skills(跨 agent CLI)
 npx skills add Jason-chen-coder/dev-skills              # 项目级
 npx skills add Jason-chen-coder/dev-skills --global     # 全局
 
-# 别忘了 CLAUDE.md(手动复制团队约定模板到项目根)
+# Claude Code 用户:别忘了 CLAUDE.md(手动复制团队约定模板到项目根)
 curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/main/CLAUDE.md.template
 mv CLAUDE.md.template CLAUDE.md
 ```
+
+Codex 用户如果需要团队级 always-on 规则,当前可先参考 `CLAUDE.md.template` 手动整理到项目根的 `AGENTS.md`;正式的 `AGENTS.md.template` 会在 Codex 兼容迁移中补齐。
 
 <sub>完整安装 / 兜底方案 / 升级路径 → <a href="./docs/onboarding.md">docs/onboarding.md</a></sub>
 
@@ -77,21 +90,9 @@ mv CLAUDE.md.template CLAUDE.md
 
 ## 🔄 工作流
 
-```
-                    dev-workflow(可选入口,只指路)
-                              │
-            ┌─────────────────┴─────────────────┐
-        [新需求]                              [bug 报告]
-            ▼  dev-spec                          ▼  dev-fix
-            ▼  dev-plan(可选)                     ▼  修代码 + regression test
-            ▼  写代码
-            └────────────────┬─────────────────────┘
-                             ▼  二选一
-                             ├─ dev-code-review     评审 + commit msg
-                             └─ dev-commit-writer   只要 commit msg
-                             ▼
-                          git commit
-```
+<p align="center">
+  <img src="images/流程图.png" alt="dev-skills 工作流程图" width="900" />
+</p>
 
 > **松耦合保证**:`dev-workflow` 是**纯建议器**,绝不调起任何 skill。其他 5 个 skill 的「不互调」Hard rule 100% 有效。
 

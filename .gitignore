@@ -10,6 +10,7 @@
 # Local Claude state (skills consume artifacts at the consuming project's path,
 # not this repo's. But guard against accidental commits from local testing.)
 .claude/artifacts/
+.claude/settings.local.json
 
 # oh-my-claudecode local state (session / memory / cooldown caches)
 .omc/
