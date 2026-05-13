@@ -152,6 +152,35 @@ fixes/<slug>.md 存在 + 其他 status   → Phase X-blocked (见 --recover)
 
 **无法明确推断时**(例如 fixes/<slug>.md 存在但 status 字段缺失),直接告诉用户「我看到 X 但不确定状态,请说一下你刚跑完什么 / 现在卡在哪」。
 
+### Clean-tree worktree checkpoint(仅当下一步会进入写代码)
+
+如果推荐链的下一步或后续步骤包含「写代码 / 修代码」,在输出建议前先检查:
+
+```bash
+git status --short
+git branch --show-current
+```
+
+判定:
+
+| 情况 | 输出要求 |
+|---|---|
+| `git status --short` 为空,且任务是 moderate / complex 或会修改代码 / 多文件规则 / 配置 / 测试 | 在「下一步」后追加 worktree checkpoint,推荐用户先创建独立 worktree |
+| 当前分支是 `main` / `master` / `release/*` | 默认推荐 worktree;若用户坚持当前目录,提醒会直接修改当前目录 |
+| 当前已经 dirty | 不推荐直接创建 worktree;提示已有改动,先让用户决定继续当前目录 / 清理 / 另建基于 HEAD 的 worktree |
+| simple typo / 单文件小文档 / 用户明确说当前目录改 | 可省略 checkpoint |
+
+推荐格式:
+
+```
+编码前检查
+  当前 git tree 干净,且下一步会修改代码/多文件。
+  建议先创建 worktree:
+  $ git worktree add -b codex/<short-slug> ../<repo>-<short-slug>
+```
+
+worktree 命名遵守 `CLAUDE.md.template` 的规范:`codex/<short-slug>` 分支 + 兄弟目录 `<repo>-<short-slug>`。
+
 ---
 
 ## Step 4 — 输出推荐(默认模式)
@@ -177,6 +206,9 @@ Slug   : <feature-slug>(自动推断,你可以纠正)
 下一步
   $ <精确命令,可复制粘贴>
   为什么:<一句话 rationale,不超过两行>
+
+编码前检查
+  <仅当下一步会写代码且 clean tree checkpoint 命中时输出;否则整段省略>
 ```
 
 ### 推荐链对照表
