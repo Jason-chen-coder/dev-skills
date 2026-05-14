@@ -12,7 +12,8 @@
 ## [Unreleased]
 
 ### Added
-- *(占位:下一版要发的东西先记在这里。)*
+- **Clean-tree worktree checkpoint**:在 `CLAUDE.md.template` / `AGENTS.md.template` / `dev-workflow` / `dev-plan` / `dev-fix` 中加入编码前 worktree 检查与创建规范。AI 在 clean tree 且即将进行非平凡代码/多文件改动前,应先询问是否创建独立 worktree;默认分支命名 `codex/<short-slug>`,目录命名 `<repo>-<short-slug>`。
+- **`AGENTS.md.template`**:新增 Codex 面向的团队 always-on 规则模板,与 `CLAUDE.md.template` 保持核心 workflow 护栏一致。
 
 ---
 

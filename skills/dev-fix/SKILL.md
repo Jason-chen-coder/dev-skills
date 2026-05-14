@@ -61,6 +61,30 @@ baseline 与本 skill 的关联点(本 skill 的核心):
 
 如果以上信息缺关键项(尤其 Repro 起点 / Symptom),**直接向用户追问补全**,不要自己猜。补全前不进 Step 2。
 
+### Clean-tree worktree checkpoint(进入任何文件写入前)
+
+dev-fix 通常会在 Step 2b 写 failing test,之后在 Step 6 写修复。**第一次写文件前**必须检查:
+
+```bash
+git status --short
+git branch --show-current
+```
+
+判定:
+
+- 如果 `git status --short` 为空,且本次 bug fix 会写测试 / 代码 / 配置,先询问用户是否创建独立 worktree。
+- 当前分支是 `main` / `master` / `release/*` 时,默认推荐 worktree。
+- 可跳过询问的场景:用户已明确说当前目录改 / 当前已经在专用 worktree 或任务分支 / 纯单文件 typo。
+- 当前 working tree 已经 dirty 时,不要把本次 fix 混进已有改动;先说明已有改动,由用户决定继续当前目录 / 清理 / 另建基于 HEAD 的 worktree。
+
+推荐命令:
+
+```bash
+git worktree add -b codex/<bug-slug> ../<repo>-<bug-slug>
+```
+
+创建后在新 worktree 内确认 `git status --short` 为空,再写 failing test。
+
 ---
 
 ## Step 2 — Reproduce(失败测试入仓的硬门槛)

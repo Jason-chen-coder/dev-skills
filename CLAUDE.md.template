@@ -42,7 +42,7 @@
 **新功能路径**:
 - **复杂改动**(跨 ≥ 3 模块 / 涉及鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)**必须**先过 `dev-spec`(对齐需求)和 `dev-plan --deliberate`(获得 Critic 共识 + Pre-mortem + Expanded test plan),不得直接编码。
 - **常规改动**(单模块 / 中等复杂)建议先过 `dev-spec`,plan 可省略;不强制。
-- **一句话改动 / hotfix** 跳过 spec 和 plan,直接编码,但 commit 前**必须**过 `dev-commit-review`。
+- **一句话改动 / hotfix** 跳过 spec 和 plan,直接编码,但 commit 前**必须**过 `dev-code-review`。
 
 **Bug 路径**:
 - **生产事故 / 间歇性 / 跨系统 bug** **必须**走 `dev-fix --deep`(强制 3-5 hypothesis + 反向 call-stack 追溯 + tagged instrument + Pattern analysis + 完整 RCA)。
@@ -51,6 +51,19 @@
 
 **入口推荐器**:
 - 不知道走哪条路径 / 卡在某 phase / 失败恢复时,跑 `dev-workflow`(默认 / `--status` / `--next` / `--recover`),它**只指路不调起任何 skill**,用户仍自己执行。
+
+**Clean-tree worktree checkpoint**:
+- 第一次写文件前,如果 `git status --short` 为空,且任务预计会修改代码 / 多文件规则 / 配置 / 测试,先询问用户是否创建独立 worktree。不要在用户未确认时直接开始改。
+- 可跳过询问的场景:纯 typo / 单文件小文档 / 用户已明确说「直接在当前目录改」/ 当前已经在专用 worktree 或任务分支内。
+- 当前分支是 `main` / `master` / `release/*` 时,默认推荐创建 worktree;如果用户拒绝,至少提醒当前目录会被直接修改。
+- 当前 working tree 已经 dirty 时,不要为当前任务从脏目录直接建 worktree;先说明已有改动,避免混入用户改动,由用户决定继续当前目录 / 清理 / 另建基于 HEAD 的 worktree。
+
+**Worktree 创建规范**:
+- 分支命名跟随团队分支规则;AI 默认使用 `codex/<short-slug>`,例如 `codex/user-export`、`codex/fix-cart-overflow`。
+- worktree 目录放在当前仓库的兄弟目录,命名为 `<repo>-<short-slug>`,只用 lowercase kebab-case,不加空格。
+- 推荐命令:`git worktree add -b codex/<short-slug> ../<repo>-<short-slug>`。
+- 创建后在新 worktree 内确认 `git status --short` 为空,再开始写文件。
+- 合并或放弃后清理:`git worktree remove ../<repo>-<short-slug>`;若分支已废弃,再删除对应分支。
 
 **中间产物路径**(consumer 项目根的 `.claude/artifacts/` 下):
 - `designs/<feature>.md`(dev-spec)
@@ -65,7 +78,7 @@
 - 长期分支:仅 `main`、`release/*`(若有)。其他都是 short-lived。
 
 ### Commit
-- 单 commit 单一意图(参见 dev-commit-review 的 surgical 检查)。
+- 单 commit 单一意图(参见 dev-code-review 的 surgical 检查)。
 - 风格跟随仓库 `git log --oneline -20` 的样式;无明显风格时退回 conventional commits。
 - subject ≤ 72 chars,祈使语气,不加句号。
 
@@ -109,7 +122,7 @@
 ### 日志
 <!-- team:fill -->
 - 统一 logger:`<例如 pino / structlog / logger 项目 wrapper>`
-- 禁止 `console.log` / `print` / `fmt.Println` 进入主分支(dev-commit-review 会拦)。
+- 禁止 `console.log` / `print` / `fmt.Println` 进入主分支(dev-code-review 会拦)。
 - 日志级别约定:`<error/warn/info/debug 各自的判定标准>`
 
 ### 配置 / Feature flag

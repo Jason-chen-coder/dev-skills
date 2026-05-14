@@ -85,6 +85,13 @@ baseline 与本 skill 的关联点:
 2. <步骤> — `path/to/y.ts` 改 Y 行为
 ...
 
+### Workspace setup
+- 实施前运行 `git status --short` 和 `git branch --show-current`。
+- 如果 working tree 干净,且本 plan 会修改代码 / 多文件规则 / 配置 / 测试,先询问用户是否创建 worktree。
+- worktree 默认命名:`git worktree add -b codex/<short-slug> ../<repo>-<short-slug>`。
+- 如果当前分支是 `main` / `master` / `release/*`,默认推荐 worktree。
+- 如果 working tree 已经 dirty,先保护现有改动,不要把本 plan 的改动混进去。
+
 ### Open questions (留给后续)
 - ...
 ```
@@ -257,6 +264,13 @@ ADR 是最终决定的**单一入口**,后续 dev-code-review 评审时如果 di
 1. <步骤> — `path:line`
 2. ...
 
+## Workspace setup
+- Run `git status --short` and `git branch --show-current` before implementation.
+- If the tree is clean and this plan will modify code / multi-file rules / config / tests, ask whether to create a worktree before the first file write.
+- Recommended worktree command: `git worktree add -b codex/<short-slug> ../<repo>-<short-slug>`.
+- If the current branch is `main` / `master` / `release/*`, recommend the worktree path by default.
+- If the tree is already dirty, protect existing changes and do not mix this plan into them without user confirmation.
+
 ## Risks & mitigations
 | Risk | Mitigation |
 |---|---|
@@ -307,6 +321,7 @@ ADR 是最终决定的**单一入口**,后续 dev-code-review 评审时如果 di
 - **不要** 替用户决定 Out of scope 之外的事 —— ADR 里 Follow-ups 段是「应做未做」,不是「我替你决定下一步做什么」。
 - **不要** 写代码 —— 本 skill 只产 plan,代码由后续动作触发。
 - **不要** 自动调起其他 skill —— dev-skills 之间松耦合,plan 完成后用户自己决定下一步。
+- **不要** 省略 Workspace setup —— 任何会进入代码/配置/测试修改的 plan,都必须写明 clean-tree worktree checkpoint。
 
 ---
 
