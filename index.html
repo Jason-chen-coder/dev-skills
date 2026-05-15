@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dev-skills - AI 开发工作流 Skill 库</title>
+  <meta name="description" content="6 个 AI 开发 skill,串起需求对齐、实施方案、Bug 修复、提交前 review 和 commit message。">
+  <link rel="preload" href="./site/assets/logo.png" as="image">
+  <link rel="stylesheet" href="./site/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="dev-skills home">
+      <img src="./site/assets/logo.png" alt="" width="34" height="34">
+      <span>dev-skills</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="#skills">Skills</a>
+      <a href="#preview">Preview</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/Jason-chen-coder/dev-skills">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero section">
+      <div class="hero-copy">
+        <p class="eyebrow">AI development workflow skills</p>
+        <h1>从需求到提交,<br>每步可验证。</h1>
+        <p class="hero-text">dev-skills 为 Claude Code 和 Codex 提供一套工程流程 skill:需求对齐、实施方案、Bug 修复、提交前 review、commit message,每一步都有明确边界和验证标准。</p>
+        <div class="hero-actions" aria-label="Primary actions">
+          <a class="button primary" href="#install" aria-label="查看安装方式">Install</a>
+          <a class="button secondary" href="#preview" aria-label="查看 skill 运行预览">Preview</a>
+          <a class="button ghost" href="https://github.com/Jason-chen-coder/dev-skills" aria-label="打开 GitHub 仓库">GitHub</a>
+        </div>
+      </div>
+
+      <div class="hero-preview" aria-label="dev-skills workflow preview">
+        <div class="preview-strip">
+          <span>需求</span>
+          <span>spec</span>
+          <span>plan</span>
+          <span>code</span>
+          <span>review</span>
+          <span>commit</span>
+        </div>
+        <div class="hero-terminal">
+          <div class="terminal-bar">
+            <span></span><span></span><span></span>
+            <strong>codex cli</strong>
+          </div>
+          <pre><code>$ codex
+&gt; 用 dev-workflow 帮我串起来,下一步该做什么?
+
+━━━ Dev Workflow ━━━
+路径   : feature
+复杂度 : moderate
+下一步 : dev-spec --default user-export</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Skill library</p>
+        <h2>每个 skill 只做一件事。</h2>
+        <p>通过 `.claude/artifacts/` 松耦合衔接,不互相调用,让每一步都可审计、可恢复、可提交。</p>
+      </div>
+      <div class="skill-grid" aria-label="dev-skills list">
+        <article class="skill-card">
+          <span class="skill-kicker">入口推荐</span>
+          <h3>dev-workflow</h3>
+          <p>不知道下一步该跑哪个时,扫描 artifacts 并推荐下一条命令。</p>
+          <small>Artifact: none</small>
+        </article>
+        <article class="skill-card">
+          <span class="skill-kicker">需求对齐</span>
+          <h3>dev-spec</h3>
+          <p>先暴露歧义,再把模糊需求整理成 scope、风险和验收标准。</p>
+          <small>Artifact: designs/&lt;slug&gt;.md</small>
+        </article>
+        <article class="skill-card">
+          <span class="skill-kicker">实施方案</span>
+          <h3>dev-plan</h3>
+          <p>把 spec 转成 RALPLAN-DR 方案,包含选项、ADR 和 Critic 验证。</p>
+          <small>Artifact: plans/&lt;slug&gt;.md</small>
+        </article>
+        <article class="skill-card">
+          <span class="skill-kicker">Bug 修复</span>
+          <h3>dev-fix</h3>
+          <p>以 failing test 和 root cause 为核心,避免猜测式 symptom patch。</p>
+          <small>Artifact: fixes/&lt;slug&gt;.md</small>
+        </article>
+        <article class="skill-card">
+          <span class="skill-kicker">提交前 review</span>
+          <h3>dev-code-review</h3>
+          <p>按规范、功能、闭环、注释、废码 5 轴检查当前 diff。</p>
+          <small>Artifact: none</small>
+        </article>
+        <article class="skill-card">
+          <span class="skill-kicker">提交信息</span>
+          <h3>dev-commit-writer</h3>
+          <p>只在明确跳过 review 且只要 message 时,生成符合仓库风格的提交信息。</p>
+          <small>Artifact: none</small>
+        </article>
+      </div>
+    </section>
+
+    <section id="preview" class="section runtime-section">
+      <div class="section-heading">
+        <p class="eyebrow">Runtime preview</p>
+        <h2>像真实 Codex CLI 一样看 skill 怎么跑。</h2>
+        <p>切换 tab 查看用户输入和代表性输出。左侧输入会播放打字机效果;开启减少动效时直接显示完整文本。</p>
+      </div>
+
+      <div class="skill-tabs" role="tablist" aria-label="Skill runtime previews">
+        <button class="skill-tab is-active" type="button" data-skill="dev-workflow" role="tab" aria-selected="true">dev-workflow</button>
+        <button class="skill-tab" type="button" data-skill="dev-spec" role="tab" aria-selected="false">dev-spec</button>
+        <button class="skill-tab" type="button" data-skill="dev-plan" role="tab" aria-selected="false">dev-plan</button>
+        <button class="skill-tab" type="button" data-skill="dev-fix" role="tab" aria-selected="false">dev-fix</button>
+        <button class="skill-tab" type="button" data-skill="dev-code-review" role="tab" aria-selected="false">dev-code-review</button>
+        <button class="skill-tab" type="button" data-skill="dev-commit-writer" role="tab" aria-selected="false">dev-commit-writer</button>
+      </div>
+
+      <div class="runtime-grid">
+        <div class="terminal-panel" aria-label="Codex CLI input preview">
+          <div class="terminal-bar">
+            <span></span><span></span><span></span>
+            <strong>codex cli</strong>
+          </div>
+          <pre><code id="preview-input">$ codex
+&gt; 用 dev-workflow 帮我串起来,下一步该做什么?</code><span class="cursor" aria-hidden="true"></span></pre>
+        </div>
+        <div class="output-panel">
+          <div class="output-title" id="preview-title">Dev Workflow</div>
+          <pre><code id="preview-output">━━━ Dev Workflow ━━━
+路径   : feature
+复杂度 : moderate
+下一步
+  $ dev-spec --default user-export
+为什么:先把模糊需求拆成可验证 spec。</code><span class="cursor output-cursor" aria-hidden="true"></span></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow" class="section workflow-section">
+      <div class="section-heading">
+        <p class="eyebrow">Workflow</p>
+        <h2>两条主路径,最后都回到提交前 review。</h2>
+      </div>
+      <div class="workflow-grid">
+        <div class="workflow-path">
+          <h3>Feature path</h3>
+          <ol>
+            <li><strong>dev-spec</strong><span>模糊需求变成 spec</span></li>
+            <li><strong>dev-plan</strong><span>复杂改动先出实施方案</span></li>
+            <li><strong>code</strong><span>按 spec / plan 实现</span></li>
+            <li><strong>dev-code-review</strong><span>提交前 5 轴检查</span></li>
+            <li><strong>commit</strong><span>READY 后提交</span></li>
+          </ol>
+        </div>
+        <div class="workflow-path">
+          <h3>Bug path</h3>
+          <ol>
+            <li><strong>dev-fix</strong><span>复现、假设、定位 root cause</span></li>
+            <li><strong>code/fix</strong><span>只改根因路径</span></li>
+            <li><strong>verify</strong><span>red -> green -> red</span></li>
+            <li><strong>dev-code-review</strong><span>确认无回归和夹带改动</span></li>
+            <li><strong>commit</strong><span>记录修复上下文</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="workflow-diagram" aria-label="dev-skills 工作流图,展示 feature 和 bug 两条路径如何进入 review 和 commit">
+        <div class="workflow-map">
+          <svg class="workflow-lines" aria-hidden="true">
+            <defs>
+              <marker id="flow-arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M 1 1 L 11 6 L 1 11 z"></path>
+              </marker>
+              <marker id="feature-arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M 1 1 L 11 6 L 1 11 z"></path>
+              </marker>
+              <marker id="bug-arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M 1 1 L 11 6 L 1 11 z"></path>
+              </marker>
+            </defs>
+            <path class="flow-track direct-track" data-flow-track="start-workflow"></path>
+            <path class="flow-track direct-track" data-flow-track="workflow-decision"></path>
+            <path class="flow-track feature-track" data-flow-track="decision-spec"></path>
+            <path class="flow-track bug-track" data-flow-track="decision-fix"></path>
+            <path class="flow-track feature-track" data-flow-track="spec-plan"></path>
+            <path class="flow-track feature-track" data-flow-track="plan-build"></path>
+            <path class="flow-track feature-track" data-flow-track="build-review"></path>
+            <path class="flow-track bug-track" data-flow-track="fix-verify"></path>
+            <path class="flow-track bug-track" data-flow-track="verify-patch"></path>
+            <path class="flow-track bug-track" data-flow-track="patch-review"></path>
+            <path class="flow-track direct-track" data-flow-track="review-commit"></path>
+            <path class="flow-line direct-line" data-flow-line="start-workflow"></path>
+            <path class="flow-line direct-line" data-flow-line="workflow-decision"></path>
+            <path class="flow-line feature-line" data-flow-line="decision-spec"></path>
+            <path class="flow-line bug-line" data-flow-line="decision-fix"></path>
+            <path class="flow-line feature-line" data-flow-line="spec-plan"></path>
+            <path class="flow-line feature-line" data-flow-line="plan-build"></path>
+            <path class="flow-line feature-line" data-flow-line="build-review"></path>
+            <path class="flow-line bug-line" data-flow-line="fix-verify"></path>
+            <path class="flow-line bug-line" data-flow-line="verify-patch"></path>
+            <path class="flow-line bug-line" data-flow-line="patch-review"></path>
+            <path class="flow-line direct-line" data-flow-line="review-commit"></path>
+          </svg>
+
+          <div class="workflow-node start-node wide-node" data-node="start" style="--left: 50%; --top: 6%;">
+            <span class="workflow-icon" aria-hidden="true">in</span>
+            <div class="workflow-copy">
+              <small>Start</small>
+              <strong>用户需求</strong>
+              <span class="workflow-desc">功能 / Bug / 提交</span>
+              <span class="workflow-tag">进入工作流</span>
+            </div>
+          </div>
+          <div class="workflow-node route-node wide-node" data-node="workflow" style="--left: 50%; --top: 18%;">
+            <span class="workflow-icon" aria-hidden="true">0</span>
+            <div class="workflow-copy">
+              <small>Route</small>
+              <strong>dev-workflow</strong>
+              <span class="workflow-desc">入口推荐器</span>
+              <span class="workflow-tag">不知道下一步,先问它</span>
+            </div>
+          </div>
+          <div class="workflow-node decision-node wide-node" data-node="decision" style="--left: 50%; --top: 30%;">
+            <span class="workflow-icon" aria-hidden="true">?</span>
+            <div class="workflow-copy">
+              <small>Decision</small>
+              <strong>路径分流</strong>
+              <span class="workflow-desc">feature / bug</span>
+              <span class="workflow-tag">选择处理路径</span>
+            </div>
+          </div>
+          <div class="workflow-node spec-node" data-node="spec" style="--left: 27%; --top: 42.667%;">
+            <span class="workflow-icon" aria-hidden="true">1</span>
+            <div class="workflow-copy">
+              <small>Feature</small>
+              <strong>dev-spec</strong>
+              <span class="workflow-desc">模糊需求 → 结构化 spec</span>
+              <span class="workflow-tag">写代码前对齐需求</span>
+            </div>
+          </div>
+          <div class="workflow-node plan-node" data-node="plan" style="--left: 27%; --top: 55.333%;">
+            <span class="workflow-icon" aria-hidden="true">2</span>
+            <div class="workflow-copy">
+              <small>Plan</small>
+              <strong>dev-plan</strong>
+              <span class="workflow-desc">spec → Critic-approved plan</span>
+              <span class="workflow-tag">复杂功能,先出方案</span>
+            </div>
+          </div>
+          <div class="workflow-node build-node" data-node="build" style="--left: 27%; --top: 68%;">
+            <span class="workflow-icon" aria-hidden="true">&lt;/&gt;</span>
+            <div class="workflow-copy">
+              <small>Build</small>
+              <strong>code</strong>
+              <span class="workflow-desc">按 spec / plan 实现</span>
+              <span class="workflow-tag">写代码</span>
+            </div>
+          </div>
+          <div class="workflow-node fix-node" data-node="fix" style="--left: 73%; --top: 42.667%;">
+            <span class="workflow-icon" aria-hidden="true">3</span>
+            <div class="workflow-copy">
+              <small>Bug</small>
+              <strong>dev-fix</strong>
+              <span class="workflow-desc">Hypothesis-driven 调试</span>
+              <span class="workflow-tag">修 bug / 排查</span>
+            </div>
+          </div>
+          <div class="workflow-node verify-node" data-node="verify" style="--left: 73%; --top: 55.333%;">
+            <span class="workflow-icon" aria-hidden="true">T</span>
+            <div class="workflow-copy">
+              <small>Verify</small>
+              <strong>red → green</strong>
+              <span class="workflow-desc">复现、修复、反证</span>
+              <span class="workflow-tag">回归验证</span>
+            </div>
+          </div>
+          <div class="workflow-node patch-node" data-node="patch" style="--left: 73%; --top: 68%;">
+            <span class="workflow-icon" aria-hidden="true">&lt;/&gt;</span>
+            <div class="workflow-copy">
+              <small>Patch</small>
+              <strong>code/fix</strong>
+              <span class="workflow-desc">只改确认根因</span>
+              <span class="workflow-tag">最小修复</span>
+            </div>
+          </div>
+          <div class="workflow-node review-node wide-node" data-node="review" style="--left: 50%; --top: 82.667%;">
+            <span class="workflow-icon" aria-hidden="true">4</span>
+            <div class="workflow-copy">
+              <small>Review</small>
+              <strong>dev-code-review</strong>
+              <span class="workflow-desc">5 轴评审 + 自动 Refs 追溯</span>
+              <span class="workflow-tag">准备 commit</span>
+            </div>
+          </div>
+          <div class="workflow-node commit-node wide-node" data-node="commit" style="--left: 50%; --top: 95%;">
+            <span class="workflow-icon" aria-hidden="true">5</span>
+            <div class="workflow-copy">
+              <small>Ship</small>
+              <strong>git commit</strong>
+              <span class="workflow-desc">提交代码到仓库</span>
+              <span class="workflow-tag">记录变更</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="install" class="section install-section">
+      <div class="section-heading">
+        <p class="eyebrow">Install and upgrade</p>
+        <h2>Claude Code 和 Codex 分开安装。</h2>
+        <p>选择你的入口,复制对应命令。升级 skill 不会自动覆盖项目里的团队规则模板。</p>
+      </div>
+
+      <div class="install-tabs" role="tablist" aria-label="Install options">
+        <button class="install-tab is-active" type="button" data-install="claude" role="tab" aria-selected="true">Claude Code</button>
+        <button class="install-tab" type="button" data-install="codex" role="tab" aria-selected="false">Codex</button>
+        <button class="install-tab" type="button" data-install="npx" role="tab" aria-selected="false">npx skills</button>
+      </div>
+
+      <div class="install-panel" id="install-panel">
+        <div class="command-card">
+          <div class="command-header">
+            <h3 id="install-title">Claude Code</h3>
+            <button class="copy-button" type="button" data-copy-target="#install-command" aria-label="复制安装命令">Copy</button>
+          </div>
+          <pre><code id="install-command">/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills
+/plugin install dev-skills</code></pre>
+        </div>
+        <div class="install-notes" id="install-notes">
+          <p>升级: `/plugin update dev-skills`。团队规则模板复制 `CLAUDE.md.template` 到项目根 `CLAUDE.md`。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section faq-section">
+      <div class="section-heading">
+        <p class="eyebrow">FAQ</p>
+        <h2>常见问题。</h2>
+      </div>
+      <div class="faq-list">
+        <details open>
+          <summary>Claude Code 和 Codex 为什么安装方式不一样?</summary>
+          <p>Claude Code 使用 `.claude-plugin/` manifest;Codex 当前兼容方式是复制 `skills/*` 到 `$CODEX_HOME/skills`。</p>
+        </details>
+        <details>
+          <summary>升级会覆盖我的 `CLAUDE.md` 或 `AGENTS.md` 吗?</summary>
+          <p>不会。skill 升级只更新 skill 文件,团队规则模板需要人工对比后同步。</p>
+        </details>
+        <details>
+          <summary>什么时候用 `dev-workflow`?</summary>
+          <p>当你不知道下一步跑哪个 skill,或者需要从失败状态恢复时使用。它只建议,不调起其他 skill。</p>
+        </details>
+        <details>
+          <summary>准备 commit 时为什么默认走 `dev-code-review`?</summary>
+          <p>团队策略是 commit 前先 review。`dev-commit-writer` 只用于用户明确表示跳过 review 且只要 message 的场景。</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>dev-skills</span>
+    <a href="https://github.com/Jason-chen-coder/dev-skills">github.com/Jason-chen-coder/dev-skills</a>
+  </footer>
+
+  <script src="./site/app.js"></script>
+</body>
+</html>
