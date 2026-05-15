@@ -1,16 +1,16 @@
 <div align="center">
   <img src="images/logo.png" alt="dev-skills logo" width="340" height="340" />
   <p>
-    6 个 skill 覆盖团队 git 工作流 ·<br/>
-    <b>需求对齐 → 实施方案 → 缺陷修复 → 代码评审 → 提交信息</b>
+    9 个 skill 覆盖团队 git 工作流 ·<br/>
+    <b>需求对齐 → 实施方案 → TDD / 修复 → 验证 → 代码评审 → 分支收尾</b>
   </p>
 </div>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.7.1-blue" alt="version" />
+  <img src="https://img.shields.io/badge/version-0.8.0-blue" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
   <img src="https://img.shields.io/badge/CI-passing-brightgreen" alt="ci" />
-  <img src="https://img.shields.io/badge/skills-6-orange" alt="skills" />
+  <img src="https://img.shields.io/badge/skills-9-orange" alt="skills" />
 </p>
 
 <p align="center">
@@ -30,9 +30,12 @@
 | 🧭 | [`dev-workflow`](./skills/dev-workflow/) | 入口推荐器,不调起任何 skill | 不知道下一步 / 失败恢复 |
 | 📋 | [`dev-spec`](./skills/dev-spec/) | 模糊需求 → 结构化 spec | 写代码前对齐需求 |
 | 🏗 | [`dev-plan`](./skills/dev-plan/) | spec → Critic-approved 实施 plan | 复杂功能,写代码前 |
+| 🧪 | [`dev-tdd`](./skills/dev-tdd/) | 红绿重构编码循环 | 写生产代码前 |
 | 🐛 | [`dev-fix`](./skills/dev-fix/) | Hypothesis-driven 调试 + 修复 | 修 bug / 排查 |
+| ✅ | [`dev-verify`](./skills/dev-verify/) | 完成前证据门禁 | 声称完成 / ready 前 |
 | 🔍 | [`dev-code-review`](./skills/dev-code-review/) | 5 轴评审 + 自动 Refs 追溯 | 准备 commit |
 | ✏️ | [`dev-commit-writer`](./skills/dev-commit-writer/) | 跟随仓库风格生成 commit message | 改动已过审 |
+| 🚢 | [`dev-finish`](./skills/dev-finish/) | merge / PR / keep / discard 分支收尾 | 验证和 review 后 |
 
 <sub>每个 skill 只做一件事 · 通过 <code>.claude/artifacts/</code> 松耦合 · <b>不互相调用</b></sub>
 
@@ -43,7 +46,7 @@
 Claude Code 和 Codex 的安装方式**不一样**:
 
 - Claude Code 走本仓库的 `.claude-plugin/` manifest,用 `/plugin marketplace add` + `/plugin install`。
-- Codex 目前先把 `skills/*` 安装到 `$CODEX_HOME/skills`(默认 `~/.codex/skills`)。等本仓库补齐 `.codex-plugin/` 后,会再提供 Codex plugin 方式。
+- Codex plugin 发布形态已补齐在 `.codex-plugin/plugin.json`;正式上架前,仍可用下方兼容方式把 `skills/*` 安装到 `$CODEX_HOME/skills`。
 
 ### Claude Code
 
@@ -56,7 +59,7 @@ Claude Code 和 Codex 的安装方式**不一样**:
 
 ### Codex
 
-当前兼容方式是在 shell 里把 skill 目录复制到 Codex skills 目录:
+本仓库已包含 `.codex-plugin/plugin.json`,可用于 Codex plugin 打包 / 发布流程。正式上架前,本地兼容方式仍是在 shell 里把 skill 目录复制到 Codex skills 目录:
 
 ```bash
 git clone https://github.com/Jason-chen-coder/dev-skills.git
@@ -117,7 +120,7 @@ mv AGENTS.md.template AGENTS.md
 
 ### Codex
 
-当前 Codex 兼容方式是复制 `skills/*` 到 `$CODEX_HOME/skills`,所以升级时需要重新同步这 6 个 skill 目录:
+当前 Codex 兼容方式是复制 `skills/*` 到 `$CODEX_HOME/skills`,所以升级时需要重新同步全部 skill 目录:
 
 ```bash
 cd dev-skills
@@ -126,7 +129,7 @@ git pull --ff-only
 CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
 mkdir -p "$CODEX_SKILLS_DIR"
 
-for skill in dev-code-review dev-commit-writer dev-spec dev-plan dev-fix dev-workflow; do
+for skill in dev-workflow dev-spec dev-plan dev-tdd dev-fix dev-verify dev-code-review dev-commit-writer dev-finish; do
   rm -rf "$CODEX_SKILLS_DIR/$skill"
 done
 
@@ -164,30 +167,75 @@ npx skills add Jason-chen-coder/dev-skills --global --force     # 全局
 /dev-workflow                # 不知道下一步,先问它
 /dev-spec    新需求描述...    # 需求对齐 → 产出 spec
 /dev-plan    spec 路径        # spec → 实施 plan
+/dev-tdd                     # 写生产代码前走红绿重构
 /dev-fix     bug 现象...       # hypothesis-driven 修 bug
+/dev-verify                  # 声称完成 / ready 前跑证据门禁
 /dev-code-review              # 提交前 5 轴评审
 /dev-commit-writer            # 改动已过审,只要 commit message
+/dev-finish                   # 验证和 review 后做分支收尾
 ```
 
-<sub>典型链路:`dev-spec` →(可选)`dev-plan` → 写代码 → `dev-code-review` → `git commit`</sub>
+### 推荐链路
+
+| 路径 | 推荐链 |
+|---|---|
+| Feature / 增强 | `dev-spec` → 可选 `dev-plan` → `dev-tdd` → `dev-verify` → `dev-code-review` → `git commit` → `dev-finish` |
+| Bug / 事故 | `dev-fix` → `dev-verify` → `dev-code-review` → `git commit` → `dev-finish` |
+| 简单 hotfix | `dev-tdd` → `dev-verify` → `dev-code-review` → `git commit` |
+
+`dev-fix` 自己负责 failing regression test、root-cause fix 和 red→green→red 验证,所以 bug 路径**不要**再追加一轮 `dev-tdd`。
 
 ---
 
 ## 🗺 架构总览
 
-<p align="center">
-  <img src="images/架构图.png" alt="dev-skills 架构图" width="780" />
-</p>
+```mermaid
+flowchart LR
+  Baseline["references/dev-baseline.md<br/>四条行为基线"]
+  Team["CLAUDE.md.template<br/>团队 always-on 规则"]
+  Workflow["dev-workflow<br/>只指路,不调起"]
+
+  Baseline --> Team
+  Team --> Workflow
+  Workflow --> Spec["dev-spec"]
+  Workflow --> Plan["dev-plan"]
+  Workflow --> TDD["dev-tdd"]
+  Workflow --> Fix["dev-fix"]
+  Workflow --> Verify["dev-verify"]
+  Workflow --> Review["dev-code-review"]
+  Workflow --> Commit["dev-commit-writer"]
+  Workflow --> Finish["dev-finish"]
+```
 
 ---
 
 ## 🔄 工作流
 
-<p align="center">
-  <img src="images/流程图.png" alt="dev-skills 工作流程图" width="900" />
-</p>
+```mermaid
+flowchart TD
+  Start["用户请求"] --> Kind{"路径?"}
 
-> **松耦合保证**:`dev-workflow` 是**纯建议器**,绝不调起任何 skill。其他 5 个 skill 的「不互调」Hard rule 100% 有效。
+  Kind -->|Feature / 增强| Spec["dev-spec"]
+  Spec --> NeedPlan{"复杂 / 高风险?"}
+  NeedPlan -->|是| Plan["dev-plan --deliberate"]
+  NeedPlan -->|否| TDD["dev-tdd"]
+  Plan --> TDD
+
+  Kind -->|Bug / 事故| Fix["dev-fix"]
+  Fix --> Verify["dev-verify"]
+
+  Kind -->|简单 hotfix| TDD
+  TDD --> Verify
+
+  Verify --> Review["dev-code-review"]
+  Review --> Ready{"READY?"}
+  Ready -->|否| Rework["修复 review finding"]
+  Rework --> Verify
+  Ready -->|是| GitCommit["git commit"]
+  GitCommit --> Finish["dev-finish"]
+```
+
+> **松耦合保证**:`dev-workflow` 是**纯建议器**,绝不调起任何 skill。其他 8 个 skill 的「不互调」Hard rule 100% 有效。
 
 <details>
 <summary><b>📂 中间产物路径 + 自动 Refs 追溯</b></summary>
@@ -199,7 +247,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force     # 全局
 | `dev-spec` | `.claude/artifacts/designs/<feature>.md` |
 | `dev-plan` | `.claude/artifacts/plans/<feature>.md` |
 | `dev-fix` | `.claude/artifacts/fixes/<slug>.md` |
-| `dev-workflow` / `dev-code-review` / `dev-commit-writer` | 无 artifact,只输出到 chat |
+| `dev-workflow` / `dev-tdd` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish` | 无 artifact,只输出到 chat |
 
 `dev-commit-writer` 和 `dev-code-review`(READY 时)会扫 `.claude/artifacts/`,在 commit message footer 自动加 `Refs: <type>/<slug>`。后续可用 `git log --grep="Refs:"` 检索 commit ↔ artifact 关联。
 
@@ -214,7 +262,10 @@ npx skills add Jason-chen-coder/dev-skills --global --force     # 全局
 |---|---|
 | 复杂功能(鉴权 / 支付 / 数据迁移 / PII) | `dev-spec` + `dev-plan --deliberate` |
 | 间歇性 / 生产事故 / 跨系统 bug | `dev-fix --deep` |
-| 一句话 hotfix | 跳过 spec/plan,直接 `dev-code-review` |
+| feature / refactor / 直接 hotfix 写生产代码 | `dev-tdd` |
+| 声称完成 / ready | `dev-verify` |
+| 一句话 hotfix | 跳过 spec/plan,但仍走 `dev-tdd` → `dev-verify` → `dev-code-review` |
+| 分支收尾 | `dev-finish` |
 | 不知道该跑哪个 | `dev-workflow` |
 
 </details>

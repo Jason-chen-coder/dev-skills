@@ -8,8 +8,8 @@
 
 dev-skills 是团队的工程规范载体。它有两层:
 
-- **行为基线**(`references/dev-baseline.md` + `CLAUDE.md`):你写代码时**永远在背景**生效的规则。
-- **场景 skill**(`dev-workflow` / `dev-spec` / `dev-plan` / `dev-fix` / `dev-code-review` / `dev-commit-writer`):特定时机用 agent 跑的检查工具。
+- **行为基线**(`references/dev-baseline.md` + `CLAUDE.md` / `AGENTS.md`):你写代码时**永远在背景**生效的规则。
+- **场景 skill**(`dev-workflow` / `dev-spec` / `dev-plan` / `dev-tdd` / `dev-fix` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish`):特定时机用 Claude / Codex 跑的检查工具。
 
 不是替代你思考的工具,是**让你不用每次都重新想团队约定**的工具。
 
@@ -66,7 +66,7 @@ npx skills add Jason-chen-coder/dev-skills --global     # 全局
 
 ```bash
 ls .claude/skills/
-# 应看到 dev-workflow / dev-spec / dev-plan / dev-fix / dev-code-review / dev-commit-writer 六个目录
+# 应看到 dev-workflow / dev-spec / dev-plan / dev-tdd / dev-fix / dev-verify / dev-code-review / dev-commit-writer / dev-finish
 ```
 
 ### 其他 agent CLI(Cursor / Gemini CLI)
@@ -99,20 +99,23 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 ---
 
-## 六个 skill 怎么选
+## 九个 skill 怎么选
 
 | 我想… | 用哪个 |
 |---|---|
 | 我有个需求 / 不知道下一步该跑哪个 / 失败了想恢复 | `dev-workflow`(入口推荐器,只指路) |
 | 写代码前对模糊需求做对齐 | `dev-spec` |
 | 需求已对齐,要把 spec 转成 Critic-approved 的实施 plan(尤其复杂功能 / 高风险改动) | `dev-plan` |
+| 写生产代码前要走红绿重构 | `dev-tdd` |
 | 修 bug:复现 + 假设 + 反向追溯 + 修 root cause + defense-in-depth + regression test + pattern analysis | `dev-fix` |
+| 声称完成 / fixed / ready 前要证据门禁 | `dev-verify` |
 | 写完代码,commit 前要严格把关 | `dev-code-review` |
 | 改动很简单 / 已自审过,只想要个 commit message | `dev-commit-writer` |
+| 验证和 review 通过后要 merge / PR / keep / discard | `dev-finish` |
 
 `dev-code-review` 和 `dev-commit-writer` 是**二选一**,不要都跑。
 `dev-spec → dev-plan` 是松耦合衔接 —— spec 写完后用户决定要不要进 plan,简单功能可直接进编码,不强制。
-`dev-fix` 与 `dev-spec` 是**平行入口** —— 新需求走 dev-spec,bug 报告走 dev-fix。两条路径在「写代码」节点合流后共用 commit-review/writer。
+`dev-fix` 与 `dev-spec` 是**平行入口** —— 新需求走 dev-spec,bug 报告走 dev-fix。feature / hotfix / refactor 的直接编码路径用 `dev-tdd`;bug 路径由 `dev-fix` 内置 failing test + red→green→red,之后在 `dev-verify → dev-code-review` 合流。
 `dev-workflow` 是**可选入口推荐器**,不调起任何 skill,只读 `.claude/artifacts/` 推断当前 phase 并建议下一步。也支持 `--status` / `--next` / `--recover`。
 
 ---
@@ -165,7 +168,7 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 - 至少跑 3 次 `dev-code-review`,熟悉报告格式。
 - 至少跑 1 次 `dev-spec`,体验 Step 1 的歧义清单(很多人这一步会「啊原来我没想清楚」)。
-- 把 [`references/calibration-cases.md`](../references/calibration-cases.md) 的 14 个 case 自己跑一遍(dev-code-review × 6 / dev-spec × 2 / dev-plan × 2 / dev-fix × 2 / dev-workflow × 2),对照 canonical answer,**这是最快内化 baseline 的方式**。
+- 把 [`references/calibration-cases.md`](../references/calibration-cases.md) 的 case 自己跑一遍,对照 canonical answer,**这是最快内化 baseline 的方式**。
 
 ---
 

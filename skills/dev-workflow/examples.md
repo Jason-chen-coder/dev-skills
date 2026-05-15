@@ -7,7 +7,7 @@
 - 例 1:**默认模式 + complex feature**(用户 0 起步,需要完整链)
 - 例 2:**`--status` + 中途**(用户跑完 spec 来问位置)
 - 例 3:**`--next` + 极简**(用户只要下一句命令)
-- 例 4:**`--recover` + 失败**(dev-code-review 给 FIX P1,推荐回写代码 step)
+- 例 4:**`--recover` + 失败**(dev-code-review 给 FIX P1,推荐回 dev-tdd / 写代码 step)
 - 例 5:**unclear 路径**(列选项让用户选)
 
 ---
@@ -34,8 +34,10 @@ Slug   : user-export(自动推断,你可纠正)
 完整推荐链
   1. dev-spec --default user-export      把模糊需求拆成结构化 spec(带 AC)
   2. dev-plan --deliberate user-export   complex 需求强制走 deliberate(pre-mortem + expanded test plan)
-  3. 写代码                                你的编辑器 / agent
-  4. dev-code-review                    commit 前 5 轴评审
+  3. dev-tdd                              红绿重构写代码
+  4. dev-verify                           完成前证据门禁
+  5. dev-code-review                      commit 前 5 轴评审
+  6. dev-finish                           验证和 review 后的分支收尾
 
 当前位置
   Phase 0:尚未开始
@@ -65,7 +67,7 @@ Slug   : user-export(自动推断,你可纠正)
 - 扫 designs/:看到 `user-export.md`(spec 只看存在性,**不看 lifecycle status**)
 - 扫 plans/:无 `user-export.md`
 - 扫 fixes/:无
-- 推断:Phase 1(spec 已存在,可进 plan / 直接写代码)
+- 推断:Phase 1(spec 已存在,可进 plan / dev-tdd)
 
 **期望输出**:
 
@@ -74,7 +76,7 @@ Slug   : user-export(自动推断,你可纠正)
 Slug:user-export
 Phase 1:spec 已存在(.claude/artifacts/designs/user-export.md)
 已完成:dev-spec
-未完成:plan(可选,complex 推荐) / 写代码 / commit-review
+未完成:plan(可选,complex 推荐) / dev-tdd / dev-verify / dev-code-review / dev-finish
 ```
 
 **不要**输出「下一步该跑 dev-plan」 —— 那是 `--next` 的事。`--status` 只定位。
@@ -107,7 +109,7 @@ $ dev-plan --deliberate user-export
 
 - 失败 skill:dev-code-review
 - 失败信号:Verdict = FIX P1(2 处问题)
-- 路径决策:**不该 commit**,但也**不该回 dev-plan**(plan 没问题,代码漏了);回写代码 step
+- 路径决策:**不该 commit**,但也**不该回 dev-plan**(plan 没问题,代码漏了);回 dev-tdd / 写代码 step
 
 **期望输出**:
 
@@ -117,7 +119,7 @@ $ dev-plan --deliberate user-export
 失败信号   : Verdict = FIX P1(2 处:console.log 残留 / cart edge case 未处理)
 
 推荐恢复:
-  → 回写代码 step
+  → 回 dev-tdd / 写代码 step
   原因   :P1 是「应修」级别,不阻塞 commit 但建议处理。当前不该硬 commit。
   操作建议:
     1. 删除 console.log(参考 dev-code-review 的 Cleanup 段定位)
@@ -151,9 +153,9 @@ $ dev-plan --deliberate user-export
 你的需求路径不确定,请选一种:
 
   (a) 新功能 / 增强 inventory
-      → dev-spec(对齐你想加什么)→ ...
+      → dev-spec(对齐你想加什么)→ dev-tdd → dev-verify → dev-code-review → ...
   (b) 修 inventory 的某个 bug
-      → dev-fix(先复现)→ ...
+      → dev-fix(先复现 + regression test + root cause fix)→ dev-verify → dev-code-review → ...
   (c) 现有 inventory 代码我准备改 / 已改完想 review
       → 直接 dev-code-review(改完 commit 前)
   (d) 想了解 inventory 现状(不修改)

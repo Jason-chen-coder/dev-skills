@@ -42,12 +42,17 @@
 **新功能路径**:
 - **复杂改动**(跨 ≥ 3 模块 / 涉及鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)**必须**先过 `dev-spec`(对齐需求)和 `dev-plan --deliberate`(获得 Critic 共识 + Pre-mortem + Expanded test plan),不得直接编码。
 - **常规改动**(单模块 / 中等复杂)建议先过 `dev-spec`,plan 可省略;不强制。
-- **一句话改动 / hotfix** 跳过 spec 和 plan,直接编码,但 commit 前**必须**过 `dev-code-review`。
+- **一句话改动 / hotfix** 跳过 spec 和 plan,但行为改动仍建议走 `dev-tdd`,commit 前**必须**过 `dev-verify` + `dev-code-review`。
+
+**编码 / 完成门禁**:
+- 任何 feature / refactor / 直接编码 hotfix 在写生产代码前默认走 `dev-tdd`(red → green → refactor)。bug 报告走 `dev-fix`,它内置 failing regression test + red→green→red。纯文档 / 生成代码 / 纯配置可说明原因后跳过。
+- 任何「完成 / fixed / ready / 可以 commit」声明前必须走 `dev-verify` 或给出等价 fresh verification evidence。
+- 分支实现完成且验证、review 通过后,用 `dev-finish` 处理 merge / PR / keep / discard,不要临时口头决定收尾方式。
 
 **Bug 路径**:
 - **生产事故 / 间歇性 / 跨系统 bug** **必须**走 `dev-fix --deep`(强制 3-5 hypothesis + 反向 call-stack 追溯 + tagged instrument + Pattern analysis + 完整 RCA)。
 - **常规 bug**(中等复杂)走 `dev-fix --default`,简单 off-by-one 可走 `dev-fix --quick`。
-- 任何 bug 修复**必须**有 regression test,Verify 三步循环(red→green→red)不许跳。
+- 任何 bug 修复**必须**有 regression test,`dev-fix` 的 Verify 三步循环(red→green→red)不许跳。
 
 **入口推荐器**:
 - 不知道走哪条路径 / 卡在某 phase / 失败恢复时,跑 `dev-workflow`(默认 / `--status` / `--next` / `--recover`),它**只指路不调起任何 skill**,用户仍自己执行。
@@ -69,6 +74,7 @@
 - `designs/<feature>.md`(dev-spec)
 - `plans/<feature>.md`(dev-plan)
 - `fixes/<bug-slug>.md`(dev-fix)
+- `dev-tdd` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish` 不产 artifact,只输出到 chat
 - 可加进 `.gitignore` 也可 commit,看团队偏好。
 
 ### 分支

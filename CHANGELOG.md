@@ -24,6 +24,22 @@
 
 ---
 
+## [0.8.0] — 2026-05-15
+
+### Added
+- **新增执行闭环 skill**:
+  - `dev-tdd`:写生产代码前的 red → green → refactor 门禁。
+  - `dev-verify`:声称完成 / fixed / ready 前的 fresh verification evidence 门禁。
+  - `dev-finish`:验证和 review 后的 merge / PR / keep / discard 分支收尾流程。
+- **补齐 Codex plugin 发布形态**:`.codex-plugin/plugin.json` 现在声明 9 个 skill、Codex UI metadata、默认 prompt、logo 和 Coding 类别。
+- **新增仓库级验证脚本**:`scripts/validate-repo.sh` 统一检查 skill inventory、baseline 副本、Claude/Codex manifest JSON、README 技能数和 workflow 路由;CI 改为调用该脚本。
+
+### Changed
+- README、Claude plugin manifests、`CLAUDE.md.template`、`dev-workflow` 推荐链同步到 9 skill 流程。
+- `references/dev-baseline.md` 的同步副本清单从 6 处更新为 9 处。
+
+---
+
 ## [0.7.1] — 2026-05-07
 
 修一个 trigger 路由 bug:模糊的 commit 请求(「**帮我 commit**」「**commit 一下**」)会误派到 `dev-commit-writer` 跳过 review,违反团队约定「commit 前必须过 dev-code-review」(`CLAUDE.md.template` §2)。

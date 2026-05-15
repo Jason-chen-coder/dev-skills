@@ -1,11 +1,11 @@
 ---
 name: dev-workflow
-description: 'Use ONLY when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain or asks what the next dev-skills step is. Trigger on: 用 dev-workflow, 帮我串起来, 从需求到 commit, 完整跑, end to end, 走完整流程, 下一步该做什么, what''s next. Supports --status, --next, and --recover by reading `.claude/artifacts/{designs,plans,fixes}/` to detect phase and recommend the next step. Does not invoke other skills, write code, or produce artifacts.'
+description: Use ONLY when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain. Triggers on phrases like "用 dev-workflow / 帮我串起来 / 从需求到 commit / 完整跑 / end to end / 走完整流程 / 下一步该做什么 / what's next". Reads `.claude/artifacts/{designs,plans,fixes}/` to detect current phase (existence + terminal status only — no deep parsing) and recommends next step across dev-spec, dev-plan, dev-tdd, dev-fix, dev-verify, dev-code-review, dev-commit-writer, and dev-finish. Does NOT invoke other skills, write code, or produce artifacts. Optional arguments — `[slug]`; `--status [slug]`; `--next [slug]`; `--recover [slug]`.
 ---
 
 # Dev Workflow
 
-**指路,不替用户跑**。`dev-workflow` 是 dev-skills 5 个工作 skill 的**入口推荐器** —— 接需求 / 接「下一步该做什么」的问题,**只输出建议**,绝不调起其他 skill,绝不写代码,绝不产出 artifact。
+**指路,不替用户跑**。`dev-workflow` 是 dev-skills 工具链的**入口推荐器** —— 接需求 / 接「下一步该做什么」的问题,**只输出建议**,绝不调起其他 skill,绝不写代码,绝不产出 artifact。
 
 它服务的是「我有个需求,该怎么走完整流程」「我跑完 X 了,该跑什么」「X skill 给我返回 BLOCK / REJECT,我该回哪一步」这三类场景。
 
@@ -85,9 +85,9 @@ baseline 与本 skill 的关联:
 
 ```
 你的需求路径不确定,请选一种:
-  (a) 新功能 / 增强(走 dev-spec → 可选 dev-plan → 写代码 → dev-code-review)
-  (b) 修 bug(走 dev-fix → 写代码 → dev-code-review)
-  (c) Hotfix 紧急(跳过 spec/plan,只过 dev-code-review)
+  (a) 新功能 / 增强(走 dev-spec → 可选 dev-plan → dev-tdd → dev-verify → dev-code-review)
+  (b) 修 bug(走 dev-fix → dev-verify → dev-code-review)
+  (c) Hotfix 紧急(跳过 spec/plan,仍过 dev-tdd → dev-verify → dev-code-review)
   (d) 其他:你说
 ```
 
@@ -154,9 +154,9 @@ ls -la .claude/artifacts/fixes/     # dev-fix 产物
 |---|---|---|
 | `.claude/artifacts/designs/<slug>.md` | `STUCK` | spec 卡住(wave 上限仍 ambiguity 高),blocked,需外部信息(见 Open questions) |
 | `.claude/artifacts/designs/<slug>.md` | 其他(DRAFT/ALIGNED/IMPLEMENTED 任一) | spec 已存在,可进下一阶段 |
-| `.claude/artifacts/plans/<slug>.md` | `APPROVED` | plan 已通过,可写代码 |
+| `.claude/artifacts/plans/<slug>.md` | `APPROVED` | plan 已通过,可进 dev-tdd |
 | `.claude/artifacts/plans/<slug>.md` | `BELOW_CONSENSUS_THRESHOLD` | plan 未达共识,blocked,需用户决策 |
-| `.claude/artifacts/fixes/<slug>.md` | `FIXED` | 修复完,待 commit-review |
+| `.claude/artifacts/fixes/<slug>.md` | `FIXED` | 修复完,待 dev-verify / dev-code-review |
 | `.claude/artifacts/fixes/<slug>.md` | `BELOW_CONFIDENCE_THRESHOLD` | root cause 找不到,blocked |
 | `.claude/artifacts/fixes/<slug>.md` | `NEEDS_DESIGN_CHANGE` | 需架构改动,blocked,转 dev-plan |
 
@@ -168,11 +168,11 @@ ls -la .claude/artifacts/fixes/     # dev-fix 产物
 
 ```
 没找到任何 artifact                 → Phase 0 (尚未开始)
-designs/<slug>.md 存在 + 非 STUCK   → Phase 1 (spec 已存在,可进 plan / 直接写代码)
+designs/<slug>.md 存在 + 非 STUCK   → Phase 1 (spec 已存在,可进 plan / dev-tdd)
 designs/<slug>.md 存在 + STUCK      → Phase 1-blocked (spec 卡住,需外部信息,见 --recover)
-plans/<slug>.md 存在 + APPROVED     → Phase 2 (plan 已通过,待写代码)
+plans/<slug>.md 存在 + APPROVED     → Phase 2 (plan 已通过,待 dev-tdd)
 plans/<slug>.md 存在 + BELOW...     → Phase 2-blocked (plan 未达共识,见 --recover)
-fixes/<slug>.md 存在 + FIXED        → Phase 3 (修复完,待 commit-review)
+fixes/<slug>.md 存在 + FIXED        → Phase 3 (修复完,待 dev-verify / dev-code-review)
 fixes/<slug>.md 存在 + 其他 status   → Phase X-blocked (见 --recover)
 ```
 
@@ -221,9 +221,9 @@ Slug   : <feature-slug>(自动推断,你可以纠正)
 
 完整推荐链
   1. <skill> <模式参数>          (一句话该步做什么)
-  2. <skill> <模式参数>
-  3. 写代码                       (你的编辑器 / agent)
-  4. <skill> <模式参数>
+  2. <skill> <模式参数>          (按路径列出,没有就省略)
+  3. <skill> <模式参数>          (按路径列出,没有就省略)
+  ...
 
 当前位置
   Phase <N>:<一句话当前状态>
@@ -243,14 +243,17 @@ Slug   : <feature-slug>(自动推断,你可以纠正)
 
 | 路径 \ 复杂度 | simple | moderate | complex |
 |---|---|---|---|
-| **feature** | dev-spec --quick → 写代码 → dev-code-review | dev-spec --default → 写代码 → dev-code-review | dev-spec --default → **dev-plan --deliberate** → 写代码 → dev-code-review |
-| **bug** | dev-fix --quick → 写代码 → dev-code-review(或 dev-commit-writer) | dev-fix --default → 写代码 → dev-code-review | **dev-fix --deep** → 写代码 → dev-code-review |
-| **hotfix** | 跳过 spec/plan,直接写代码 → dev-code-review | n/a — 升 feature/bug moderate | n/a — complex 不允许 hotfix,升 feature/bug complex |
+| **feature** | dev-spec --quick → dev-tdd → dev-verify → dev-code-review → dev-finish | dev-spec --default → dev-tdd → dev-verify → dev-code-review → dev-finish | dev-spec --default → **dev-plan --deliberate** → dev-tdd → dev-verify → dev-code-review → dev-finish |
+| **bug** | dev-fix --quick → dev-verify → dev-code-review → dev-finish | dev-fix --default → dev-verify → dev-code-review → dev-finish | **dev-fix --deep** → dev-verify → dev-code-review → dev-finish |
+| **hotfix** | 跳过 spec/plan,但仍走 dev-tdd → dev-verify → dev-code-review → dev-finish | n/a — 升 feature/bug moderate | n/a — complex 不允许 hotfix,升 feature/bug complex |
 
 **关键规则**:
 
 - complex feature **强烈建议 dev-plan --deliberate**(自带 pre-mortem + expanded test plan)
 - complex bug **强烈建议 dev-fix --deep**(强制 3-5 hypothesis + 反向追溯 + instrument)
+- feature / hotfix / refactor 等直接编码路径默认推荐 `dev-tdd`;bug 路径由 `dev-fix` 内置 failing test + red→green→red 验证,不要再追加第二套 `dev-tdd`。
+- 任何完成声明前默认推荐 `dev-verify`,避免把局部测试通过包装成完整 ready。
+- `dev-finish` 只在验证和 review 后用于 merge / PR / keep / discard,不是 coding step。
 - hotfix 只允许 simple,如果用户标 hotfix 但实际是 moderate/complex,**警告并建议升级路径**(具体话术见下)
 
 ### Hotfix 升级警告(用户标 hotfix 但实际不是 simple)
@@ -261,11 +264,11 @@ Slug   : <feature-slug>(自动推断,你可以纠正)
 你标了 hotfix,但 symptoms 含 [具体信号:跨服务 / 鉴权 / 数据迁移 / ...],
 实际是 [moderate/complex]。
 
-Hotfix 路径会跳过 dev-spec / dev-plan,**很可能让 dev-code-review 抓出 P0 阻塞**
+Hotfix 路径会跳过 dev-spec / dev-plan,但不能跳过 dev-tdd / dev-verify / dev-code-review。否则**很可能让 dev-code-review 抓出 P0 阻塞**
 (常见 P0:闭环失败 / 边界没考虑 / 跨模块未对齐),反而比走完整路径更慢。
 
 建议改走:
-  → [feature/bug] [moderate/complex] 路径(完整 spec + plan + review)
+  → [feature/bug] [moderate/complex] 路径(完整 spec + plan + tdd + verify + review)
   → 完整推荐链:[列具体 skill 序列]
 
 如果你坚持 hotfix(承担 review 阶段被 BLOCK 的风险),回复「继续 hotfix」。
@@ -311,7 +314,7 @@ $ <skill> <args>
 
 ```
 要给你恢复建议,我需要两条信息:
-  1. 你刚跑了哪个 skill?(dev-spec / dev-plan / dev-fix / dev-code-review / dev-commit-writer)
+  1. 你刚跑了哪个 skill?(dev-spec / dev-plan / dev-tdd / dev-fix / dev-verify / dev-code-review / dev-commit-writer / dev-finish)
   2. 它的输出关键信号是什么?(贴 Verdict / Status / 错误摘要那一行就行)
 
 例如:「dev-code-review 给我 Verdict = ⚠ FIX P1,有 2 处 console.log 残留」
@@ -334,9 +337,15 @@ $ <skill> <args>
 | dev-fix | deep 模式 3 高置信 hypothesis 全 fail / 3 fix attempt fail | 升 `dev-plan --deliberate` 评估架构改动,plan 通过后回 dev-fix Step 6 |
 | dev-fix | NEEDS_DESIGN_CHANGE | 同上,转 `dev-plan --deliberate` |
 | dev-fix | Verify 7b stash 后仍 GREEN(test 没真测到 bug) | 回 dev-fix Step 2,重写 test 用更精确断言 |
+| dev-tdd | RED 阶段测试直接 PASS | 回 dev-tdd Step 3,重写测试直到能证明行为缺失 |
+| dev-tdd | GREEN 后相关测试失败 | 回写代码 step,修实现而不是削弱测试 |
+| dev-verify | 验证命令 FAIL | 回写代码 / dev-fix,不允许进入 dev-code-review 或 dev-finish |
+| dev-verify | claim 无 proof command | 补 proof command 或把该 claim 标为未验证 |
 | dev-code-review | Verdict = BLOCK(P0 / secret 泄漏 / 闭环失败) | 回写代码 step 修 P0,**不允许 commit** |
 | dev-code-review | Verdict = FIX P1 | 回写代码 step 处理 P1,或在 PR 描述里**显式覆盖 + 解释**(参见 CLAUDE.md.template) |
 | dev-commit-writer | 输出多候选(意图歧义) | 回写代码 step 拆 commit;或者用户选定一个候选继续 |
+| dev-finish | tests / review 未通过 | 回 dev-verify / dev-code-review,不展示 merge / PR 选项 |
+| dev-finish | discard 未精确确认 | 停止,等待用户输入精确 `discard` |
 
 输出形式:
 

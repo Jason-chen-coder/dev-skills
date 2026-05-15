@@ -1,0 +1,46 @@
+{
+  "name": "dev-skills",
+  "version": "0.8.0",
+  "description": "A team development workflow skill suite for Codex: dev-workflow, dev-spec, dev-plan, dev-tdd, dev-fix, dev-verify, dev-code-review, dev-commit-writer, and dev-finish.",
+  "author": {
+    "name": "Jason-chen-coder",
+    "url": "https://github.com/Jason-chen-coder"
+  },
+  "homepage": "https://github.com/Jason-chen-coder/dev-skills",
+  "repository": "https://github.com/Jason-chen-coder/dev-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "workflow",
+    "spec",
+    "planning",
+    "tdd",
+    "debugging",
+    "verification",
+    "code-review",
+    "git"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Dev Skills",
+    "shortDescription": "Team workflow skills for specs, plans, TDD, debugging, review, and branch finish.",
+    "longDescription": "Use Dev Skills to guide agent work through requirement alignment, implementation planning, test-first execution, root-cause debugging, completion verification, pre-commit review, commit messages, and branch finishing.",
+    "developerName": "Jason-chen-coder",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use dev-workflow to guide this feature from idea to reviewed commit.",
+      "Run the dev-skills path for this bug fix."
+    ],
+    "websiteURL": "https://github.com/Jason-chen-coder/dev-skills",
+    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+    "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+    "brandColor": "#2563EB",
+    "logo": "./images/logo.png",
+    "screenshots": []
+  }
+}
