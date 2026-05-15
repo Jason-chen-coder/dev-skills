@@ -13,6 +13,14 @@
   <img src="https://img.shields.io/badge/skills-6-orange" alt="skills" />
 </p>
 
+<p align="center">
+  <a href="https://jason-chen-coder.github.io/dev-skills/">Website</a>
+  ·
+  <a href="./docs/onboarding.md">Onboarding</a>
+  ·
+  <a href="./skills/dev-workflow/">Start with dev-workflow</a>
+</p>
+
 ---
 
 ## Skills
