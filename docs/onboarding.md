@@ -9,7 +9,7 @@
 dev-skills 是团队的工程规范载体。它有两层:
 
 - **行为基线**(`references/dev-baseline.md` + `CLAUDE.md`):你写代码时**永远在背景**生效的规则。
-- **场景 skill**(`dev-code-review` / `dev-commit-writer` / `dev-spec`):特定时机用 Claude 跑的检查工具。
+- **场景 skill**(`dev-workflow` / `dev-spec` / `dev-plan` / `dev-fix` / `dev-code-review` / `dev-commit-writer`):特定时机用 agent 跑的检查工具。
 
 不是替代你思考的工具,是**让你不用每次都重新想团队约定**的工具。
 
@@ -19,16 +19,11 @@ dev-skills 是团队的工程规范载体。它有两层:
 
 ### Claude Code 用户
 
+在 Claude Code 里逐行执行:
+
 ```bash
-# 项目级全量安装(推荐 — 进版本控制,团队共享)
-npx skills add Jason-chen-coder/dev-skills
-
-# 或全局安装(个人偏好,所有项目都生效)
-npx skills add Jason-chen-coder/dev-skills --global
-
-# 验证
-ls .claude/skills/    # 项目级
-# 应看到 dev-code-review / dev-commit-writer / dev-spec / dev-plan 四个目录
+/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills
+/plugin install dev-skills
 ```
 
 如果团队 fork 到了别的 owner,把 `Jason-chen-coder` 替换成实际 owner。
@@ -36,11 +31,45 @@ ls .claude/skills/    # 项目级
 **别忘了 CLAUDE.md** —— skill 不会自动把团队级 always-on 文件复制到你项目根。第一次装完跑一次:
 
 ```bash
-curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/main/CLAUDE.md.template
+curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/master/CLAUDE.md.template
 mv CLAUDE.md.template CLAUDE.md   # 重命名后按 <!-- team:fill --> 填团队约定
 ```
 
-### 其他 agent CLI(Cursor / Codex / Gemini CLI)
+### Codex 用户
+
+当前 Codex 兼容方式是复制 `skills/*` 到 `$CODEX_HOME/skills`:
+
+```bash
+git clone https://github.com/Jason-chen-coder/dev-skills.git
+cd dev-skills
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
+```
+
+如果需要团队级 always-on 规则,复制 Codex 模板到项目根:
+
+```bash
+curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/master/AGENTS.md.template
+mv AGENTS.md.template AGENTS.md   # 重命名后按 <!-- team:fill --> 填团队约定
+```
+
+### npx skills 用户
+
+跨 agent CLI 安装方式:
+
+```bash
+npx skills add Jason-chen-coder/dev-skills              # 项目级
+npx skills add Jason-chen-coder/dev-skills --global     # 全局
+```
+
+验证项目级安装:
+
+```bash
+ls .claude/skills/
+# 应看到 dev-workflow / dev-spec / dev-plan / dev-fix / dev-code-review / dev-commit-writer 六个目录
+```
+
+### 其他 agent CLI(Cursor / Gemini CLI)
 
 skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 system prompt 或 rules 区。具体路径问 leader。
 
@@ -51,7 +80,7 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 跑通一遍最常用的 `dev-code-review`:
 
 1. 在任何项目里**故意做一个改动**(比如新增一个函数)。
-2. 别 commit,先在 Claude Code 里说:
+2. 别 commit,先在 Claude Code / Codex 里说:
 
    > 准备 commit,review 一下
 

@@ -1,6 +1,6 @@
 ---
 name: dev-commit-writer
-description: Use ONLY when the user EXPLICITLY asks for ONLY a commit message and EXPLICITLY skips review. Triggers on phrases like "帮我写 commit message / 给个 commit message / 生成 commit message / write a commit message / 这次 commit message 怎么写 / skip review just give me the message / 跳过 review 只要 message / 我自审过了只要 message / only message no review". **AMBIGUOUS phrases like "帮我 commit / commit 一下 / I want to commit" do NOT trigger this skill — they go to `dev-code-review` (safer default, since team policy requires review before commit per CLAUDE.md.template §2)**. This skill exists for the explicit-skip case only (small change already self-reviewed, hotfix where user accepts review-skip risk). Reads the current git working tree (or staged subset) and produces a commit message in the style of the branch's existing commit history. Does NOT review code quality — that is dev-code-review's job. Does NOT mutate the working tree. Optional arguments — `--staged` for staged-only; `--path=<glob>` for scope filter.
+description: 'Use only when the user explicitly asks for a commit message without review. Trigger on: 帮我写 commit message, 给个 commit message, 生成 commit message, 这次 commit message 怎么写, write a commit message, skip review, 跳过 review, 我自审过了, only message, 只要 message. Writes a message from the current git diff in repository style. Does not review code quality or mutate the working tree; ambiguous commit requests like 帮我 commit route to dev-code-review.'
 ---
 
 # Dev Commit Writer
@@ -10,6 +10,29 @@ Generate a commit message for the current git working tree, in the style of the 
 This skill **only writes the message**, it does not evaluate code quality. If the user wants a quality check, route them to `dev-code-review` instead.
 
 ---
+
+## Trigger routing
+
+Use this skill only when the user explicitly asks for only a commit message and explicitly skips review.
+
+Trigger phrases include:
+
+- `帮我写 commit message`
+- `给个 commit message`
+- `生成 commit message`
+- `write a commit message`
+- `这次 commit message 怎么写`
+- `skip review just give me the message`
+- `跳过 review 只要 message`
+- `我自审过了只要 message`
+- `only message no review`
+
+Ambiguous phrases such as `帮我 commit`, `commit 一下`, or `I want to commit` do **not** trigger this skill. Route them to `dev-code-review`, because team policy requires review before commit.
+
+Optional arguments:
+
+- `--staged`: use staged changes only
+- `--path=<glob>`: limit scope to a path glob
 
 ## Step 0 — Load baseline
 

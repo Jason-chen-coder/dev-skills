@@ -1,6 +1,6 @@
 ---
 name: dev-workflow
-description: Use ONLY when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain. Triggers on phrases like "用 dev-workflow / 帮我串起来 / 从需求到 commit / 完整跑 / end to end / 走完整流程 / 下一步该做什么 / what's next". Reads `.claude/artifacts/{designs,plans,fixes}/` to detect current phase (existence + terminal status only — no deep parsing) and recommends next step (skill + mode + arguments). Does NOT invoke other skills; the user runs each skill themselves. Does NOT write code. Does NOT produce artifacts itself. Does NOT trigger when the user asks for a specific skill directly (e.g., "帮我设计 / 修个 bug / commit review" — those go to the corresponding skill). Optional arguments — `[slug]` to specify which feature/bug (required when multiple in-flight); `--status [slug]` to only detect current phase; `--next [slug]` to output only the next command (terse); `--recover [slug]` for post-failure recovery guidance.
+description: 'Use ONLY when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain or asks what the next dev-skills step is. Trigger on: 用 dev-workflow, 帮我串起来, 从需求到 commit, 完整跑, end to end, 走完整流程, 下一步该做什么, what''s next. Supports --status, --next, and --recover by reading `.claude/artifacts/{designs,plans,fixes}/` to detect phase and recommend the next step. Does not invoke other skills, write code, or produce artifacts.'
 ---
 
 # Dev Workflow
@@ -8,6 +8,32 @@ description: Use ONLY when the user explicitly wants end-to-end guided workflow 
 **指路,不替用户跑**。`dev-workflow` 是 dev-skills 5 个工作 skill 的**入口推荐器** —— 接需求 / 接「下一步该做什么」的问题,**只输出建议**,绝不调起其他 skill,绝不写代码,绝不产出 artifact。
 
 它服务的是「我有个需求,该怎么走完整流程」「我跑完 X 了,该跑什么」「X skill 给我返回 BLOCK / REJECT,我该回哪一步」这三类场景。
+
+---
+
+## Trigger routing
+
+Use this skill only when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain.
+
+Trigger phrases include:
+
+- `用 dev-workflow`
+- `帮我串起来`
+- `从需求到 commit`
+- `完整跑`
+- `end to end`
+- `走完整流程`
+- `下一步该做什么`
+- `what's next`
+
+Do not trigger this skill when the user asks for a specific skill directly, such as `帮我设计`, `修个 bug`, or `commit review`; route those to the corresponding skill.
+
+Optional arguments:
+
+- `[slug]`: specify which feature or bug when multiple items are in flight
+- `--status [slug]`: detect only the current phase
+- `--next [slug]`: output only the next command
+- `--recover [slug]`: recover after a failed or blocked skill result
 
 ---
 

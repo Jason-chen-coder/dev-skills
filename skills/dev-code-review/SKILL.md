@@ -1,6 +1,6 @@
 ---
 name: dev-code-review
-description: Use when the user is preparing to commit code or asks to review the current git working tree before committing — INCLUDING ambiguous requests like "帮我 commit" / "commit 一下" which mean "go through the full commit flow (review + message)". Triggers on phrases like "帮我 commit / 我要 commit / commit 一下 / commit 这个改动 / 准备 commit / 准备提交 / pre-commit / 提交前检查 / 这次改动 review 一下 / 看下这次修改 / commit 前看一下 / I want to commit / let's commit / check before commit / review my changes". Reviews uncommitted changes along 5 axes (规范/功能/闭环/注释/废码), flags issues by severity, and only emits a commit message when verdict is ready. Does NOT mutate the working tree. **This is the safer DEFAULT path for any commit request**, because it enforces team policy "commit 前必须过 review" (CLAUDE.md.template §2). Only route to `dev-commit-writer` instead when user EXPLICITLY says "skip review / 跳过 review / 我自审过了 / only message / 只要 message". For other stages — `dev-spec` for fuzzy requirements; `dev-plan` for spec → plan; `dev-fix` for bug investigation. Optional arguments — `--staged` to limit to staged changes only; `--path=<glob>` to limit scope.
+description: 'Use when reviewing uncommitted or staged git changes before commit. Trigger on: 帮我 commit, 我要 commit, commit 一下, 准备提交, pre-commit, 提交前检查, 看下这次修改, commit 前看一下, I want to commit, let''s commit, review my changes. Checks conventions, functionality, wiring, comments, and dead code; emits a commit message only when READY. Does not mutate the working tree. Route to dev-commit-writer only when the user explicitly asks to skip review or wants only a commit message.'
 ---
 
 # Dev Code Review
@@ -11,6 +11,43 @@ Goal: catch 规范、功能、闭环、注释、废代码 problems **before** th
 This is NOT a full architecture review. Stay scoped to what actually changed in this diff.
 
 ---
+
+## Trigger routing
+
+Use this skill when the user is preparing to commit code or asks to review the current git working tree before committing.
+
+Trigger phrases include:
+
+- `帮我 commit`
+- `我要 commit`
+- `commit 一下`
+- `commit 这个改动`
+- `准备 commit`
+- `准备提交`
+- `pre-commit`
+- `提交前检查`
+- `这次改动 review 一下`
+- `看下这次修改`
+- `commit 前看一下`
+- `I want to commit`
+- `let's commit`
+- `check before commit`
+- `review my changes`
+
+Ambiguous commit requests such as `帮我 commit` / `commit 一下` mean "go through the full commit flow: review first, commit message only if ready". This is the safer default path because team policy requires review before commit.
+
+Only route to `dev-commit-writer` when the user explicitly says `skip review`, `跳过 review`, `我自审过了`, `only message`, or `只要 message`.
+
+For other workflow stages, route to the matching skill:
+
+- Fuzzy requirements before code → `dev-spec`
+- Spec to implementation plan → `dev-plan`
+- Bug investigation / root cause fix → `dev-fix`
+
+Optional arguments:
+
+- `--staged`: limit to staged changes only
+- `--path=<glob>`: limit scope to a path glob
 
 ## Step 0 — Load baseline
 
