@@ -57,7 +57,7 @@ mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-Codex 用户如果需要团队级 always-on 规则,当前可先参考 `CLAUDE.md.template` 手动整理到项目根的 `AGENTS.md`;正式的 `AGENTS.md.template` 会在 Codex 兼容迁移中补齐。
+Codex 用户如果需要团队级 always-on 规则,可以复制 `AGENTS.md.template` 到项目根的 `AGENTS.md`。
 
 ### npx skills
 
@@ -73,11 +73,78 @@ npx skills add Jason-chen-coder/dev-skills --global     # 全局
 Claude Code 用户别忘了手动复制团队约定模板到项目根:
 
 ```bash
-curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/main/CLAUDE.md.template
+curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/master/CLAUDE.md.template
 mv CLAUDE.md.template CLAUDE.md
 ```
 
+Codex 用户复制 Codex 团队规则模板:
+
+```bash
+curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/master/AGENTS.md.template
+mv AGENTS.md.template AGENTS.md
+```
+
 <sub>完整安装 / 兜底方案 / 升级路径 → <a href="./docs/onboarding.md">docs/onboarding.md</a></sub>
+
+---
+
+## 🔄 升级
+
+升级方式取决于你当初怎么安装。
+
+### Claude Code
+
+在 Claude Code 里执行:
+
+```bash
+/plugin update dev-skills
+```
+
+如果 update 后没有生效,用卸载重装兜底:
+
+```bash
+/plugin uninstall dev-skills
+/plugin install dev-skills
+```
+
+### Codex
+
+当前 Codex 兼容方式是复制 `skills/*` 到 `$CODEX_HOME/skills`,所以升级时需要重新同步这 6 个 skill 目录:
+
+```bash
+cd dev-skills
+git pull --ff-only
+
+CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
+mkdir -p "$CODEX_SKILLS_DIR"
+
+for skill in dev-code-review dev-commit-writer dev-spec dev-plan dev-fix dev-workflow; do
+  rm -rf "$CODEX_SKILLS_DIR/$skill"
+done
+
+cp -R skills/* "$CODEX_SKILLS_DIR/"
+```
+
+如果本地没有保留 `dev-skills` clone,重新跑一遍 Codex 安装步骤即可。
+
+### npx skills
+
+如果使用 `npx skills` 安装,优先使用 update:
+
+```bash
+npx skills update
+```
+
+如果你的 `npx skills` 版本没有 update,或遇到目录结构迁移 / skill 重命名,用 force 重新安装:
+
+```bash
+npx skills add Jason-chen-coder/dev-skills --force              # 项目级
+npx skills add Jason-chen-coder/dev-skills --global --force     # 全局
+```
+
+### 模板同步
+
+升级 skill **不会自动覆盖**你项目里的 `CLAUDE.md` / `AGENTS.md`。如果本仓库的 `CLAUDE.md.template` 或 `AGENTS.md.template` 有更新,需要人工对比后把需要的规则同步到项目根对应文件。
 
 ---
 

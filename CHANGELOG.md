@@ -15,6 +15,11 @@
 - **Clean-tree worktree checkpoint**:在 `CLAUDE.md.template` / `AGENTS.md.template` / `dev-workflow` / `dev-plan` / `dev-fix` 中加入编码前 worktree 检查与创建规范。AI 在 clean tree 且即将进行非平凡代码/多文件改动前,应先询问是否创建独立 worktree;默认分支命名 `codex/<short-slug>`,目录命名 `<repo>-<short-slug>`。
 - **`AGENTS.md.template`**:新增 Codex 面向的团队 always-on 规则模板,与 `CLAUDE.md.template` 保持核心 workflow 护栏一致。
 
+### Fixed
+- **Codex skill metadata 加载兼容性**:缩短并重写全部 6 个 dev skill 的 `SKILL.md` frontmatter `description`,在 Codex 1024 字符限制内保留关键中英文触发词;将完整触发词、路由规则和参数说明移入正文 `Trigger routing` 段。
+- **Codex 安装 / 升级文档**:补充 Codex 的 `AGENTS.md.template` 同步步骤,同步 `docs/onboarding.md` 的 Claude Code / Codex / `npx skills` 安装分流,并将模板下载 URL 修正为当前远端默认分支 `master`。
+- **CI metadata 防回归**:GitHub Actions 新增 Codex skill metadata 校验,检查 frontmatter YAML、仅允许 `name` / `description`、`description <= 1024`、以及每个 skill 都有 `Trigger routing` 段。
+
 ---
 
 ## [0.7.1] — 2026-05-07

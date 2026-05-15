@@ -1,6 +1,6 @@
 ---
 name: dev-spec
-description: Use when the user has a fuzzy or under-specified request and wants to align on what to build before writing any code. Triggers on phrases like "帮我设计 / 写个方案 / 这个需求要怎么做 / spec 一下 / 设计文档 / design this / scope this out". Surfaces ambiguities first, then produces a structured spec with scope, solution sketch, edge cases, risks, and verifiable acceptance criteria. Output goes to `.claude/artifacts/designs/<feature>.md`. Does NOT write code. Does NOT make autonomous decisions on ambiguous points — always asks. Optional arguments — `--quick` for single-round ambiguity list, `--deep` for multi-wave interview with challenge modes; default is mid-depth wave loop.
+description: 'Use when the user has a fuzzy or under-specified feature request and wants to align on what to build before coding. Trigger on: 帮我设计, 写个方案, 这个需求要怎么做, spec 一下, 设计文档, design this, scope this out. Surfaces ambiguities first, asks before choosing among interpretations, and produces a structured spec with scope, solution sketch, risks, and verifiable acceptance criteria. Does not write code, plan implementation, fix bugs, or review commits.'
 ---
 
 # Dev Spec
@@ -10,6 +10,28 @@ Convert a fuzzy request into a structured design document **before any code is w
 This skill **must surface ambiguities first** and let the user resolve them, then produce the spec. It does not write code, and it does not silently pick interpretations.
 
 ---
+
+## Trigger routing
+
+Use this skill when the user has a fuzzy or under-specified request and wants to align on what to build before writing code.
+
+Trigger phrases include:
+
+- `帮我设计`
+- `写个方案`
+- `这个需求要怎么做`
+- `spec 一下`
+- `设计文档`
+- `design this`
+- `scope this out`
+
+Output goes to `.claude/artifacts/designs/<feature>.md`.
+
+Optional arguments:
+
+- `--quick`: single-round ambiguity list
+- `--deep`: multi-wave interview with challenge modes
+- default: mid-depth wave loop
 
 ## Step 0 — Load baseline
 

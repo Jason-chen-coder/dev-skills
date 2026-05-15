@@ -1,6 +1,6 @@
 ---
 name: dev-plan
-description: Use when a spec or scoped requirement exists and the user wants a concrete implementation plan with cross-perspective validation BEFORE writing code. Triggers on phrases like "出个 plan / 做个实施方案 / 怎么做这件事 / 给我个方案 / plan this / make a plan / consensus plan / ralplan". Produces a plan with RALPLAN-DR structure (principles, drivers, ≥2 viable options, ADR) via an in-context Planner → Architect → Critic loop. Does NOT gather requirements (that's dev-spec) and does NOT review code (that's dev-code-review). Output goes to `.claude/artifacts/plans/<feature>.md`. Optional arguments — `--quick` for single-pass small change, `--deliberate` for high-risk plans (adds pre-mortem + expanded test plan); default is full Planner → Architect → Critic loop.
+description: 'Use when a spec or scoped requirement exists and the user wants a concrete implementation plan before coding. Trigger on: 出个 plan, 做个实施方案, 怎么做这件事, 给我个方案, plan this, make a plan, consensus plan, ralplan. Produces a RALPLAN-DR plan with principles, decision drivers, viable options, ADR, and Planner-Architect-Critic validation. Does not gather requirements, fix bugs, review code, or write code.'
 ---
 
 # Dev Plan
@@ -10,6 +10,29 @@ Convert a spec / scoped requirement into a **Critic-approved implementation plan
 This skill **only plans**. It does not gather requirements (`dev-spec` does that) and does not review or write code (`dev-code-review` / your editor / a coding skill do that).
 
 ---
+
+## Trigger routing
+
+Use this skill when a spec or scoped requirement exists and the user wants a concrete implementation plan with cross-perspective validation before writing code.
+
+Trigger phrases include:
+
+- `出个 plan`
+- `做个实施方案`
+- `怎么做这件事`
+- `给我个方案`
+- `plan this`
+- `make a plan`
+- `consensus plan`
+- `ralplan`
+
+Output goes to `.claude/artifacts/plans/<feature>.md`.
+
+Optional arguments:
+
+- `--quick`: single-pass plan for small changes
+- `--deliberate`: high-risk plan with pre-mortem and expanded test plan
+- default: full Planner → Architect → Critic loop
 
 ## Step 0 — Load baseline
 

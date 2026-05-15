@@ -33,6 +33,64 @@ jobs:
           fi
           echo "✅ All SKILL.md frontmatter OK"
 
+      - name: Verify Codex skill metadata constraints
+        run: |
+          set -e
+          python3 -m pip install --quiet PyYAML
+          python3 <<'PY'
+          import pathlib
+          import sys
+          import yaml
+
+          allowed = {"name", "description"}
+          failed = False
+
+          for path in sorted(pathlib.Path("skills").glob("*/SKILL.md")):
+              text = path.read_text(encoding="utf-8")
+              if not text.startswith("---\n"):
+                  print(f"❌ {path}: missing opening frontmatter delimiter")
+                  failed = True
+                  continue
+
+              parts = text.split("---", 2)
+              if len(parts) < 3:
+                  print(f"❌ {path}: missing closing frontmatter delimiter")
+                  failed = True
+                  continue
+
+              try:
+                  metadata = yaml.safe_load(parts[1]) or {}
+              except yaml.YAMLError as exc:
+                  print(f"❌ {path}: invalid YAML frontmatter: {exc}")
+                  failed = True
+                  continue
+
+              missing = sorted(allowed - metadata.keys())
+              extra = sorted(metadata.keys() - allowed)
+              description = str(metadata.get("description", ""))
+
+              if missing:
+                  print(f"❌ {path}: missing required fields: {', '.join(missing)}")
+                  failed = True
+              if extra:
+                  print(f"❌ {path}: unsupported frontmatter fields: {', '.join(extra)}")
+                  failed = True
+              if len(description) > 1024:
+                  print(f"❌ {path}: description is {len(description)} chars, max 1024 for Codex")
+                  failed = True
+              if "\n## Trigger routing\n" not in parts[2]:
+                  print(f"❌ {path}: missing '## Trigger routing' section")
+                  failed = True
+
+              if not (missing or extra or len(description) > 1024):
+                  print(f"✓ {path}: description {len(description)} chars")
+
+          if failed:
+              sys.exit(1)
+
+          print("✅ Codex skill metadata constraints OK")
+          PY
+
       - name: Verify dev-baseline copies are in sync
         run: |
           set -e

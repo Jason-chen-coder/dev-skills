@@ -1,6 +1,6 @@
 ---
 name: dev-fix
-description: Use when the user reports a bug, asks to investigate why something is broken, or wants a structured root-cause-driven fix. Triggers on phrases like "修个 bug / 这个 bug / 排查一下 / 复现 / 这个错怎么回事 / 为什么 X 不工作 / debug / RCA / fix this bug / investigate / reproduce". Enforces hypothesis-driven debugging:reproduce with a failing test → list hypotheses → diagnose with backward call-stack tracing → fix only the root cause → optionally add defense-in-depth at boundaries → verify with red→green→red cycle → leave a regression test. Output goes to `.claude/artifacts/fixes/<bug-slug>.md`. Does NOT symptom-patch; refuses to "fix" before root cause is confirmed. Optional arguments — `--quick` for small bugs (typo / off-by-one / single function), `--deep` for hairy bugs (heisenbug / race / cross-system / production incident, forces 3-5 hypotheses + tagged debug instrumentation + defense-in-depth + pattern analysis); default is mid-depth.
+description: 'Use when the user reports a bug, broken behavior, regression, failing test, or asks to investigate/root-cause/debug. Trigger on: 修个 bug, 这个 bug, 排查一下, 复现, 这个错怎么回事, 为什么 X 不工作, debug, RCA, fix this bug, investigate, reproduce. Guides root-cause debugging: reproduce with a failing test, list hypotheses, trace backward, fix only the confirmed cause, verify red-green-red, and leave a regression test. Does not symptom-patch or write commit messages.'
 ---
 
 # Dev Fix
@@ -10,6 +10,32 @@ Hypothesis-driven debugging & fix workflow with **No fix without root cause**. R
 This skill **only debugs and fixes**. It does not gather requirements (that's `dev-spec`), does not plan large refactors (that's `dev-plan`), and does not write commit messages on its own (that's `dev-code-review` / `dev-commit-writer` after the fix is in).
 
 ---
+
+## Trigger routing
+
+Use this skill when the user reports a bug, asks why something is broken, or wants a structured root-cause-driven fix.
+
+Trigger phrases include:
+
+- `修个 bug`
+- `这个 bug`
+- `排查一下`
+- `复现`
+- `这个错怎么回事`
+- `为什么 X 不工作`
+- `debug`
+- `RCA`
+- `fix this bug`
+- `investigate`
+- `reproduce`
+
+Output goes to `.claude/artifacts/fixes/<bug-slug>.md`.
+
+Optional arguments:
+
+- `--quick`: small bugs such as typo, off-by-one, or single-function fixes
+- `--deep`: hairy bugs such as heisenbugs, race conditions, cross-system bugs, or production incidents; forces 3-5 hypotheses, tagged instrumentation, defense-in-depth, and pattern analysis
+- default: mid-depth investigation
 
 ## Step 0 — Load baseline
 
@@ -122,12 +148,7 @@ expect(await getOrderStatus(id)).toBe('confirmed');
 await waitFor(() => getOrderStatus(id).then(s => s === 'confirmed'), { timeout: 5000 });
 ```
 
-固定 sleep 的问题:
-- 短了 test 偶尔过(假阴性 —— bug 没被抓到)
-- 长了 test 跑得慢
-- 调长缩短永远找不到对的值,真正的 race 永远抓不稳
-
-condition polling 让 test 等**真实状态**,不是凭运气等够时间。
+固定 sleep 要么产生假阴性,要么拖慢测试,且真正的 race 永远抓不稳。condition polling 让 test 等**真实状态**,不是凭运气等够时间。
 
 > **Hard rule**:Step 2 不通过(无 reliably failing test)**禁止进 Step 3**。这条是 baseline「可验证成功标准」的最强落地。
 
@@ -179,7 +200,6 @@ H<n>: <一句话 root cause 假设>
 - 误解需求(代码按规范跑,但规范本身错)
 
 ≥ 3 个差异化方向。**绝不省略 contrarian 视角**(devil's advocate:「会不会根本不是这块的问题?」)。
-
 ---
 
 ## Step 4 — Instrument(`--deep` only,默认可选)
@@ -188,23 +208,15 @@ H<n>: <一句话 root cause 假设>
 
 ```python
 # bug-<slug> DEBUG START
-print(f"[bug-<slug>] cart_state at line 42: {cart}")
+print(f"[bug-<slug>] relevant_state at line 42: {state}")
 # bug-<slug> DEBUG END
 ```
 
-```ts
-// bug-<slug> DEBUG START
-console.log(`[bug-<slug>] order state:`, order);
-// bug-<slug> DEBUG END
-```
-
 约束:
-
 - **唯一锚点 `bug-<slug>`** 必须出现在每条 log + 每个 START/END 注释里(便于 Step 7d `grep -rn "bug-<slug>" .` 一发命中,**不依赖空格数 / region 关键字 / 注释风格**)
 - 不许 `console.log` / `print` 没锚点 —— 那种是「污染」,Step 7d grep 抓不到
 - 不在 hot path 里加无 throttle 的 log
-
-模式差异:**`--deep` 必做**(通常需要事后回看完整日志);默认 / quick **可选**(用 IDE breakpoint 或现有 logger 也行)。
+- 模式差异:`--deep` 必做(通常需要事后回看完整日志);默认 / quick 可选(用 IDE breakpoint 或现有 logger 也行)。
 
 ---
 
