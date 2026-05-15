@@ -15,6 +15,9 @@
 # oh-my-claudecode local state (session / memory / cooldown caches)
 .omc/
 
+# Brainstorming visual companion local drafts
+.superpowers/
+
 # Node (in case skills repo ever gains tooling)
 node_modules/
 *.log
