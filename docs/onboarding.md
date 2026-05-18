@@ -6,9 +6,10 @@
 
 ## 60 秒了解这是什么
 
-dev-skills 是团队的工程规范载体。它有两层:
+dev-skills 是团队的工程规范载体。它有三层:
 
-- **行为基线**(`references/dev-baseline.md` + `CLAUDE.md` / `AGENTS.md`):你写代码时**永远在背景**生效的规则。
+- **行为基线**(`references/dev-baseline.md` + `docs/why-dev-baseline.md`):所有 skill 共享的四条原则,以及每条原则关闭的失败模式。
+- **Always-on 模板**(`CLAUDE.md.template` / `AGENTS.md.template`):复制到消费项目根目录后,成为 agent 永远在背景读取的短规则。
 - **场景 skill**(`dev-workflow` / `dev-spec` / `dev-plan` / `dev-tdd` / `dev-fix` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish`):特定时机用 Claude / Codex 跑的检查工具。
 
 不是替代你思考的工具,是**让你不用每次都重新想团队约定**的工具。
@@ -35,6 +36,8 @@ curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/master/CLA
 mv CLAUDE.md.template CLAUDE.md   # 重命名后按 <!-- team:fill --> 填团队约定
 ```
 
+`CLAUDE.md.template` 是短版常驻规则。更细的分支、PR、测试、错误处理、日志、feature flag 取舍参考见 [`docs/team-policy.md`](./team-policy.md)。
+
 ### Codex 用户
 
 当前 Codex 兼容方式是复制 `skills/*` 到 `$CODEX_HOME/skills`:
@@ -52,6 +55,8 @@ cp -R skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
 curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/master/AGENTS.md.template
 mv AGENTS.md.template AGENTS.md   # 重命名后按 <!-- team:fill --> 填团队约定
 ```
+
+`AGENTS.md.template` 与 `CLAUDE.md.template` 保持同一套短规则,只是面向 Codex / OpenCode 的文件名。
 
 ### npx skills 用户
 
@@ -120,14 +125,16 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 ---
 
-## 必读文档(按顺序看,~20 分钟)
+## 必读文档(按顺序看,~25 分钟)
 
 1. [`README.md`](../README.md) —— 整体结构 5 分钟。
 2. [`references/dev-baseline.md`](../references/dev-baseline.md) —— 四条基线原则 5 分钟。
-3. [`CLAUDE.md.template`](../CLAUDE.md.template) —— 团队特有约定 5 分钟(注意:需复制到项目根并改名为 `CLAUDE.md` 才生效)。
-4. 你日常会用的 skill 的 SKILL.md(选你感兴趣的一个先读) —— 5 分钟。
+3. [`docs/why-dev-baseline.md`](./why-dev-baseline.md) —— 每条原则背后的失败模式 5 分钟。
+4. [`CLAUDE.md.template`](../CLAUDE.md.template) 或 [`AGENTS.md.template`](../AGENTS.md.template) —— 短版 always-on 规则 5 分钟(注意:需复制到项目根并改名才生效)。
+5. 你日常会用的 skill 的 SKILL.md(选你感兴趣的一个先读) —— 5 分钟。
 
 后续按需查阅:
+- `docs/team-policy.md` —— 分支 / PR / 测试 / 错误处理 / 日志等详细团队治理参考。
 - `references/team-conventions.md` —— 写到具体语言时查。
 - `skills/dev-code-review/references/lang-conventions.md` —— 跨语言通用规范(dev-code-review 专属)。
 - `references/calibration-cases.md` —— 想理解 P0 / P1 / P2 边界 / dev-spec ambiguity 评分 / dev-plan Critic verdict 边界时看。
@@ -140,7 +147,7 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 不。P2 是可选的,**你可以选择不修但要在 PR 里一句话解释**(例如「P2 注释问题暂不处理,本 commit 仅修 bug」)。P0 / P1 必须处理。
 
 **「Claude 说 `❌ BLOCK` 但我觉得没问题」**
-两步走:(1) 确认你不是漏看了 baseline / CLAUDE.md 的某条硬规则(尤其 secret / 闭环);(2) 如果你确信 skill 判错了,在 PR 里覆盖判定 + 解释,然后开 issue 反馈这个 case。
+两步走:(1) 确认你不是漏看了 baseline / `CLAUDE.md` / `AGENTS.md` 的某条硬规则(尤其 secret / 闭环);(2) 如果你确信 skill 判错了,在 PR 里覆盖判定 + 解释,然后开 issue 反馈这个 case。
 
 **「skill 没识别出我用的语言怎么办?」**
 `skills/dev-code-review/references/lang-conventions.md` 里有「其他语言」段落兜底。如果你常用某语言但 conventions 不全,提 PR 补。

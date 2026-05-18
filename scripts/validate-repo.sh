@@ -37,6 +37,13 @@ done
 echo "Checking team template guard..."
 [[ ! -f CLAUDE.md ]] || fail "CLAUDE.md should not exist at repo root; use CLAUDE.md.template"
 [[ -f CLAUDE.md.template ]] || fail "CLAUDE.md.template missing"
+[[ -f AGENTS.md.template ]] || fail "AGENTS.md.template missing"
+[[ -f docs/why-dev-baseline.md ]] || fail "docs/why-dev-baseline.md missing"
+[[ -f docs/team-policy.md ]] || fail "docs/team-policy.md missing"
+grep -q 'docs/team-policy.md' CLAUDE.md.template || fail "CLAUDE.md.template should point to docs/team-policy.md"
+grep -q 'docs/team-policy.md' AGENTS.md.template || fail "AGENTS.md.template should point to docs/team-policy.md"
+grep -q 'docs/why-dev-baseline.md' CLAUDE.md.template || fail "CLAUDE.md.template should point to docs/why-dev-baseline.md"
+grep -q 'docs/why-dev-baseline.md' AGENTS.md.template || fail "AGENTS.md.template should point to docs/why-dev-baseline.md"
 
 echo "Checking baseline copies..."
 canonical_md5="$(md5sum references/dev-baseline.md | cut -d' ' -f1)"
@@ -80,13 +87,15 @@ PY
 echo "Checking docs mention the expanded skill set..."
 grep -q '9 个 skill' README.md || fail "README.md should advertise 9 skills"
 grep -q 'skills-9' README.md || fail "README badge should advertise skills-9"
+grep -q 'docs/why-dev-baseline.md' README.md || fail "README.md missing docs/why-dev-baseline.md"
+grep -q 'docs/team-policy.md' README.md || fail "README.md missing docs/team-policy.md"
 for skill in dev-tdd dev-verify dev-finish; do
   grep -q "$skill" README.md || fail "README.md missing $skill"
   grep -q "$skill" CLAUDE.md.template || fail "CLAUDE.md.template missing $skill"
   grep -q "$skill" skills/dev-workflow/SKILL.md || fail "dev-workflow missing $skill"
 done
 
-if grep -RIEq 'dev-fix([[:space:]]+--[a-z]+)?[[:space:]]*(→|->)[^|]*dev-tdd' README.md CLAUDE.md.template docs/onboarding.md skills scripts; then
+if grep -RIEq 'dev-fix([[:space:]]+--[a-z]+)?[[:space:]]*(→|->)[^|]*dev-tdd' README.md CLAUDE.md.template AGENTS.md.template docs skills scripts; then
   fail "bug path should not route dev-fix into dev-tdd; dev-fix already owns bug TDD"
 fi
 

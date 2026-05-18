@@ -11,7 +11,7 @@
 | 修 typo / 格式 / 链接 | 直接 PR,不需要 issue |
 | 改某个 skill 的 SKILL.md(规则、流程、报告模板) | 先开 issue 讨论,再 PR |
 | 改 `references/dev-baseline.md`(贯穿所有 skill) | 先开 issue,需要 ≥ 2 人讨论达成一致后再 PR |
-| 改 `CLAUDE.md`(团队约定) | 先开 issue,leader approval |
+| 改 `CLAUDE.md.template` / `AGENTS.md.template` / `docs/team-policy.md`(团队约定) | 先开 issue,leader approval |
 | 新增 skill | 先开 issue,讨论触发时机和与现有 skill 的边界,再 PR |
 | 删除 skill | 先开 issue,说明替代方案 |
 | 改 examples / calibration cases | 直接 PR |
@@ -81,7 +81,8 @@
 
 1. **issue 必填**:为什么要改、改了之后所有 skill 的行为变化预期、是否需要同步改 SKILL.md。
 2. **PR 描述必含**:before / after 对比、影响哪些 skill、是否需要 calibration session 重做。
-3. **同步副本**:改根目录 `/references/dev-baseline.md` 后,**必须**同步到九处 skill 副本:
+3. **更新 rationale**:同步检查 `docs/why-dev-baseline.md`,确保每条 baseline 都有对应 failure mode 说明。
+4. **同步副本**:改根目录 `/references/dev-baseline.md` 后,**必须**同步到九处 skill 副本:
    - `skills/dev-spec/references/dev-baseline.md`
    - `skills/dev-plan/references/dev-baseline.md`
    - `skills/dev-tdd/references/dev-baseline.md`
@@ -91,8 +92,8 @@
    - `skills/dev-commit-writer/references/dev-baseline.md`
    - `skills/dev-finish/references/dev-baseline.md`
    - `skills/dev-workflow/references/dev-baseline.md`
-4. **CHANGELOG 必填**:在 `CHANGELOG.md` 加 entry。
-5. **通知**:merge 后在团队群通知,并附 PR 链接。
+5. **CHANGELOG 必填**:在 `CHANGELOG.md` 加 entry。
+6. **通知**:merge 后在团队群通知,并附 PR 链接。
 
 ---
 
@@ -103,7 +104,7 @@
 | typo / 格式 | 1 | 任何团队成员 |
 | skill 内部规则 | 1 | 该 skill 的 maintainer 或 leader |
 | baseline | 2 | leader + 1 个高频用户 |
-| CLAUDE.md | 2 | leader 必须在内 |
+| CLAUDE / AGENTS 模板或 team policy | 2 | leader 必须在内 |
 | 新 skill | 2 | leader + 1 |
 
 ---

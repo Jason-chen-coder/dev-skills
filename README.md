@@ -41,6 +41,16 @@
 
 ---
 
+## 规则分层
+
+dev-skills 的规则分三层:
+
+- [`references/dev-baseline.md`](./references/dev-baseline.md):四条最小行为基线,所有 skill 都加载。
+- [`docs/why-dev-baseline.md`](./docs/why-dev-baseline.md):解释每条 baseline 关闭的真实失败模式,避免规则变口号。
+- [`CLAUDE.md.template`](./CLAUDE.md.template) / [`AGENTS.md.template`](./AGENTS.md.template):短版 always-on 团队规则;详细治理说明放 [`docs/team-policy.md`](./docs/team-policy.md)。
+
+---
+
 ## 🚀 安装
 
 Claude Code 和 Codex 的安装方式**不一样**:
@@ -81,7 +91,7 @@ npx skills add Jason-chen-coder/dev-skills --global     # 全局
 
 ### 团队规则模板
 
-Claude Code 用户别忘了手动复制团队约定模板到项目根:
+Claude Code 用户别忘了手动复制团队约定模板到项目根。模板刻意保持短,只放 agent 必须常驻读取的硬规则;分支、PR、测试、错误处理等细则见 [`docs/team-policy.md`](./docs/team-policy.md)。
 
 ```bash
 curl -O https://raw.githubusercontent.com/Jason-chen-coder/dev-skills/master/CLAUDE.md.template
@@ -155,7 +165,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force     # 全局
 
 ### 模板同步
 
-升级 skill **不会自动覆盖**你项目里的 `CLAUDE.md` / `AGENTS.md`。如果本仓库的 `CLAUDE.md.template` 或 `AGENTS.md.template` 有更新,需要人工对比后把需要的规则同步到项目根对应文件。
+升级 skill **不会自动覆盖**你项目里的 `CLAUDE.md` / `AGENTS.md`。如果本仓库的 `CLAUDE.md.template` 或 `AGENTS.md.template` 有更新,需要人工对比后把需要的短规则同步到项目根对应文件;详细政策变化参考 [`docs/team-policy.md`](./docs/team-policy.md)。
 
 ---
 
@@ -192,10 +202,14 @@ npx skills add Jason-chen-coder/dev-skills --global --force     # 全局
 ```mermaid
 flowchart LR
   Baseline["references/dev-baseline.md<br/>四条行为基线"]
-  Team["CLAUDE.md.template<br/>团队 always-on 规则"]
+  Why["docs/why-dev-baseline.md<br/>failure mode rationale"]
+  Policy["docs/team-policy.md<br/>详细团队治理"]
+  Team["CLAUDE.md.template / AGENTS.md.template<br/>短版 always-on 规则"]
   Workflow["dev-workflow<br/>只指路,不调起"]
 
+  Why --> Baseline
   Baseline --> Team
+  Policy --> Team
   Team --> Workflow
   Workflow --> Spec["dev-spec"]
   Workflow --> Plan["dev-plan"]

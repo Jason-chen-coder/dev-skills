@@ -1,80 +1,75 @@
-# AGENTS.md — Team-level Always-On Guidelines
+# AGENTS.md — Team Always-On Rules
 
-> **这是一份模板文件(`AGENTS.md.template`)。**
+> 这是一份模板文件。使用 Codex / OpenCode 时,把本文件复制到项目根目录并重命名为 `AGENTS.md`,再按 `<!-- team:fill -->` 标记填团队真实情况。
 >
-> 使用 Codex 时,把本文件复制到团队项目根目录并重命名为 `AGENTS.md`,再按 `<!-- team:fill -->` 标记填团队真实情况。
->
-> 本文件是团队级**永远在上下文里**的工程约定。skill 是「场景触发」的检查点,本文件是「贯穿所有任务」的行为底色。
+> 这份文件会常驻 agent 上下文,所以只放必须永远生效的短规则。更完整的团队治理说明可参考 dev-skills 仓库的 `docs/team-policy.md`,或复制 / 改写到消费项目自己的 `docs/team-policy.md` / wiki。
 
 ---
 
-## 1. 不可破的硬规则
+## 1. 行为基线
+
+所有任务都遵守 `references/dev-baseline.md` 的四条原则:
+
+- **不假设**:多解时列选项;看不懂就停;隐含前提要显式。
+- **最小代码**:没要求的不做;单次使用不抽象;不为未来可能性写框架。
+- **外科手术式改动**:只动任务需要的代码;不顺手重构、格式化或改邻近注释。
+- **可验证成功标准**:完成前给出新鲜验证证据;测试必须断言行为,不是只断言 shape。
+
+这些原则背后的失败模式见 `docs/why-dev-baseline.md`。
+
+---
+
+## 2. 不可破的硬规则
 
 - **不要在没有显式授权的情况下** `git push --force` / `git push --force-with-lease` 到 protected 分支。
-- **不要新增运行时依赖**(npm / pip / pub / cargo 等)未经讨论。如果需要,在 PR 描述里独立说明原因。
-- **不要写裸 secret / API key / token / 个人路径** 到任何文件。`.env.example` 用占位符。
-- **不要修改与本任务无关的代码**。
-- **不要用 LLM 生成的代码替换现有的、有 git blame 的代码而不说明**。
+- **不要新增运行时依赖**(npm / pip / pub / cargo 等)未经讨论;确实需要时在 PR 描述里说明为什么不能用现有代码或标准库。
+- **不要写裸 secret / API key / token / 个人路径** 到任何文件;`.env.example` 只能写占位符。
+- **不要修改与本任务无关的代码** —— 即使它看起来值得整理。
+- **不要用 LLM 生成的代码替换已有、有 git blame 的代码而不说明**。
 
 ---
 
-## 2. Workflow 约定
+## 3. Agent 工作方式
 
-### Clean-tree worktree checkpoint
-
-- 第一次写文件前,如果 `git status --short` 为空,且任务预计会修改代码 / 多文件规则 / 配置 / 测试,先询问用户是否创建独立 worktree。
-- 可跳过询问的场景:纯 typo / 单文件小文档 / 用户已明确说「直接在当前目录改」/ 当前已经在专用 worktree 或任务分支内。
-- 当前分支是 `main` / `master` / `release/*` 时,默认推荐创建 worktree;如果用户拒绝,至少提醒当前目录会被直接修改。
-- 当前 working tree 已经 dirty 时,不要为当前任务从脏目录直接建 worktree;先说明已有改动,避免混入用户改动。
-
-### Worktree 创建规范
-
-- 分支命名跟随团队分支规则;AI 默认使用 `codex/<short-slug>`,例如 `codex/user-export`、`codex/fix-cart-overflow`。
-- worktree 目录放在当前仓库的兄弟目录,命名为 `<repo>-<short-slug>`,只用 lowercase kebab-case,不加空格。
-- 推荐命令:`git worktree add -b codex/<short-slug> ../<repo>-<short-slug>`。
-- 创建后在新 worktree 内确认 `git status --short` 为空,再开始写文件。
-- 合并或放弃后清理:`git worktree remove ../<repo>-<short-slug>`;若分支已废弃,再删除对应分支。
-
-### 设计前置(skill 工具链)
-<!-- team:fill — 团队是否强制以下流程,leader 拍板 -->
-
-- 复杂新功能先过 `dev-spec` 和 `dev-plan --deliberate`。
-- 常规 bug 走 `dev-fix`;生产事故 / 间歇性 / 跨系统 bug 走 `dev-fix --deep`。
-- commit 前过 `dev-code-review`;仅当用户明确跳过 review 时才用 `dev-commit-writer`。
-- 不知道下一步时跑 `dev-workflow`,它只指路不调起其他 skill。
-
-### 分支
-<!-- team:fill -->
-
-- 默认分支:`main`(或 `master`)。
-- 功能分支命名:`<type>/<short-desc>`;AI 默认分支前缀:`codex/`。
-- 长期分支仅 `main`、`release/*`。其他都是 short-lived。
-
-### Commit
-
-- 单 commit 单一意图。
-- 风格跟随仓库 `git log --oneline -20`;无明显风格时退回 conventional commits。
-- subject ≤ 72 chars,祈使语气,不加句号。
+- **先读后写**:改文件前先读邻近代码、直接 caller / callee、相关测试和项目配置。
+- **冲突不平均**:同一代码库有两种错误处理、状态管理、命名或测试模式时,选一种并解释原因;不要两个都混用。
+- **确定性逻辑写成代码**:重试、路由、限流、算术、时间、排序、去重等不要靠 prompt 判断。
+- **失败必须可见**:partial failure、skipped rows、truncated output、retry exhaustion 都要进入结果说明。
+- **长任务设 checkpoint**:多步 refactor / migration / 批量修改要拆小步,每步可验证、可回退。
+- **卡住要换策略**:同一错误或同一 8KB 输入反复循环时,停止猜测,改用 reproduction、instrumentation 或更小假设。
 
 ---
 
-## 3. AI 协作专属护栏
+## 4. dev-skills 路由
 
-- 写完先自己读一遍,进入 PR 前能解释每一行。
-- 不接受不能解释的 API / 库 / 模式。
-- PR 描述里标注 LLM 协作程度,例如 `[AI-assisted]`。
-- 大段 LLM 生成的代码必须有测试。
-
----
-
-## 4. 当 skill 与 AGENTS.md 冲突
-
-- skill 局部规则 > AGENTS.md > dev-baseline。
-- 若发现 skill 输出与 AGENTS.md 冲突,以 AGENTS.md 为准,并在 PR 里反馈。
+- 不知道下一步时跑 `dev-workflow`;它只指路,不调起其他 skill。
+- 复杂新功能先走 `dev-spec` → 可选 `dev-plan --deliberate`。
+- feature / refactor / direct hotfix 写生产代码前默认走 `dev-tdd`。
+- bug 报告走 `dev-fix`;它自带 failing regression test 和 red→green→red,不要再追加一轮 `dev-tdd`。
+- 声称完成 / fixed / ready 前必须跑 `dev-verify` 或给出等价 fresh verification evidence。
+- commit 前默认跑 `dev-code-review`;只有用户明确说跳过 review 时才用 `dev-commit-writer`。
+- 验证和 review 通过后用 `dev-finish` 处理 PR / merge / keep / discard。
 
 ---
 
-## 5. 当用户指令与本文件冲突
+## 5. Team Specifics
 
-- 优先服从用户当下指令,但先一句话提示冲突并请求确认。
-- 用户确认后照办,但在 commit / PR 描述里记录例外原因。
+<!-- team:fill — 保持短。详细规则放项目自己的 docs/team-policy.md 或 wiki。 -->
+
+- Stack:`<填技术栈>`
+- Test:`<填测试命令>`
+- Lint / format:`<填命令>`
+- Default branch:`main`(或 `master`)
+- Branch naming:`codex/<short-slug>` for AI work;团队分支规则为 `<填>`
+- Commit style:跟随 `git log --oneline -20`;无明显风格时用 conventional commits,subject ≤ 72 chars
+- Error handling:`<throw / Result / mixed,选一种>`
+- Logger:`<团队 logger>`;禁止调试输出进入主分支
+- Do-not-touch:`<列出 migrations / generated files / vendor dirs 等>`
+
+---
+
+## 6. 冲突处理
+
+- 用户当下明确指令 > 本文件 > skill 局部流程 > `references/dev-baseline.md`。
+- 如果用户指令与本文件冲突,先一句话点明冲突并请求确认;用户确认后照办,并在 commit / PR 描述里记录例外原因。
+- 如果 skill 输出与本文件冲突,以本文件为准,并把冲突作为 dev-skills bug 反馈。

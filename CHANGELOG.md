@@ -12,9 +12,15 @@
 ## [Unreleased]
 
 ### Added
+- **Baseline rationale 文档**:新增 `docs/why-dev-baseline.md`,逐条说明四条 baseline 关闭的真实 LLM 编码失败模式,并把「冲突不平均 / 失败可见 / checkpoint / deterministic logic / debug budget」列为可放进模板或 skill 的推论,避免继续膨胀 baseline。
+- **Team policy guide**:新增 `docs/team-policy.md`,承接原 `CLAUDE.md.template` / `AGENTS.md.template` 中较长的分支、PR、测试、错误处理、日志、feature flag、AI 协作护栏等治理说明。
 - **Clean-tree worktree checkpoint**:在 `CLAUDE.md.template` / `AGENTS.md.template` / `dev-workflow` / `dev-plan` / `dev-fix` 中加入编码前 worktree 检查与创建规范。AI 在 clean tree 且即将进行非平凡代码/多文件改动前,应先询问是否创建独立 worktree;默认分支命名 `codex/<short-slug>`,目录命名 `<repo>-<short-slug>`。
 - **`AGENTS.md.template`**:新增 Codex 面向的团队 always-on 规则模板,与 `CLAUDE.md.template` 保持核心 workflow 护栏一致。
 - **H5 正式站点**:新增 `site/` 静态产品落地页,包含 skill 卡片、Skill Runtime Preview、工作流、安装升级 tabs 和 FAQ;新增 GitHub Pages workflow,在 `master` push 后发布正式站点。
+
+### Changed
+- **Always-on 模板瘦身**:`CLAUDE.md.template` 和 `AGENTS.md.template` 改为短版常驻规则,保留 baseline、硬规则、agent 工作方式、dev-skills 路由和少量 team-specific placeholder;详细团队治理说明移到 `docs/team-policy.md`。
+- **文档入口同步**:README 和 onboarding 增加规则分层说明,把 `docs/why-dev-baseline.md` 与 `docs/team-policy.md` 纳入新用户阅读路径。
 
 ### Fixed
 - **GitHub Pages 根路径 404**:当前仓库 Pages 发布源是 `master` 根目录,新增根目录 `index.html` 和 `.nojekyll`,让 `https://jason-chen-coder.github.io/dev-skills/` 直接加载 H5 正式站点。
