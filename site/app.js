@@ -35,17 +35,17 @@ const installOptions = {
   claude: {
     title: "Claude Code",
     command: "/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills\n/plugin install dev-skills",
-    notes: "升级: /plugin update dev-skills。团队规则模板复制 CLAUDE.md.template 到项目根 CLAUDE.md。"
+    notes: "升级: /plugin update dev-skills。短版团队规则复制 CLAUDE.md.template 到项目根 CLAUDE.md;详细政策参考 docs/team-policy.md。"
   },
   codex: {
     title: "Codex",
     command: "git clone https://github.com/Jason-chen-coder/dev-skills.git\ncd dev-skills\nmkdir -p \"${CODEX_HOME:-$HOME/.codex}/skills\"\ncp -R skills/* \"${CODEX_HOME:-$HOME/.codex}/skills/\"",
-    notes: "升级: git pull --ff-only 后重新同步 skills/*。团队规则模板复制 AGENTS.md.template 到项目根 AGENTS.md。"
+    notes: "升级: git pull --ff-only 后重新同步 skills/*。短版团队规则复制 AGENTS.md.template 到项目根 AGENTS.md;详细政策参考 docs/team-policy.md。"
   },
   npx: {
     title: "npx skills",
     command: "npx skills add Jason-chen-coder/dev-skills\nnpx skills add Jason-chen-coder/dev-skills --global",
-    notes: "升级优先使用 npx skills update;如果版本不支持 update,使用 add --force 重新安装。"
+    notes: "升级优先使用 npx skills update;如果版本不支持 update,使用 add --force 重新安装。团队规则模板仍需人工同步。"
   }
 };
 

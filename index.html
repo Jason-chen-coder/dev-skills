@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>dev-skills - AI 开发工作流 Skill 库</title>
-  <meta name="description" content="6 个 AI 开发 skill,串起需求对齐、实施方案、Bug 修复、提交前 review 和 commit message。">
+  <meta name="description" content="9 个 AI 开发 skill,加上短版 always-on 规则、baseline rationale 和 team policy guide,串起需求对齐、实施方案、TDD、Bug 修复、验证、代码评审和分支收尾。">
   <link rel="preload" href="./site/assets/logo.png" as="image">
   <link rel="stylesheet" href="./site/styles.css">
 </head>
@@ -16,6 +16,7 @@
     </a>
     <nav class="nav-links" aria-label="Primary navigation">
       <a href="#skills">Skills</a>
+      <a href="#rules">Rules</a>
       <a href="#preview">Preview</a>
       <a href="#workflow">Workflow</a>
       <a href="#install">Install</a>
@@ -28,7 +29,7 @@
       <div class="hero-copy">
         <p class="eyebrow">AI development workflow skills</p>
         <h1>从需求到提交,<br>每步可验证。</h1>
-        <p class="hero-text">dev-skills 为 Claude Code 和 Codex 提供一套工程流程 skill:需求对齐、实施方案、Bug 修复、提交前 review、commit message,每一步都有明确边界和验证标准。</p>
+        <p class="hero-text">dev-skills 为 Claude Code 和 Codex 提供 9 个工程流程 skill,再加一层短版 always-on 团队规则:需求对齐、实施方案、TDD、Bug 修复、完成验证、代码评审、commit message 和分支收尾都有明确边界。</p>
         <div class="hero-actions" aria-label="Primary actions">
           <a class="button primary" href="#install" aria-label="查看安装方式">Install</a>
           <a class="button secondary" href="#preview" aria-label="查看 skill 运行预览">Preview</a>
@@ -41,9 +42,10 @@
           <span>需求</span>
           <span>spec</span>
           <span>plan</span>
-          <span>code</span>
+          <span>TDD</span>
+          <span>verify</span>
           <span>review</span>
-          <span>commit</span>
+          <span>finish</span>
         </div>
         <div class="hero-terminal">
           <div class="terminal-bar">
@@ -64,8 +66,8 @@
     <section id="skills" class="section">
       <div class="section-heading">
         <p class="eyebrow">Skill library</p>
-        <h2>每个 skill 只做一件事。</h2>
-        <p>通过 `.claude/artifacts/` 松耦合衔接,不互相调用,让每一步都可审计、可恢复、可提交。</p>
+        <h2>9 个 skill,每个只做一件事。</h2>
+        <p>通过 `.claude/artifacts/` 松耦合衔接,不互相调用。feature、bug、hotfix、review、commit 和 finish 各有明确入口。</p>
       </div>
       <div class="skill-grid" aria-label="dev-skills list">
         <article class="skill-card">
@@ -87,10 +89,22 @@
           <small>Artifact: plans/&lt;slug&gt;.md</small>
         </article>
         <article class="skill-card">
+          <span class="skill-kicker">红绿重构</span>
+          <h3>dev-tdd</h3>
+          <p>写生产代码前先定义行为测试,按 red -> green -> refactor 收敛。</p>
+          <small>Artifact: none</small>
+        </article>
+        <article class="skill-card">
           <span class="skill-kicker">Bug 修复</span>
           <h3>dev-fix</h3>
           <p>以 failing test 和 root cause 为核心,避免猜测式 symptom patch。</p>
           <small>Artifact: fixes/&lt;slug&gt;.md</small>
+        </article>
+        <article class="skill-card">
+          <span class="skill-kicker">完成门禁</span>
+          <h3>dev-verify</h3>
+          <p>声称完成前补齐 fresh evidence,把“应该可以”变成可验证结果。</p>
+          <small>Artifact: none</small>
         </article>
         <article class="skill-card">
           <span class="skill-kicker">提交前 review</span>
@@ -103,6 +117,37 @@
           <h3>dev-commit-writer</h3>
           <p>只在明确跳过 review 且只要 message 时,生成符合仓库风格的提交信息。</p>
           <small>Artifact: none</small>
+        </article>
+        <article class="skill-card">
+          <span class="skill-kicker">分支收尾</span>
+          <h3>dev-finish</h3>
+          <p>验证和 review 后处理 PR、merge、keep 或 discard,避免口头收尾。</p>
+          <small>Artifact: none</small>
+        </article>
+      </div>
+    </section>
+
+    <section id="rules" class="section rules-section">
+      <div class="section-heading">
+        <p class="eyebrow">Rules layer</p>
+        <h2>常驻规则变短,解释和政策各归其位。</h2>
+        <p>这次更新把模板从团队治理手册压回 agent 必须常驻读取的短规则,同时新增 rationale 和 policy 文档,让规则可解释、可传播、可维护。</p>
+      </div>
+      <div class="rules-grid" aria-label="dev-skills rules layer">
+        <article class="rule-card rule-card-strong">
+          <span>Always-on</span>
+          <h3>CLAUDE.md / AGENTS.md</h3>
+          <p>短版团队规则,只保留 baseline、硬规则、agent 工作方式、skill 路由和少量 team-specific placeholder。</p>
+        </article>
+        <article class="rule-card">
+          <span>Why</span>
+          <h3>docs/why-dev-baseline.md</h3>
+          <p>逐条解释“不假设、最小代码、外科手术式、可验证成功标准”关闭的失败模式。</p>
+        </article>
+        <article class="rule-card">
+          <span>Policy</span>
+          <h3>docs/team-policy.md</h3>
+          <p>承接分支、PR、测试、错误处理、日志、feature flag 和 AI 协作护栏等详细治理说明。</p>
         </article>
       </div>
     </section>
@@ -316,7 +361,7 @@
       <div class="section-heading">
         <p class="eyebrow">Install and upgrade</p>
         <h2>Claude Code 和 Codex 分开安装。</h2>
-        <p>选择你的入口,复制对应命令。升级 skill 不会自动覆盖项目里的团队规则模板。</p>
+        <p>选择你的入口,复制对应命令。升级 skill 不会自动覆盖项目里的短版团队规则模板;详细政策可参考或复制 `docs/team-policy.md`。</p>
       </div>
 
       <div class="install-tabs" role="tablist" aria-label="Install options">
@@ -335,7 +380,7 @@
 /plugin install dev-skills</code></pre>
         </div>
         <div class="install-notes" id="install-notes">
-          <p>升级: `/plugin update dev-skills`。团队规则模板复制 `CLAUDE.md.template` 到项目根 `CLAUDE.md`。</p>
+          <p>升级: `/plugin update dev-skills`。短版团队规则复制 `CLAUDE.md.template` 到项目根 `CLAUDE.md`;详细政策参考 `docs/team-policy.md`。</p>
         </div>
       </div>
     </section>
@@ -352,7 +397,11 @@
         </details>
         <details>
           <summary>升级会覆盖我的 `CLAUDE.md` 或 `AGENTS.md` 吗?</summary>
-          <p>不会。skill 升级只更新 skill 文件,团队规则模板需要人工对比后同步。</p>
+          <p>不会。skill 升级只更新 skill 文件,短版团队规则模板需要人工对比后同步;详细 policy 文档也建议按团队实际情况复制或改写。</p>
+        </details>
+        <details>
+          <summary>`docs/why-dev-baseline.md` 和 `docs/team-policy.md` 分别解决什么?</summary>
+          <p>前者解释四条 baseline 背后的失败模式,防止规则变口号;后者放详细团队治理,避免把 always-on 模板写得过长。</p>
         </details>
         <details>
           <summary>什么时候用 `dev-workflow`?</summary>
