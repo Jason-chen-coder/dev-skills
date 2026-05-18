@@ -293,25 +293,6 @@ h3 {
   min-width: 0;
 }
 
-.preview-strip {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.preview-strip span {
-  min-width: 0;
-  padding: 8px 6px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--surface);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 760;
-  text-align: center;
-}
-
 .hero-terminal,
 .terminal-panel {
   overflow: hidden;
@@ -470,12 +451,32 @@ pre {
   white-space: nowrap;
 }
 
+.skill-tab {
+  --preview-progress-angle: 0turn;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(var(--line-strong), var(--line-strong)) border-box;
+  border-color: transparent;
+}
+
 .skill-tab,
 .install-tab {
   padding: 0 14px;
 }
 
-.skill-tab.is-active,
+.skill-tab.is-active {
+  background:
+    linear-gradient(color-mix(in srgb, var(--accent) 10%, var(--surface)), color-mix(in srgb, var(--accent) 10%, var(--surface))) padding-box,
+    linear-gradient(transparent, transparent) border-box;
+  color: var(--accent-strong);
+}
+
+.skill-tab.is-active.is-auto-counting {
+  background:
+    linear-gradient(color-mix(in srgb, var(--accent) 10%, var(--surface)), color-mix(in srgb, var(--accent) 10%, var(--surface))) padding-box,
+    conic-gradient(from -90deg, var(--accent) var(--preview-progress-angle), transparent 0) border-box;
+}
+
 .install-tab.is-active {
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 10%, var(--surface));
@@ -968,10 +969,6 @@ details p {
 
   .skill-grid {
     grid-template-columns: 1fr;
-  }
-
-  .preview-strip {
-    grid-template-columns: repeat(3, 1fr);
   }
 
   .hero-actions {

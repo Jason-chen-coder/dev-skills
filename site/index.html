@@ -34,7 +34,7 @@
       <div class="hero-copy">
         <p class="eyebrow">AI development workflow skills</p>
         <h1>从需求到提交,<br>每步可验证。</h1>
-        <p class="hero-text">dev-skills 为 Claude Code 和 Codex 提供 9 个工程流程 skill,再加一层短版 always-on 团队规则:需求对齐、实施方案、TDD、Bug 修复、完成验证、代码评审、commit message 和分支收尾都有明确边界。</p>
+        <p class="hero-text">dev-skills 为 Claude Code 与 Codex 提供 9 个工程流程 skill 和精简 always-on 团队规则,让需求、实现、验证、评审与收尾都有清晰边界和可复核结果。</p>
         <div class="hero-actions" aria-label="Primary actions">
           <a class="button primary" href="#install" aria-label="查看安装方式">Install</a>
           <a class="button secondary" href="#preview" aria-label="查看 skill 运行预览">Preview</a>
@@ -43,15 +43,6 @@
       </div>
 
       <div class="hero-preview" aria-label="dev-skills workflow preview">
-        <div class="preview-strip">
-          <span>需求</span>
-          <span>spec</span>
-          <span>plan</span>
-          <span>TDD</span>
-          <span>verify</span>
-          <span>review</span>
-          <span>finish</span>
-        </div>
         <div class="hero-terminal">
           <div class="terminal-bar">
             <span></span><span></span><span></span>
@@ -72,7 +63,7 @@
       <div class="section-heading">
         <p class="eyebrow">Skill library</p>
         <h2>9 个 skill,每个只做一件事。</h2>
-        <p>通过 `.claude/artifacts/` 松耦合衔接,不互相调用。feature、bug、hotfix、review、commit 和 finish 各有明确入口。</p>
+        <p>把它当成开发导航:不确定下一步就问 dev-auto。做新功能从 dev-spec 开始,再到 plan、TDD、verify、review、finish;修 bug 从 dev-fix 开始,同样经过 verify 和 review 收尾;只需要提交信息时用 dev-commit-writer。</p>
       </div>
       <div class="skill-grid" aria-label="dev-skills list">
         <article class="skill-card">
@@ -168,9 +159,12 @@
         <button class="skill-tab is-active" type="button" data-skill="dev-auto" role="tab" aria-selected="true">dev-auto</button>
         <button class="skill-tab" type="button" data-skill="dev-spec" role="tab" aria-selected="false">dev-spec</button>
         <button class="skill-tab" type="button" data-skill="dev-plan" role="tab" aria-selected="false">dev-plan</button>
+        <button class="skill-tab" type="button" data-skill="dev-tdd" role="tab" aria-selected="false">dev-tdd</button>
         <button class="skill-tab" type="button" data-skill="dev-fix" role="tab" aria-selected="false">dev-fix</button>
+        <button class="skill-tab" type="button" data-skill="dev-verify" role="tab" aria-selected="false">dev-verify</button>
         <button class="skill-tab" type="button" data-skill="dev-code-review" role="tab" aria-selected="false">dev-code-review</button>
         <button class="skill-tab" type="button" data-skill="dev-commit-writer" role="tab" aria-selected="false">dev-commit-writer</button>
+        <button class="skill-tab" type="button" data-skill="dev-finish" role="tab" aria-selected="false">dev-finish</button>
       </div>
 
       <div class="runtime-grid">

@@ -14,10 +14,20 @@ const skillPreviews = {
     input: "$ codex\n> 用 dev-plan 基于 user-export spec 出实施方案",
     output: "Status: APPROVED\nOption A: 复用现有 worker\nDecision: 选 A\nRisks: 队列隔离 / S3 权限\nVerification: API + worker + notification tests"
   },
+  "dev-tdd": {
+    title: "Dev TDD",
+    input: "$ codex\n> 用 dev-tdd 实现用户导出接口",
+    output: "RED\n  写失败测试: export creates a job\nGREEN\n  最小实现: enqueue export worker\nREFACTOR\n  保持行为不变,整理命名\nVerify: targeted test green"
+  },
   "dev-fix": {
     title: "Dev Fix",
     input: "$ codex\n> 用 dev-fix 排查登录 30 分钟后被踢出的问题",
     output: "Reproduce: failing test RED\nHypothesis: Redis session TTL 被覆盖\nRoot cause: refresh path 写入 30m TTL\nFix: 统一使用 24h TTL\nVerify: red -> green -> red"
+  },
+  "dev-verify": {
+    title: "Dev Verify",
+    input: "$ codex\n> 用 dev-verify 检查这次改动是否真的完成",
+    output: "Evidence\n  bash scripts/validate-repo.sh ✓\n  node --check site/app.js ✓\n  HTML parse ✓\nResult: ready to review"
   },
   "dev-code-review": {
     title: "Dev Code Review",
@@ -28,6 +38,11 @@ const skillPreviews = {
     title: "Dev Commit Writer",
     input: "$ codex\n> 我自审过了,只要 commit message",
     output: "docs: update Codex install instructions\n\nClarify manual skill sync and AGENTS.md template setup for Codex users."
+  },
+  "dev-finish": {
+    title: "Dev Finish",
+    input: "$ codex\n> 用 dev-finish 收尾这个分支",
+    output: "Branch state: clean\nRemote: origin/master checked\nAction: merge / push / keep branch\nResult: work closed with verification evidence"
   }
 };
 
@@ -50,8 +65,14 @@ const installOptions = {
 };
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PREVIEW_AUTO_CYCLE_MS = 10000;
 let previewRunId = 0;
+let heroTypingRunId = 0;
 let headerFrame = 0;
+let previewAutoCycleTimer = 0;
+let previewCountdownFrame = 0;
+let previewAutoCycling = false;
+let previewUserInteracted = false;
 const mobileNavMedia = window.matchMedia("(max-width: 680px)");
 
 const workflowFlows = [
@@ -74,21 +95,46 @@ function sleep(ms) {
   });
 }
 
-async function typeText(target, text, delay, runId) {
+async function typeText(target, text, delay, isCurrent = () => true) {
   if (!target) return false;
   if (reduceMotion) {
     target.textContent = text;
-    return runId === previewRunId;
+    return isCurrent();
   }
 
   target.textContent = "";
   for (let index = 0; index < text.length; index += 1) {
-    if (runId !== previewRunId) return false;
+    if (!isCurrent()) return false;
     target.textContent += text[index];
     await sleep(delay);
   }
 
-  return runId === previewRunId;
+  return isCurrent();
+}
+
+async function renderHeroTerminal() {
+  const terminal = document.querySelector(".hero-terminal");
+  const pre = terminal?.querySelector("pre");
+  const code = terminal?.querySelector("code");
+  if (!terminal || !pre || !code) return;
+
+  const text = code.dataset.sourceText || code.textContent;
+  const runId = heroTypingRunId + 1;
+  code.dataset.sourceText = text;
+  heroTypingRunId = runId;
+
+  if (!pre.querySelector(".hero-cursor")) {
+    const cursor = document.createElement("span");
+    cursor.className = "cursor hero-cursor";
+    cursor.setAttribute("aria-hidden", "true");
+    pre.append(cursor);
+  }
+
+  terminal.classList.add("is-typing");
+  const typed = await typeText(code, text, 17, () => runId === heroTypingRunId);
+  if (!typed) return;
+  terminal.classList.remove("is-typing");
+  terminal.classList.add("is-typed");
 }
 
 async function renderPreview(skill) {
@@ -108,7 +154,7 @@ async function renderPreview(skill) {
   panel.classList.remove("is-typing");
   panel.setAttribute("aria-busy", "true");
 
-  const inputDone = await typeText(input, data.input, 18, runId);
+  const inputDone = await typeText(input, data.input, 18, () => runId === previewRunId);
   if (!inputDone) return;
 
   if (!reduceMotion) await sleep(180);
@@ -117,7 +163,7 @@ async function renderPreview(skill) {
   panel.classList.remove("is-waiting");
   panel.classList.add("is-typing");
 
-  const outputDone = await typeText(output, data.output, 12, runId);
+  const outputDone = await typeText(output, data.output, 12, () => runId === previewRunId);
   if (!outputDone) return;
 
   panel.classList.remove("is-typing");
@@ -128,8 +174,110 @@ function setActiveButton(buttons, activeButton) {
   buttons.forEach((button) => {
     const isActive = button === activeButton;
     button.classList.toggle("is-active", isActive);
+    button.classList.remove("is-auto-counting");
+    button.style.removeProperty("--preview-progress-angle");
     button.setAttribute("aria-selected", String(isActive));
   });
+}
+
+function previewButtons() {
+  return [...document.querySelectorAll(".skill-tab")];
+}
+
+function stopPreviewAutoCycle() {
+  if (previewAutoCycleTimer) {
+    window.clearTimeout(previewAutoCycleTimer);
+    previewAutoCycleTimer = 0;
+  }
+
+  if (previewCountdownFrame) {
+    window.cancelAnimationFrame(previewCountdownFrame);
+    previewCountdownFrame = 0;
+  }
+
+  previewButtons().forEach((button) => {
+    button.classList.remove("is-auto-counting");
+    button.style.removeProperty("--preview-progress-angle");
+  });
+}
+
+function nextPreviewButton() {
+  const buttons = previewButtons();
+  const activeIndex = buttons.findIndex((button) => button.classList.contains("is-active"));
+  return buttons[(activeIndex + 1) % buttons.length] || buttons[0];
+}
+
+function schedulePreviewAutoCycle(button) {
+  if (previewUserInteracted || !button) return;
+
+  if (previewAutoCycleTimer) {
+    window.clearTimeout(previewAutoCycleTimer);
+  }
+
+  if (previewCountdownFrame) {
+    window.cancelAnimationFrame(previewCountdownFrame);
+    previewCountdownFrame = 0;
+  }
+
+  button.classList.add("is-auto-counting");
+  button.style.setProperty("--preview-progress-angle", "0turn");
+
+  if (!reduceMotion) {
+    const startedAt = window.performance.now();
+    const renderCountdown = (now) => {
+      if (previewUserInteracted || !button.classList.contains("is-active")) {
+        previewCountdownFrame = 0;
+        return;
+      }
+
+      const progress = Math.max(0, Math.min((now - startedAt) / PREVIEW_AUTO_CYCLE_MS, 1));
+      button.style.setProperty("--preview-progress-angle", `${progress}turn`);
+
+      if (progress < 1) {
+        previewCountdownFrame = window.requestAnimationFrame(renderCountdown);
+      } else {
+        previewCountdownFrame = 0;
+      }
+    };
+
+    previewCountdownFrame = window.requestAnimationFrame(renderCountdown);
+  }
+
+  previewAutoCycleTimer = window.setTimeout(() => {
+    previewAutoCycleTimer = 0;
+    if (previewUserInteracted) return;
+
+    const nextButton = nextPreviewButton();
+    if (!nextButton) return;
+
+    previewAutoCycling = true;
+    nextButton.click();
+    previewAutoCycling = false;
+  }, PREVIEW_AUTO_CYCLE_MS);
+}
+
+function activatePreview(button, userInitiated = false) {
+  if (!button) return;
+
+  if (userInitiated) {
+    previewUserInteracted = true;
+    stopPreviewAutoCycle();
+  }
+
+  setActiveButton(previewButtons(), button);
+  renderPreview(button.dataset.skill);
+
+  if (!userInitiated) {
+    schedulePreviewAutoCycle(button);
+  }
+}
+
+function startPreviewAutoCycle() {
+  const buttons = previewButtons();
+  if (buttons.length < 2 || previewAutoCycleTimer) return;
+
+  const activeButton = buttons.find((button) => button.classList.contains("is-active")) || buttons[0];
+  schedulePreviewAutoCycle(activeButton);
 }
 
 function workflowNodeBox(node, mapBox) {
@@ -204,8 +352,7 @@ function layoutWorkflowLines() {
 
 document.querySelectorAll(".skill-tab").forEach((button) => {
   button.addEventListener("click", () => {
-    setActiveButton(document.querySelectorAll(".skill-tab"), button);
-    renderPreview(button.dataset.skill);
+    activatePreview(button, !previewAutoCycling);
   });
 });
 
@@ -332,4 +479,6 @@ if ("ResizeObserver" in window) {
   }
 }
 
+renderHeroTerminal();
 renderPreview("dev-auto");
+startPreviewAutoCycle();
