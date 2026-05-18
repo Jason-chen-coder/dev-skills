@@ -18,7 +18,7 @@
   ·
   <a href="./docs/onboarding.md">Onboarding</a>
   ·
-  <a href="./skills/dev-workflow/">Start with dev-workflow</a>
+  <a href="./skills/dev-auto/">Start with dev-auto</a>
 </p>
 
 ---
@@ -27,7 +27,7 @@
 
 |  | Skill | 一句话职责 | 触发 |
 |:---:|---|---|---|
-| 🧭 | [`dev-workflow`](./skills/dev-workflow/) | 入口推荐器,不调起任何 skill | 不知道下一步 / 失败恢复 |
+| 🧭 | [`dev-auto`](./skills/dev-auto/) | 入口推荐器,不调起任何 skill | 不知道下一步 / 失败恢复 |
 | 📋 | [`dev-spec`](./skills/dev-spec/) | 模糊需求 → 结构化 spec | 写代码前对齐需求 |
 | 🏗 | [`dev-plan`](./skills/dev-plan/) | spec → Critic-approved 实施 plan | 复杂功能,写代码前 |
 | 🧪 | [`dev-tdd`](./skills/dev-tdd/) | 红绿重构编码循环 | 写生产代码前 |
@@ -139,7 +139,7 @@ git pull --ff-only
 CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
 mkdir -p "$CODEX_SKILLS_DIR"
 
-for skill in dev-workflow dev-spec dev-plan dev-tdd dev-fix dev-verify dev-code-review dev-commit-writer dev-finish; do
+for skill in dev-auto dev-spec dev-plan dev-tdd dev-fix dev-verify dev-code-review dev-commit-writer dev-finish; do
   rm -rf "$CODEX_SKILLS_DIR/$skill"
 done
 
@@ -171,10 +171,10 @@ npx skills add Jason-chen-coder/dev-skills --global --force     # 全局
 
 ## 💡 使用
 
-直接在对话里按需触发 skill,或先跑 `dev-workflow` 让它指路:
+直接在对话里按需触发 skill,或先跑 `dev-auto` 让它指路:
 
 ```text
-/dev-workflow                # 不知道下一步,先问它
+/dev-auto                # 不知道下一步,先问它
 /dev-spec    新需求描述...    # 需求对齐 → 产出 spec
 /dev-plan    spec 路径        # spec → 实施 plan
 /dev-tdd                     # 写生产代码前走红绿重构
@@ -205,7 +205,7 @@ flowchart LR
   Why["docs/why-dev-baseline.md<br/>failure mode rationale"]
   Policy["docs/team-policy.md<br/>详细团队治理"]
   Team["CLAUDE.md.template / AGENTS.md.template<br/>短版 always-on 规则"]
-  Workflow["dev-workflow<br/>只指路,不调起"]
+  Workflow["dev-auto<br/>只指路,不调起"]
 
   Why --> Baseline
   Baseline --> Team
@@ -249,7 +249,7 @@ flowchart TD
   GitCommit --> Finish["dev-finish"]
 ```
 
-> **松耦合保证**:`dev-workflow` 是**纯建议器**,绝不调起任何 skill。其他 8 个 skill 的「不互调」Hard rule 100% 有效。
+> **松耦合保证**:`dev-auto` 是**纯建议器**,绝不调起任何 skill。其他 8 个 skill 的「不互调」Hard rule 100% 有效。
 
 <details>
 <summary><b>📂 中间产物路径 + 自动 Refs 追溯</b></summary>
@@ -261,7 +261,7 @@ flowchart TD
 | `dev-spec` | `.claude/artifacts/designs/<feature>.md` |
 | `dev-plan` | `.claude/artifacts/plans/<feature>.md` |
 | `dev-fix` | `.claude/artifacts/fixes/<slug>.md` |
-| `dev-workflow` / `dev-tdd` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish` | 无 artifact,只输出到 chat |
+| `dev-auto` / `dev-tdd` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish` | 无 artifact,只输出到 chat |
 
 `dev-commit-writer` 和 `dev-code-review`(READY 时)会扫 `.claude/artifacts/`,在 commit message footer 自动加 `Refs: <type>/<slug>`。后续可用 `git log --grep="Refs:"` 检索 commit ↔ artifact 关联。
 
@@ -280,7 +280,7 @@ flowchart TD
 | 声称完成 / ready | `dev-verify` |
 | 一句话 hotfix | 跳过 spec/plan,但仍走 `dev-tdd` → `dev-verify` → `dev-code-review` |
 | 分支收尾 | `dev-finish` |
-| 不知道该跑哪个 | `dev-workflow` |
+| 不知道该跑哪个 | `dev-auto` |
 
 </details>
 
@@ -295,7 +295,7 @@ flowchart TD
 | `dev-plan` | `BELOW_CONSENSUS_THRESHOLD` |
 | `dev-fix` | `BELOW_CONFIDENCE_THRESHOLD` / `NEEDS_DESIGN_CHANGE` |
 
-任何 skill 卡住时,跑 `dev-workflow --recover [slug]`,它有完整决策表覆盖各阻塞的恢复路径。
+任何 skill 卡住时,跑 `dev-auto --recover [slug]`,它有完整决策表覆盖各阻塞的恢复路径。
 
 </details>
 

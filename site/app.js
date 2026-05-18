@@ -1,8 +1,8 @@
 const skillPreviews = {
-  "dev-workflow": {
-    title: "Dev Workflow",
-    input: "$ codex\n> 用 dev-workflow 帮我串起来,下一步该做什么?",
-    output: "━━━ Dev Workflow ━━━\n路径   : feature\n复杂度 : moderate\n下一步\n  $ dev-spec --default user-export\n为什么:先把模糊需求拆成可验证 spec。"
+  "dev-auto": {
+    title: "Dev Auto",
+    input: "$ codex\n> 用 dev-auto 帮我串起来,下一步该做什么?",
+    output: "━━━ Dev Auto ━━━\n路径   : feature\n复杂度 : moderate\n下一步\n  $ dev-spec --default user-export\n为什么:先把模糊需求拆成可验证 spec。"
   },
   "dev-spec": {
     title: "Dev Spec",
@@ -52,6 +52,7 @@ const installOptions = {
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 let previewRunId = 0;
 let headerFrame = 0;
+const mobileNavMedia = window.matchMedia("(max-width: 680px)");
 
 const workflowFlows = [
   { id: "start-workflow", from: "start", to: "workflow", kind: "vertical" },
@@ -247,6 +248,53 @@ function updateHeaderState() {
   header.classList.toggle("is-condensed", window.scrollY > 24);
 }
 
+function setNavMenuOpen(isOpen) {
+  const header = document.querySelector(".site-header");
+  const toggle = document.querySelector(".nav-toggle");
+  if (!header || !toggle) return;
+
+  const shouldOpen = isOpen && mobileNavMedia.matches;
+  header.classList.toggle("is-menu-open", shouldOpen);
+  toggle.setAttribute("aria-expanded", String(shouldOpen));
+  toggle.setAttribute("aria-label", shouldOpen ? "关闭导航菜单" : "打开导航菜单");
+}
+
+function setupMobileNav() {
+  const header = document.querySelector(".site-header");
+  const toggle = document.querySelector(".nav-toggle");
+  const nav = document.querySelector(".nav-links");
+  if (!header || !toggle || !nav) return;
+
+  toggle.addEventListener("click", () => {
+    if (!mobileNavMedia.matches) {
+      setNavMenuOpen(false);
+      return;
+    }
+
+    const nextState = toggle.getAttribute("aria-expanded") !== "true";
+    setNavMenuOpen(nextState);
+  });
+
+  nav.addEventListener("click", (event) => {
+    if (event.target.closest("a")) {
+      setNavMenuOpen(false);
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!header.contains(event.target)) {
+      setNavMenuOpen(false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+      setNavMenuOpen(false);
+      toggle.focus();
+    }
+  });
+}
+
 function scheduleHeaderStateUpdate() {
   if (headerFrame) return;
 
@@ -256,9 +304,15 @@ function scheduleHeaderStateUpdate() {
   });
 }
 
+setupMobileNav();
 updateHeaderState();
 window.addEventListener("load", updateHeaderState);
-window.addEventListener("resize", updateHeaderState);
+window.addEventListener("resize", () => {
+  updateHeaderState();
+  if (!mobileNavMedia.matches) {
+    setNavMenuOpen(false);
+  }
+});
 window.addEventListener("scroll", scheduleHeaderStateUpdate, { passive: true });
 
 layoutWorkflowLines();
@@ -278,4 +332,4 @@ if ("ResizeObserver" in window) {
   }
 }
 
-renderPreview("dev-workflow");
+renderPreview("dev-auto");

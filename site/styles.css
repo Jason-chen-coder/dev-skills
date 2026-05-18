@@ -55,6 +55,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 18px;
   width: 100%;
   min-height: 68px;
   margin: 0 auto;
@@ -91,6 +92,7 @@ code {
 .brand {
   display: inline-flex;
   align-items: center;
+  flex: 0 0 auto;
   gap: 10px;
   color: var(--text);
   font-weight: 780;
@@ -117,6 +119,62 @@ code {
 .nav-links a:hover,
 .nav-links a:focus-visible {
   color: var(--text);
+}
+
+.nav-toggle {
+  display: none;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background-color 180ms var(--ease),
+    color 180ms var(--ease);
+}
+
+.nav-toggle:hover,
+.nav-toggle:focus-visible {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent-strong);
+}
+
+.nav-toggle span {
+  position: absolute;
+  width: 17px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition:
+    transform 180ms var(--ease),
+    opacity 120ms ease;
+}
+
+.nav-toggle span:nth-child(1) {
+  transform: translateY(-6px);
+}
+
+.nav-toggle span:nth-child(3) {
+  transform: translateY(6px);
+}
+
+.site-header.is-menu-open .nav-toggle span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.site-header.is-menu-open .nav-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+.site-header.is-menu-open .nav-toggle span:nth-child(3) {
+  transform: rotate(-45deg);
 }
 
 .section {
@@ -848,7 +906,50 @@ details p {
   }
 
   .nav-links {
-    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 16px;
+    z-index: 30;
+    display: grid;
+    gap: 4px;
+    width: min(220px, calc(100vw - 32px));
+    padding: 8px;
+    border: 1px solid color-mix(in srgb, var(--line-strong) 82%, transparent);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--surface-strong) 94%, transparent);
+    box-shadow: 0 18px 46px rgba(39, 45, 51, 0.16);
+    color: var(--text);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition:
+      opacity 170ms var(--ease),
+      transform 170ms var(--ease),
+      visibility 0s linear 170ms;
+  }
+
+  .site-header.is-menu-open .nav-links {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+
+  .nav-links a {
+    min-height: 42px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    color: var(--muted);
+  }
+
+  .nav-links a:hover,
+  .nav-links a:focus-visible {
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    color: var(--text);
+  }
+
+  .nav-toggle {
+    display: inline-flex;
   }
 
   .section,

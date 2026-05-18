@@ -1,11 +1,11 @@
 ---
-name: dev-workflow
-description: Use ONLY when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain. Triggers on phrases like "用 dev-workflow / 帮我串起来 / 从需求到 commit / 完整跑 / end to end / 走完整流程 / 下一步该做什么 / what's next". Reads `.claude/artifacts/{designs,plans,fixes}/` to detect current phase (existence + terminal status only — no deep parsing) and recommends next step across dev-spec, dev-plan, dev-tdd, dev-fix, dev-verify, dev-code-review, dev-commit-writer, and dev-finish. Does NOT invoke other skills, write code, or produce artifacts. Optional arguments — `[slug]`; `--status [slug]`; `--next [slug]`; `--recover [slug]`.
+name: dev-auto
+description: Use ONLY when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain. Triggers on phrases like "用 dev-auto / 帮我串起来 / 从需求到 commit / 完整跑 / end to end / 走完整流程 / 下一步该做什么 / what's next". Reads `.claude/artifacts/{designs,plans,fixes}/` to detect current phase (existence + terminal status only — no deep parsing) and recommends next step across dev-spec, dev-plan, dev-tdd, dev-fix, dev-verify, dev-code-review, dev-commit-writer, and dev-finish. Does NOT invoke other skills, write code, or produce artifacts. Optional arguments — `[slug]`; `--status [slug]`; `--next [slug]`; `--recover [slug]`.
 ---
 
-# Dev Workflow
+# Dev Auto
 
-**指路,不替用户跑**。`dev-workflow` 是 dev-skills 工具链的**入口推荐器** —— 接需求 / 接「下一步该做什么」的问题,**只输出建议**,绝不调起其他 skill,绝不写代码,绝不产出 artifact。
+**指路,不替用户跑**。`dev-auto` 是 dev-skills 工具链的**入口推荐器** —— 接需求 / 接「下一步该做什么」的问题,**只输出建议**,绝不调起其他 skill,绝不写代码,绝不产出 artifact。
 
 它服务的是「我有个需求,该怎么走完整流程」「我跑完 X 了,该跑什么」「X skill 给我返回 BLOCK / REJECT,我该回哪一步」这三类场景。
 
@@ -17,7 +17,7 @@ Use this skill only when the user explicitly wants end-to-end guided workflow th
 
 Trigger phrases include:
 
-- `用 dev-workflow`
+- `用 dev-auto`
 - `帮我串起来`
 - `从需求到 commit`
 - `完整跑`
@@ -44,13 +44,13 @@ Optional arguments:
 baseline 与本 skill 的关联:
 
 - **不假设** —— 路径(feature / bug / hotfix)和复杂度模糊时,**列选项让用户选**,不替用户拍板。
-- **最小代码** —— **dev-workflow 自己也是最小流程**:不深读 artifacts、不维护 state file、不产出 doc。每次调用都从仓库现状现扫现答。
+- **最小代码** —— **dev-auto 自己也是最小流程**:不深读 artifacts、不维护 state file、不产出 doc。每次调用都从仓库现状现扫现答。
 
 ---
 
 ## Step 1 — 选模式
 
-按 `$ARGUMENTS`(所有模式都可选 `[slug]` 后缀,例 `dev-workflow --status user-export`):
+按 `$ARGUMENTS`(所有模式都可选 `[slug]` 后缀,例 `dev-auto --status user-export`):
 
 | 模式 | 触发 | 行为 |
 |---|---|---|
@@ -130,7 +130,7 @@ ls -la .claude/artifacts/fixes/     # dev-fix 产物
 请改其中一个的名字让它们分开,例如:
   fixes/<slug>.md → fixes/<slug>-bug.md
 
-改完再来跑 dev-workflow。
+改完再来跑 dev-auto。
 ```
 
 **绝不擅自合并或假设语义**(它们可能是同一工作单元的两面,也可能是凑巧重名)。让用户拍板。
@@ -148,7 +148,7 @@ ls -la .claude/artifacts/fixes/     # dev-fix 产物
 
 ### Terminal status 解析(只读 terminal 信号)
 
-读匹配到的 artifact 文件**第一行 frontmatter / quote block 里的 Status 字段**,只识别以下**对 dev-workflow 有意义**的 terminal status:
+读匹配到的 artifact 文件**第一行 frontmatter / quote block 里的 Status 字段**,只识别以下**对 dev-auto 有意义**的 terminal status:
 
 | 文件 | 关心的 terminal status | 含义 |
 |---|---|---|
@@ -214,7 +214,7 @@ worktree 命名遵守 `CLAUDE.md.template` 的规范:`codex/<short-slug>` 分支
 **严格按下列三段输出**,不要加寒暄、不要输出多余分析:
 
 ```
-━━━ Dev Workflow ━━━
+━━━ Dev Auto ━━━
 路径   : feature | bug | hotfix
 复杂度 : simple | moderate | complex
 Slug   : <feature-slug>(自动推断,你可以纠正)
@@ -239,7 +239,7 @@ Slug   : <feature-slug>(自动推断,你可以纠正)
 
 ### 推荐链对照表
 
-下面是**默认推荐**,用户可以偏离(但偏离时 dev-workflow 应在下一次 `--status` 时容忍):
+下面是**默认推荐**,用户可以偏离(但偏离时 dev-auto 应在下一次 `--status` 时容忍):
 
 | 路径 \ 复杂度 | simple | moderate | complex |
 |---|---|---|---|
@@ -368,7 +368,7 @@ $ <skill> <args>
 
 ## Hard rules
 
-- **不要** 调起其他 skill。`dev-workflow` 永远是建议器,用户自己跑。
+- **不要** 调起其他 skill。`dev-auto` 永远是建议器,用户自己跑。
 - **不要** 写代码。
 - **不要** 产出 artifact 文件(没有 `.claude/artifacts/workflows/` 这种东西)。
 - **不要** 深读 artifact 内容 —— 只读存在性 + frontmatter status 字段。读 AC / hypothesis / plan body 就违反「最小代码」。
@@ -377,13 +377,13 @@ $ <skill> <args>
 - **不要** 在 `--next` / `--status` 模式里输出多余信息 —— 这两个模式追求极简。
 - **不要** 在 `--recover` 模式建议「再试一次」—— 必须是修复 / 换路径 / 升模式 / 转 skill,不许重复同操作。
 - **不要** 把 hotfix 路径用在 complex 改动上 —— 警告并建议升级到 feature/bug 路径。
-- **不要** 假装能看到代码改动 —— dev-workflow 不读源码,只看 artifacts。代码状态由用户告知。
+- **不要** 假装能看到代码改动 —— dev-auto 不读源码,只看 artifacts。代码状态由用户告知。
 
 ---
 
 ## 与其他 skill 的关系
 
-- **入口侧**:dev-workflow 是**所有路径的可选入口**。用户可以直接跑某个 skill,也可以先跑 dev-workflow 拿推荐再决定。
-- **不调用**:dev-workflow 推荐 `dev-spec` 时,**用户**自己执行 `dev-spec`,不是 dev-workflow 调起。
-- **下游回流**:用户跑完某 skill 后,可以再来 dev-workflow 问下一步,也可以自己看流程图直接进。
-- **触发竞争**:dev-workflow 的 description 严格限制只在用户**显式要求 workflow / 串起来 / 完整跑**时触发,避免和 dev-spec / dev-fix 等具体 skill 抢触发。
+- **入口侧**:dev-auto 是**所有路径的可选入口**。用户可以直接跑某个 skill,也可以先跑 dev-auto 拿推荐再决定。
+- **不调用**:dev-auto 推荐 `dev-spec` 时,**用户**自己执行 `dev-spec`,不是 dev-auto 调起。
+- **下游回流**:用户跑完某 skill 后,可以再来 dev-auto 问下一步,也可以自己看流程图直接进。
+- **触发竞争**:dev-auto 的 description 严格限制只在用户**显式要求 workflow / 串起来 / 完整跑**时触发,避免和 dev-spec / dev-fix 等具体 skill 抢触发。

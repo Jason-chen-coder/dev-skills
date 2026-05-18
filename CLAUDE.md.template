@@ -42,7 +42,7 @@
 
 ## 4. dev-skills 路由
 
-- 不知道下一步时跑 `dev-workflow`;它只指路,不调起其他 skill。
+- 不知道下一步时跑 `dev-auto`;它只指路,不调起其他 skill。
 - 复杂新功能先走 `dev-spec` → 可选 `dev-plan --deliberate`。
 - feature / refactor / direct hotfix 写生产代码前默认走 `dev-tdd`。
 - bug 报告走 `dev-fix`;它自带 failing regression test 和 red→green→red,不要再追加一轮 `dev-tdd`。

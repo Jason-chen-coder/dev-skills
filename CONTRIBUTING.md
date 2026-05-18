@@ -36,7 +36,7 @@
 
 ### 类型 B:Orchestrator / Recommender skill(特殊例外)
 
-只有**极少数** skill 属于这类(目前只有 `dev-workflow`)。**这类 skill 不产 artifact、不持久化 state、不调起其他 skill,只指路**。准入标准不同:
+只有**极少数** skill 属于这类(目前只有 `dev-auto`)。**这类 skill 不产 artifact、不持久化 state、不调起其他 skill,只指路**。准入标准不同:
 
 | 7 问 | 原子 skill 标准 | Orchestrator skill 标准 |
 |---|---|---|
@@ -91,7 +91,7 @@
    - `skills/dev-code-review/references/dev-baseline.md`
    - `skills/dev-commit-writer/references/dev-baseline.md`
    - `skills/dev-finish/references/dev-baseline.md`
-   - `skills/dev-workflow/references/dev-baseline.md`
+   - `skills/dev-auto/references/dev-baseline.md`
 5. **CHANGELOG 必填**:在 `CHANGELOG.md` 加 entry。
 6. **通知**:merge 后在团队群通知,并附 PR 链接。
 

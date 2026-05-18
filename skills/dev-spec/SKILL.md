@@ -176,7 +176,7 @@ Ontology: User, Order, ExportJob (vs Wave {n-1}: 1 stable, 1 renamed, 1 new — 
   - 「需要数据团队提供:历史导出量级,决定是否需要异步」
 - 在 chat 给用户:「spec 标 STUCK,需要外部信息。建议先去拿:[列出具体 unblock 项],拿到后回来跑 `dev-spec --deep <slug>` 续 wave。」
 
-dev-workflow 看到 spec status STUCK → Phase 1-blocked → 推荐用户处理 Open questions 而非进 dev-plan。
+dev-auto 看到 spec status STUCK → Phase 1-blocked → 推荐用户处理 Open questions 而非进 dev-plan。
 
 ### STUCK 触发的客观判据(防 LLM 软通过)
 

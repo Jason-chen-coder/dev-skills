@@ -156,7 +156,7 @@ Add a `#preview` section with 6 tab buttons, a left terminal panel, and a right 
 
 ```html
 <div class="skill-tabs" role="tablist" aria-label="Skill runtime previews">
-  <button class="skill-tab is-active" type="button" data-skill="dev-workflow">dev-workflow</button>
+  <button class="skill-tab is-active" type="button" data-skill="dev-auto">dev-auto</button>
   <button class="skill-tab" type="button" data-skill="dev-spec">dev-spec</button>
   <button class="skill-tab" type="button" data-skill="dev-plan">dev-plan</button>
   <button class="skill-tab" type="button" data-skill="dev-fix">dev-fix</button>
@@ -181,10 +181,10 @@ In `site/app.js`, define:
 
 ```js
 const skillPreviews = {
-  "dev-workflow": {
-    title: "Dev Workflow",
-    input: "$ codex\n> 用 dev-workflow 帮我串起来,下一步该做什么?",
-    output: "━━━ Dev Workflow ━━━\n路径   : feature\n复杂度 : moderate\n下一步\n  $ dev-spec --default user-export\n为什么:先把模糊需求拆成可验证 spec。"
+  "dev-auto": {
+    title: "Dev Auto",
+    input: "$ codex\n> 用 dev-auto 帮我串起来,下一步该做什么?",
+    output: "━━━ Dev Auto ━━━\n路径   : feature\n复杂度 : moderate\n下一步\n  $ dev-spec --default user-export\n为什么:先把模糊需求拆成可验证 spec。"
   },
   "dev-spec": {
     title: "Dev Spec",

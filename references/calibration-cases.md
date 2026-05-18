@@ -8,7 +8,7 @@
 - **Cases 7-8**:`dev-spec` 的 ambiguity 维度评分校准。
 - **Cases 9-10**:`dev-plan` 的 Critic verdict(APPROVED / REVISE / REJECT)校准。
 - **Cases 11-12**:`dev-fix` 的 escalation 决策(BELOW vs continue)+ Defense-in-depth 边界判断。
-- **Cases 13-14**:`dev-workflow` 的 path/complexity 分类 + `--recover` 决策路径。
+- **Cases 13-14**:`dev-auto` 的 path/complexity 分类 + `--recover` 决策路径。
 
 ---
 
@@ -369,11 +369,11 @@ Commit
 
 ---
 
-## Case 13 — dev-workflow path/complexity 分类
+## Case 13 — dev-auto path/complexity 分类
 
 **场景**:用户说「帮我做用户头像上传功能,要支持 jpg/png,自动压缩,存 S3,前端进度条。」
 
-**关键问**:dev-workflow 应判定为什么 path / 什么 complexity?推荐链是什么?
+**关键问**:dev-auto 应判定为什么 path / 什么 complexity?推荐链是什么?
 
 **Canonical answer**:
 
@@ -392,13 +392,13 @@ Commit
 
 ---
 
-## Case 14 — dev-workflow `--recover` 决策(BLOCK vs FIX P1)
+## Case 14 — dev-auto `--recover` 决策(BLOCK vs FIX P1)
 
 **场景 A**:用户跑 dev-code-review,Verdict = ❌ **BLOCK**,理由 = 「P0:secret 泄漏,生产 .env 入了 git」。
 
 **场景 B**:用户跑 dev-code-review,Verdict = ⚠ **FIX P1**,理由 = 「P1:console.log 残留(2 处),P1:边界 case 未处理(1 处)」。
 
-**关键问**:两种场景 dev-workflow `--recover` 推荐路径**有何不同**?
+**关键问**:两种场景 dev-auto `--recover` 推荐路径**有何不同**?
 
 **Canonical answer**:
 
@@ -449,7 +449,7 @@ Commit
    - dev-spec 2 个 case:15 分钟,默写 dimension 打分 + 下一目标
    - dev-plan 2 个 case:15 分钟,默写 Critic verdict + 拒收/通过依据
    - dev-fix 2 个 case:15 分钟,默写 escalation 决策 + defense 边界判断
-   - dev-workflow 2 个 case:15 分钟,默写 path/complexity 分类 + recover 路径
+   - dev-auto 2 个 case:15 分钟,默写 path/complexity 分类 + recover 路径
    **不许互相讨论。**
 2. **15 分钟对答案**:打印或共享,看每人答案对比。
 3. **30 分钟讨论分歧**:

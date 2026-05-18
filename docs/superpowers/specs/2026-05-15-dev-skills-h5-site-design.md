@@ -61,7 +61,7 @@
 
 展示 6 个 skill 卡片:
 
-- `dev-workflow`:入口推荐器,只指路。
+- `dev-auto`:入口推荐器,只指路。
 - `dev-spec`:模糊需求到结构化 spec。
 - `dev-plan`:spec 到 Critic-approved 实施 plan。
 - `dev-fix`:root-cause-driven bug 修复。
@@ -96,7 +96,7 @@
 - 展示该 skill 的代表性结果,不是完整长报告。
 - 输出必须压缩到适合官网阅读的摘要形态。
 - 明确体现每个 skill 的差异:
-  - `dev-workflow`:推荐下一步和命令。
+  - `dev-auto`:推荐下一步和命令。
   - `dev-spec`:先列歧义问题,再产出 spec。
   - `dev-plan`:输出方案、风险、ADR 摘要。
   - `dev-fix`:展示 reproduce -> root cause -> verification。
@@ -145,7 +145,7 @@ Commit
 
 同时说明:
 
-- `dev-workflow` 是推荐器,不调用其他 skill。
+- `dev-auto` 是推荐器,不调用其他 skill。
 - `dev-code-review` 是 commit 前默认安全路径。
 - `dev-commit-writer` 只用于用户明确跳过 review 且只要 commit message 的场景。
 
@@ -191,7 +191,7 @@ Claude Code 区域必须明确:
 
 - Claude Code 和 Codex 安装方式为什么不一样?
 - 升级 skill 会不会覆盖 `CLAUDE.md` / `AGENTS.md`?
-- 什么时候用 `dev-workflow`?
+- 什么时候用 `dev-auto`?
 - 准备 commit 时为什么默认走 `dev-code-review`?
 
 ## 技术设计
@@ -262,7 +262,7 @@ Website: https://jason-chen-coder.github.io/dev-skills/
 ## 交互设计
 
 - 安装 tabs 默认选 Claude Code。
-- Skill Runtime Preview tabs 默认选 `dev-workflow`,因为它是入口推荐器。
+- Skill Runtime Preview tabs 默认选 `dev-auto`,因为它是入口推荐器。
 - Codex tab 明确展示 `$CODEX_HOME` fallback。
 - 命令块提供复制按钮。
 - 移动端 tabs 可横向滚动或堆叠为 segmented controls。

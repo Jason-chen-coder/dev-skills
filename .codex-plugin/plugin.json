@@ -1,7 +1,7 @@
 {
   "name": "dev-skills",
   "version": "0.8.0",
-  "description": "A team development workflow skill suite for Codex: dev-workflow, dev-spec, dev-plan, dev-tdd, dev-fix, dev-verify, dev-code-review, dev-commit-writer, and dev-finish.",
+  "description": "A team development workflow skill suite for Codex: dev-auto, dev-spec, dev-plan, dev-tdd, dev-fix, dev-verify, dev-code-review, dev-commit-writer, and dev-finish.",
   "author": {
     "name": "Jason-chen-coder",
     "url": "https://github.com/Jason-chen-coder"
@@ -33,7 +33,7 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Use dev-workflow to guide this feature from idea to reviewed commit.",
+      "Use dev-auto to guide this feature from idea to reviewed commit.",
       "Run the dev-skills path for this bug fix."
     ],
     "websiteURL": "https://github.com/Jason-chen-coder/dev-skills",

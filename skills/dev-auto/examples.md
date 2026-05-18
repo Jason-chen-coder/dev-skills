@@ -1,4 +1,4 @@
-# dev-workflow · Examples
+# dev-auto · Examples
 
 具体反例集。SKILL.md 描述了规则,本文件给真实「需求 → 推荐链 → 失败恢复」的样例,让实际输出对齐这里的笔法。
 
@@ -14,9 +14,9 @@
 
 ## 例 1 — 默认模式,complex feature 完整链
 
-**用户**:「用 dev-workflow 帮我做用户自助导出功能,GDPR 合规要的。」
+**用户**:「用 dev-auto 帮我做用户自助导出功能,GDPR 合规要的。」
 
-**dev-workflow 内部**:
+**dev-auto 内部**:
 
 - Path 检测:「做」「功能」→ feature
 - 复杂度:GDPR / 异步任务 / 邮件 / S3 / PII → **complex**
@@ -26,7 +26,7 @@
 **期望输出**:
 
 ```
-━━━ Dev Workflow ━━━
+━━━ Dev Auto ━━━
 路径   : feature
 复杂度 : complex(涉及 PII / 异步任务 / 邮件投递 / S3 存储)
 Slug   : user-export(自动推断,你可纠正)
@@ -57,11 +57,11 @@ Slug   : user-export(自动推断,你可纠正)
 
 ## 例 2 — `--status` 中途定位
 
-**场景**:用户跑完 `dev-spec --default user-export`,artifact 已落 `.claude/artifacts/designs/user-export.md`(无论 Status 是 DRAFT / ALIGNED / IMPLEMENTED,dev-workflow 都视作 spec 已存在),plan 还没跑。用户来问。
+**场景**:用户跑完 `dev-spec --default user-export`,artifact 已落 `.claude/artifacts/designs/user-export.md`(无论 Status 是 DRAFT / ALIGNED / IMPLEMENTED,dev-auto 都视作 spec 已存在),plan 还没跑。用户来问。
 
-**用户**:「`dev-workflow --status user-export`」(显式带 slug,准确)
+**用户**:「`dev-auto --status user-export`」(显式带 slug,准确)
 
-**dev-workflow 内部**:
+**dev-auto 内部**:
 
 - $ARGUMENTS 含 slug `user-export`,直接用
 - 扫 designs/:看到 `user-export.md`(spec 只看存在性,**不看 lifecycle status**)
@@ -80,15 +80,15 @@ Phase 1:spec 已存在(.claude/artifacts/designs/user-export.md)
 ```
 
 **不要**输出「下一步该跑 dev-plan」 —— 那是 `--next` 的事。`--status` 只定位。
-**也不要**输出 spec 的 lifecycle status(DRAFT/ALIGNED/IMPLEMENTED)—— 那是用户手动管理的字段,dev-workflow 不关心。
+**也不要**输出 spec 的 lifecycle status(DRAFT/ALIGNED/IMPLEMENTED)—— 那是用户手动管理的字段,dev-auto 不关心。
 
 ---
 
 ## 例 3 — `--next` 极简下一步
 
-**用户**:「`dev-workflow --next user-export`」(显式带 slug,即使仓库只有这一个 in-flight,也建议显式以防误匹配)
+**用户**:「`dev-auto --next user-export`」(显式带 slug,即使仓库只有这一个 in-flight,也建议显式以防误匹配)
 
-**dev-workflow 内部**:同例 2 的状态推断。
+**dev-auto 内部**:同例 2 的状态推断。
 
 **期望输出**:
 
@@ -103,9 +103,9 @@ $ dev-plan --deliberate user-export
 
 ## 例 4 — `--recover` 处理 dev-code-review FIX P1
 
-**用户**:「`dev-workflow --recover user-export` —— 我跑 dev-code-review 给我 FIX P1,说有个 console.log 残留 + 一处 cart edge case 没处理。怎么办?」(显式 slug 让 recover 输出能精确指出 commit 该关联哪个 spec/plan,有助于修完后重跑 dev-code-review 自动加 Refs)
+**用户**:「`dev-auto --recover user-export` —— 我跑 dev-code-review 给我 FIX P1,说有个 console.log 残留 + 一处 cart edge case 没处理。怎么办?」(显式 slug 让 recover 输出能精确指出 commit 该关联哪个 spec/plan,有助于修完后重跑 dev-code-review 自动加 Refs)
 
-**dev-workflow 内部**:
+**dev-auto 内部**:
 
 - 失败 skill:dev-code-review
 - 失败信号:Verdict = FIX P1(2 处问题)
@@ -139,9 +139,9 @@ $ dev-plan --deliberate user-export
 
 ## 例 5 — Unclear 路径,列选项问用户
 
-**用户**:「dev-workflow 帮我看看 inventory 这块。」
+**用户**:「dev-auto 帮我看看 inventory 这块。」
 
-**dev-workflow 内部**:
+**dev-auto 内部**:
 
 - Path 检测:「看看 X」语义模糊。可能是 (a) 想加新功能 / (b) 报 bug / (c) 想 review 现有代码
 - 不假设,问
@@ -149,7 +149,7 @@ $ dev-plan --deliberate user-export
 **期望输出**:
 
 ```
-━━━ Dev Workflow ━━━
+━━━ Dev Auto ━━━
 你的需求路径不确定,请选一种:
 
   (a) 新功能 / 增强 inventory
@@ -170,13 +170,13 @@ $ dev-plan --deliberate user-export
 
 ---
 
-## 反模式备忘(不要这样跑 dev-workflow)
+## 反模式备忘(不要这样跑 dev-auto)
 
-- ❌ **替用户调起其他 skill** —— dev-workflow 永远是建议器,违反就成了 orchestrator,破坏松耦合原则
+- ❌ **替用户调起其他 skill** —— dev-auto 永远是建议器,违反就成了 orchestrator,破坏松耦合原则
 - ❌ **深读 artifact 内容做精细推断** —— 例如读 spec 的 AC 表来判断「应不应该升 plan」。**只读存在性 + frontmatter status**,深推断让用户做
 - ❌ **维护跨调用的 state file** —— 没有 `.claude/artifacts/workflows/` 这种东西。每次调用从仓库现状重扫
 - ❌ **在 `--next` / `--status` 模式里输出 50 行说明** —— 这两个模式追求极简,3-5 行就够
 - ❌ **在 `--recover` 推荐「再试一次」** —— 失败有因,必须修复或换路径
 - ❌ **把 hotfix 推荐给 complex 改动** —— 例如用户说「线上紧急,加个跨多服务的鉴权」,这不是 hotfix,警告并建议升 complex feature
-- ❌ **假装看到代码改动** —— dev-workflow 不读源码。「代码状态」靠 artifacts(spec/plan/fix 文件)+ 用户告知
+- ❌ **假装看到代码改动** —— dev-auto 不读源码。「代码状态」靠 artifacts(spec/plan/fix 文件)+ 用户告知
 - ❌ **路径 unclear 时硬猜** —— 模糊就列选项问,这是 baseline「不假设」的最低落地
