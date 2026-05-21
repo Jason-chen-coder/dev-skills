@@ -6,7 +6,7 @@
   <title>dev-skills - AI 开发工作流 Skill 库</title>
   <meta name="description" content="9 个 AI 开发 skill,加上短版 always-on 规则、baseline rationale 和 team policy guide,串起需求对齐、实施方案、TDD、Bug 修复、验证、代码评审和分支收尾。">
   <link rel="preload" href="./assets/logo.png" as="image">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=i18n-header-switch">
 </head>
 <body>
   <header class="site-header">
@@ -14,11 +14,6 @@
       <img src="./assets/logo.png" alt="" width="34" height="34">
       <span>dev-skills</span>
     </a>
-    <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-haspopup="true" aria-label="打开导航菜单">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
     <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
       <a href="#skills">Skills</a>
       <a href="#rules">Rules</a>
@@ -27,6 +22,17 @@
       <a href="#install">Install</a>
       <a href="https://github.com/Jason-chen-coder/dev-skills">GitHub</a>
     </nav>
+    <div class="header-actions">
+      <div class="language-switch" data-language-switch role="group" aria-label="Language">
+        <button class="is-active" type="button" data-language-option="zh" aria-pressed="true">中文</button>
+        <button type="button" data-language-option="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-haspopup="true" aria-label="打开导航菜单">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
   </header>
 
   <main id="top">
@@ -191,167 +197,47 @@
     <section id="workflow" class="section workflow-section">
       <div class="section-heading">
         <p class="eyebrow">Workflow</p>
-        <h2>两条主路径,最后都回到提交前 review。</h2>
+        <h2>纵向流程图,三条分支最后汇合到验证、评审和提交。</h2>
       </div>
       <div class="workflow-grid">
         <div class="workflow-path">
           <h3>Feature path</h3>
           <ol>
             <li><strong>dev-spec</strong><span>模糊需求变成 spec</span></li>
-            <li><strong>dev-plan</strong><span>复杂改动先出实施方案</span></li>
-            <li><strong>code</strong><span>按 spec / plan 实现</span></li>
+            <li><strong>dev-plan optional</strong><span>复杂 / 高风险改动先出实施方案</span></li>
+            <li><strong>dev-tdd</strong><span>red -> green -> refactor</span></li>
+            <li><strong>dev-verify</strong><span>完成前证据门禁</span></li>
             <li><strong>dev-code-review</strong><span>提交前 5 轴检查</span></li>
-            <li><strong>commit</strong><span>READY 后提交</span></li>
+            <li><strong>dev-commit-writer optional</strong><span>需要时生成 commit message</span></li>
+            <li><strong>git commit</strong><span>READY 后提交</span></li>
+            <li><strong>dev-finish</strong><span>分支 / PR / 收尾决策</span></li>
           </ol>
         </div>
         <div class="workflow-path">
           <h3>Bug path</h3>
           <ol>
             <li><strong>dev-fix</strong><span>复现、假设、定位 root cause</span></li>
-            <li><strong>code/fix</strong><span>只改根因路径</span></li>
-            <li><strong>verify</strong><span>red -> green -> red</span></li>
+            <li><strong>dev-verify</strong><span>完成前证据门禁</span></li>
             <li><strong>dev-code-review</strong><span>确认无回归和夹带改动</span></li>
-            <li><strong>commit</strong><span>记录修复上下文</span></li>
+            <li><strong>dev-commit-writer optional</strong><span>需要时生成 commit message</span></li>
+            <li><strong>git commit</strong><span>记录修复上下文</span></li>
+            <li><strong>dev-finish</strong><span>分支 / PR / 收尾决策</span></li>
+          </ol>
+        </div>
+        <div class="workflow-path">
+          <h3>Simple hotfix</h3>
+          <ol>
+            <li><strong>dev-tdd</strong><span>直接用测试锁住小改动</span></li>
+            <li><strong>dev-verify</strong><span>完成前证据门禁</span></li>
+            <li><strong>dev-code-review</strong><span>提交前检查风险</span></li>
+            <li><strong>git commit</strong><span>READY 后提交</span></li>
+            <li><strong>dev-finish optional</strong><span>需要分支收尾时执行</span></li>
           </ol>
         </div>
       </div>
-      <div class="workflow-diagram" aria-label="dev-skills 工作流图,展示 feature 和 bug 两条路径如何进入 review 和 commit">
-        <div class="workflow-map">
-          <svg class="workflow-lines" aria-hidden="true">
-            <defs>
-              <marker id="flow-arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                <path d="M 1 1 L 11 6 L 1 11 z"></path>
-              </marker>
-              <marker id="feature-arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                <path d="M 1 1 L 11 6 L 1 11 z"></path>
-              </marker>
-              <marker id="bug-arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                <path d="M 1 1 L 11 6 L 1 11 z"></path>
-              </marker>
-            </defs>
-            <path class="flow-track direct-track" data-flow-track="start-workflow"></path>
-            <path class="flow-track direct-track" data-flow-track="workflow-decision"></path>
-            <path class="flow-track feature-track" data-flow-track="decision-spec"></path>
-            <path class="flow-track bug-track" data-flow-track="decision-fix"></path>
-            <path class="flow-track feature-track" data-flow-track="spec-plan"></path>
-            <path class="flow-track feature-track" data-flow-track="plan-build"></path>
-            <path class="flow-track feature-track" data-flow-track="build-review"></path>
-            <path class="flow-track bug-track" data-flow-track="fix-verify"></path>
-            <path class="flow-track bug-track" data-flow-track="verify-patch"></path>
-            <path class="flow-track bug-track" data-flow-track="patch-review"></path>
-            <path class="flow-track direct-track" data-flow-track="review-commit"></path>
-            <path class="flow-line direct-line" data-flow-line="start-workflow"></path>
-            <path class="flow-line direct-line" data-flow-line="workflow-decision"></path>
-            <path class="flow-line feature-line" data-flow-line="decision-spec"></path>
-            <path class="flow-line bug-line" data-flow-line="decision-fix"></path>
-            <path class="flow-line feature-line" data-flow-line="spec-plan"></path>
-            <path class="flow-line feature-line" data-flow-line="plan-build"></path>
-            <path class="flow-line feature-line" data-flow-line="build-review"></path>
-            <path class="flow-line bug-line" data-flow-line="fix-verify"></path>
-            <path class="flow-line bug-line" data-flow-line="verify-patch"></path>
-            <path class="flow-line bug-line" data-flow-line="patch-review"></path>
-            <path class="flow-line direct-line" data-flow-line="review-commit"></path>
-          </svg>
-
-          <div class="workflow-node start-node wide-node" data-node="start" style="--left: 50%; --top: 6%;">
-            <span class="workflow-icon" aria-hidden="true">in</span>
-            <div class="workflow-copy">
-              <small>Start</small>
-              <strong>用户需求</strong>
-              <span class="workflow-desc">功能 / Bug / 提交</span>
-              <span class="workflow-tag">进入工作流</span>
-            </div>
-          </div>
-          <div class="workflow-node route-node wide-node" data-node="workflow" style="--left: 50%; --top: 18%;">
-            <span class="workflow-icon" aria-hidden="true">0</span>
-            <div class="workflow-copy">
-              <small>Route</small>
-              <strong>dev-auto</strong>
-              <span class="workflow-desc">入口推荐器</span>
-              <span class="workflow-tag">不知道下一步,先问它</span>
-            </div>
-          </div>
-          <div class="workflow-node decision-node wide-node" data-node="decision" style="--left: 50%; --top: 30%;">
-            <span class="workflow-icon" aria-hidden="true">?</span>
-            <div class="workflow-copy">
-              <small>Decision</small>
-              <strong>路径分流</strong>
-              <span class="workflow-desc">feature / bug</span>
-              <span class="workflow-tag">选择处理路径</span>
-            </div>
-          </div>
-          <div class="workflow-node spec-node" data-node="spec" style="--left: 27%; --top: 42.667%;">
-            <span class="workflow-icon" aria-hidden="true">1</span>
-            <div class="workflow-copy">
-              <small>Feature</small>
-              <strong>dev-spec</strong>
-              <span class="workflow-desc">模糊需求 → 结构化 spec</span>
-              <span class="workflow-tag">写代码前对齐需求</span>
-            </div>
-          </div>
-          <div class="workflow-node plan-node" data-node="plan" style="--left: 27%; --top: 55.333%;">
-            <span class="workflow-icon" aria-hidden="true">2</span>
-            <div class="workflow-copy">
-              <small>Plan</small>
-              <strong>dev-plan</strong>
-              <span class="workflow-desc">spec → Critic-approved plan</span>
-              <span class="workflow-tag">复杂功能,先出方案</span>
-            </div>
-          </div>
-          <div class="workflow-node build-node" data-node="build" style="--left: 27%; --top: 68%;">
-            <span class="workflow-icon" aria-hidden="true">&lt;/&gt;</span>
-            <div class="workflow-copy">
-              <small>Build</small>
-              <strong>code</strong>
-              <span class="workflow-desc">按 spec / plan 实现</span>
-              <span class="workflow-tag">写代码</span>
-            </div>
-          </div>
-          <div class="workflow-node fix-node" data-node="fix" style="--left: 73%; --top: 42.667%;">
-            <span class="workflow-icon" aria-hidden="true">3</span>
-            <div class="workflow-copy">
-              <small>Bug</small>
-              <strong>dev-fix</strong>
-              <span class="workflow-desc">Hypothesis-driven 调试</span>
-              <span class="workflow-tag">修 bug / 排查</span>
-            </div>
-          </div>
-          <div class="workflow-node verify-node" data-node="verify" style="--left: 73%; --top: 55.333%;">
-            <span class="workflow-icon" aria-hidden="true">T</span>
-            <div class="workflow-copy">
-              <small>Verify</small>
-              <strong>red → green</strong>
-              <span class="workflow-desc">复现、修复、反证</span>
-              <span class="workflow-tag">回归验证</span>
-            </div>
-          </div>
-          <div class="workflow-node patch-node" data-node="patch" style="--left: 73%; --top: 68%;">
-            <span class="workflow-icon" aria-hidden="true">&lt;/&gt;</span>
-            <div class="workflow-copy">
-              <small>Patch</small>
-              <strong>code/fix</strong>
-              <span class="workflow-desc">只改确认根因</span>
-              <span class="workflow-tag">最小修复</span>
-            </div>
-          </div>
-          <div class="workflow-node review-node wide-node" data-node="review" style="--left: 50%; --top: 82.667%;">
-            <span class="workflow-icon" aria-hidden="true">4</span>
-            <div class="workflow-copy">
-              <small>Review</small>
-              <strong>dev-code-review</strong>
-              <span class="workflow-desc">5 轴评审 + 自动 Refs 追溯</span>
-              <span class="workflow-tag">准备 commit</span>
-            </div>
-          </div>
-          <div class="workflow-node commit-node wide-node" data-node="commit" style="--left: 50%; --top: 95%;">
-            <span class="workflow-icon" aria-hidden="true">5</span>
-            <div class="workflow-copy">
-              <small>Ship</small>
-              <strong>git commit</strong>
-              <span class="workflow-desc">提交代码到仓库</span>
-              <span class="workflow-tag">记录变更</span>
-            </div>
-          </div>
+      <div class="workflow-diagram workflow-g6-diagram" aria-label="dev-skills 简化工作流图,展示 feature、hotfix 和 bug 三条分支如何汇合到验证、评审、提交和收尾">
+        <div id="workflow-graph" class="workflow-graph" role="img" aria-label="Feature、Simple hotfix 和 Bug 三条工作流分支最终汇合到验证、评审、提交和收尾">
+          <p class="workflow-graph-fallback">Feature、Simple hotfix 和 Bug 三条路径最终都会汇合到 dev-verify、dev-code-review、git commit 和 dev-finish。</p>
         </div>
       </div>
     </section>
@@ -419,6 +305,7 @@
     <a href="https://github.com/Jason-chen-coder/dev-skills">github.com/Jason-chen-coder/dev-skills</a>
   </footer>
 
-  <script src="./app.js"></script>
+  <script src="https://unpkg.com/@antv/g6@5.1.1/dist/g6.min.js"></script>
+  <script src="./app.js?v=i18n-header-switch"></script>
 </body>
 </html>
