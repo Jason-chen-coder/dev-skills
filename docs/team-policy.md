@@ -58,6 +58,7 @@ git worktree add -b codex/<short-slug> ../<repo>-<short-slug>
 - `.claude/artifacts/designs/<slug>.md` — `dev-spec`
 - `.claude/artifacts/plans/<slug>.md` — `dev-plan`
 - `.claude/artifacts/fixes/<slug>.md` — `dev-fix`
+- `dev-design-context` 默认写 `.design-context.md`
 - `dev-tdd` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish` 默认只输出到 chat
 
 这些 artifact 是否提交进仓库由团队决定;如果不提交,加入 `.gitignore`。

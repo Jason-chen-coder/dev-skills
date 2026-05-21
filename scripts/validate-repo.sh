@@ -14,12 +14,21 @@ EXPECTED_SKILLS=(
   dev-code-review
   dev-commit-writer
   dev-finish
+  dev-design-context
 )
 
 OLD_WORKFLOW_SKILL="dev-"
 OLD_WORKFLOW_SKILL+="workflow"
 OLD_WORKFLOW_TITLE="Dev "
 OLD_WORKFLOW_TITLE+="Workflow"
+OLD_DESIGN_SKILL="teach-"
+OLD_DESIGN_SKILL+="impecc"
+OLD_DESIGN_SKILL+="able"
+OLD_DESIGN_TITLE="Teach "
+OLD_DESIGN_TITLE+="Impecc"
+OLD_DESIGN_TITLE+="able"
+OLD_DESIGN_MARK="impecc"
+OLD_DESIGN_MARK+="able"
 
 fail() {
   echo "ERROR: $*" >&2
@@ -100,13 +109,20 @@ assert old_workflow not in serialized
 PY
 
 echo "Checking docs mention the expanded skill set..."
-grep -q '9 个 skill' README.md || fail "README.md should advertise 9 skills"
-grep -q 'skills-9' README.md || fail "README badge should advertise skills-9"
+grep -q '10 个 skill' README.md || fail "README.md should advertise 10 skills"
+grep -q 'skills-10' README.md || fail "README badge should advertise skills-10"
 grep -q 'dev-auto' README.md || fail "README.md missing dev-auto"
+grep -q 'dev-design-context' README.md || fail "README.md missing dev-design-context"
+grep -q 'dev-design-context' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing dev-design-context"
+grep -q 'dev-design-context' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing dev-design-context"
+grep -q 'dev-design-context' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing dev-design-context"
+grep -q 'dev-design-context' site/index.html || fail "site/index.html missing dev-design-context"
+grep -q 'dev-design-context' index.html || fail "index.html missing dev-design-context"
+grep -q 'dev-design-context' site/app.js || fail "site/app.js missing dev-design-context"
 grep -Fq "统一命名为 \`dev-auto\`" CHANGELOG.md || fail "CHANGELOG.md should document the dev-auto rename"
 grep -q 'docs/why-dev-baseline.md' README.md || fail "README.md missing docs/why-dev-baseline.md"
 grep -q 'docs/team-policy.md' README.md || fail "README.md missing docs/team-policy.md"
-for skill in dev-tdd dev-verify dev-finish; do
+for skill in dev-design-context dev-tdd dev-verify dev-finish; do
   grep -q "$skill" README.md || fail "README.md missing $skill"
   grep -q "$skill" CLAUDE.md.template || fail "CLAUDE.md.template missing $skill"
   grep -q "$skill" skills/dev-auto/SKILL.md || fail "dev-auto missing $skill"
@@ -116,6 +132,12 @@ if grep -RIEq "$OLD_WORKFLOW_SKILL|$OLD_WORKFLOW_TITLE" \
   README.md CLAUDE.md.template AGENTS.md.template CHANGELOG.md CONTRIBUTING.md \
   references docs skills scripts index.html site .claude-plugin .codex-plugin; then
   fail "old $OLD_WORKFLOW_SKILL references should be renamed to dev-auto"
+fi
+
+if grep -RIEq "$OLD_DESIGN_SKILL|$OLD_DESIGN_TITLE|$OLD_DESIGN_MARK" \
+  README.md CLAUDE.md.template AGENTS.md.template CHANGELOG.md CONTRIBUTING.md \
+  references docs skills scripts index.html site .claude-plugin .codex-plugin; then
+  fail "old design-context skill references should be renamed to dev-design-context"
 fi
 
 if grep -RIEq 'dev-fix([[:space:]]+--[a-z]+)?[[:space:]]*(→|->)[^|]*dev-tdd' README.md CLAUDE.md.template AGENTS.md.template docs skills scripts; then

@@ -10,7 +10,7 @@ dev-skills 是团队的工程规范载体。它有三层:
 
 - **行为基线**(`references/dev-baseline.md` + `docs/why-dev-baseline.md`):所有 skill 共享的四条原则,以及每条原则关闭的失败模式。
 - **Always-on 模板**(`CLAUDE.md.template` / `AGENTS.md.template`):复制到消费项目根目录后,成为 agent 永远在背景读取的短规则。
-- **场景 skill**(`dev-auto` / `dev-spec` / `dev-plan` / `dev-tdd` / `dev-fix` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish`):特定时机用 Claude / Codex 跑的检查工具。
+- **场景 skill**(`dev-auto` / `dev-design-context` / `dev-spec` / `dev-plan` / `dev-tdd` / `dev-fix` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish`):特定时机用 Claude / Codex 跑的检查工具。
 
 不是替代你思考的工具,是**让你不用每次都重新想团队约定**的工具。
 
@@ -71,7 +71,7 @@ npx skills add Jason-chen-coder/dev-skills --global     # 全局
 
 ```bash
 ls .claude/skills/
-# 应看到 dev-auto / dev-spec / dev-plan / dev-tdd / dev-fix / dev-verify / dev-code-review / dev-commit-writer / dev-finish
+# 应看到 dev-auto / dev-design-context / dev-spec / dev-plan / dev-tdd / dev-fix / dev-verify / dev-code-review / dev-commit-writer / dev-finish
 ```
 
 ### 其他 agent CLI(Cursor / Gemini CLI)
@@ -104,11 +104,12 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 ---
 
-## 九个 skill 怎么选
+## 十个 skill 怎么选
 
 | 我想… | 用哪个 |
 |---|---|
 | 我有个需求 / 不知道下一步该跑哪个 / 失败了想恢复 | `dev-auto`(入口推荐器,只指路) |
+| 做 UI / landing page / 产品界面前,想让 agent 先理解设计方向 | `dev-design-context` |
 | 写代码前对模糊需求做对齐 | `dev-spec` |
 | 需求已对齐,要把 spec 转成 Critic-approved 的实施 plan(尤其复杂功能 / 高风险改动) | `dev-plan` |
 | 写生产代码前要走红绿重构 | `dev-tdd` |
@@ -119,6 +120,7 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 | 验证和 review 通过后要 merge / PR / keep / discard | `dev-finish` |
 
 `dev-code-review` 和 `dev-commit-writer` 是**二选一**,不要都跑。
+`dev-design-context` 是设计类工作的**一次性前置步骤**,会写 `.design-context.md`;普通后端任务可以跳过。
 `dev-spec → dev-plan` 是松耦合衔接 —— spec 写完后用户决定要不要进 plan,简单功能可直接进编码,不强制。
 `dev-fix` 与 `dev-spec` 是**平行入口** —— 新需求走 dev-spec,bug 报告走 dev-fix。feature / hotfix / refactor 的直接编码路径用 `dev-tdd`;bug 路径由 `dev-fix` 内置 failing test + red→green→red,之后在 `dev-verify → dev-code-review` 合流。
 `dev-auto` 是**可选入口推荐器**,不调起任何 skill,只读 `.claude/artifacts/` 推断当前 phase 并建议下一步。也支持 `--status` / `--next` / `--recover`。

@@ -1,8 +1,8 @@
 <div align="center">
   <img src="images/logo.png" alt="dev-skills logo" width="340" height="340" />
   <p>
-    9 个 skill,把 AI 写代码这件事拆成更稳的步骤。<br/>
-    <b>想清楚需求 → 定方案 → 写代码 / 修 bug → 验证 → review → commit → 收尾</b>
+    10 个 skill,把 AI 写代码和做界面这件事拆成更稳的步骤。<br/>
+    <b>沉淀设计上下文 → 想清楚需求 → 定方案 → 写代码 / 修 bug → 验证 → review → commit → 收尾</b>
   </p>
 </div>
 
@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/version-0.8.0-blue" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
   <img src="https://img.shields.io/badge/CI-passing-brightgreen" alt="ci" />
-  <img src="https://img.shields.io/badge/skills-9-orange" alt="skills" />
+  <img src="https://img.shields.io/badge/skills-10-orange" alt="skills" />
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@
 
 dev-skills 是一套给 Claude Code / Codex 用的开发流程卡片。
 
-你可以把它理解成:每次让 AI 帮你写代码时,它不用从零猜流程,而是按固定步骤工作。
+你可以把它理解成:每次让 AI 帮你写代码或做界面时,它不用从零猜流程,而是按固定步骤工作。
 
 它主要解决这些问题:
 
@@ -47,11 +47,12 @@ dev-skills 是一套给 Claude Code / Codex 用的开发流程卡片。
 ### 1. 做新功能 / 改功能
 
 ```text
-dev-spec -> 可选 dev-plan -> dev-tdd -> dev-verify -> dev-code-review -> git commit -> dev-finish
+可选 dev-design-context -> dev-spec -> 可选 dev-plan -> dev-tdd -> dev-verify -> dev-code-review -> git commit -> dev-finish
 ```
 
 白话解释:
 
+- `dev-design-context`:做 UI、landing page、产品界面前,先把项目设计方向写进 `.design-context.md`;不是设计类工作可以跳过。
 - `dev-spec`:先把需求问清楚。
 - `dev-plan`:复杂功能先出方案,简单功能可以跳过。
 - `dev-tdd`:写生产代码前先写测试,按 red -> green -> refactor 做。
@@ -88,11 +89,12 @@ dev-tdd -> dev-verify -> dev-code-review -> git commit
 
 ---
 
-## 9 个 skill 分别干什么
+## 10 个 skill 分别干什么
 
 | Skill | 什么时候用 | 它会做什么 |
 |---|---|---|
 | [`dev-auto`](./skills/dev-auto/) | 不知道下一步 / 失败后想恢复 | 看当前状态,推荐下一条命令。它不自动调起其他 skill。 |
+| [`dev-design-context`](./skills/dev-design-context/) | 做 UI / landing page / 产品界面前 | 扫描项目设计上下文,只问代码里看不出来的问题,把设计原则写到 `.design-context.md`。 |
 | [`dev-spec`](./skills/dev-spec/) | 需求还模糊 | 先问清楚边界,再整理 scope、风险和验收标准。 |
 | [`dev-plan`](./skills/dev-plan/) | 功能复杂 / 风险高 | 把 spec 变成可执行方案,包括选项、取舍和验证方式。 |
 | [`dev-tdd`](./skills/dev-tdd/) | 要写生产代码前 | 先写会失败的测试,再写最小实现,最后重构。 |
@@ -105,6 +107,7 @@ dev-tdd -> dev-verify -> dev-code-review -> git commit
 简单规则:
 
 - 新功能从 `dev-spec` 开始。
+- UI / landing page / 产品界面可以先跑一次 `dev-design-context`。
 - 修 bug 从 `dev-fix` 开始。
 - 不确定就先问 `dev-auto`。
 - 准备 commit 前默认跑 `dev-code-review`。
@@ -186,7 +189,7 @@ git pull --ff-only
 CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
 mkdir -p "$CODEX_SKILLS_DIR"
 
-for skill in dev-auto dev-spec dev-plan dev-tdd dev-fix dev-verify dev-code-review dev-commit-writer dev-finish; do
+for skill in dev-auto dev-spec dev-plan dev-tdd dev-fix dev-verify dev-code-review dev-commit-writer dev-finish dev-design-context; do
   rm -rf "$CODEX_SKILLS_DIR/$skill"
 done
 
@@ -216,6 +219,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 ```text
 用 dev-auto 看看下一步该做什么
+用 dev-design-context 先沉淀这个项目的设计上下文
 用 dev-spec 帮我梳理这个需求: ...
 用 dev-plan 基于这个 spec 出实施方案
 用 dev-tdd 实现这个功能
@@ -230,6 +234,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 ```text
 /dev-auto
+/dev-design-context
 /dev-spec
 /dev-plan
 /dev-tdd
@@ -275,7 +280,10 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 ```mermaid
 flowchart TD
-  Start["用户请求"] --> Auto["dev-auto<br/>可选:不知道下一步时先问它"]
+  Start["用户请求"] --> Design{"UI / 产品界面?"}
+  Design -->|是| Teach["dev-design-context<br/>一次性沉淀设计上下文"]
+  Design -->|否| Auto["dev-auto<br/>可选:不知道下一步时先问它"]
+  Teach --> Auto
   Auto --> Kind{"这是什么类型的工作?"}
 
   Kind -->|新功能 / 增强| Spec["dev-spec<br/>先说清楚要做什么"]
@@ -317,6 +325,7 @@ flowchart TD
 
 | Skill | Artifact |
 |---|---|
+| `dev-design-context` | `.design-context.md` |
 | `dev-spec` | `.claude/artifacts/designs/<feature>.md` |
 | `dev-plan` | `.claude/artifacts/plans/<feature>.md` |
 | `dev-fix` | `.claude/artifacts/fixes/<slug>.md` |

@@ -1,13 +1,13 @@
 ---
 name: dev-auto
-description: Use ONLY when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain. Triggers on phrases like "用 dev-auto / 帮我串起来 / 从需求到 commit / 完整跑 / end to end / 走完整流程 / 下一步该做什么 / what's next". Reads `.claude/artifacts/{designs,plans,fixes}/` to detect current phase (existence + terminal status only — no deep parsing) and recommends next step across dev-spec, dev-plan, dev-tdd, dev-fix, dev-verify, dev-code-review, dev-commit-writer, and dev-finish. Does NOT invoke other skills, write code, or produce artifacts. Optional arguments — `[slug]`; `--status [slug]`; `--next [slug]`; `--recover [slug]`.
+description: Use ONLY when the user explicitly wants end-to-end guided workflow through the dev-skills toolchain. Triggers on phrases like "用 dev-auto / 帮我串起来 / 从需求到 commit / 完整跑 / end to end / 走完整流程 / 下一步该做什么 / what's next". Reads `.claude/artifacts/{designs,plans,fixes}/` and `.design-context.md` existence to detect current phase (no deep parsing) and recommends next step across dev-design-context, dev-spec, dev-plan, dev-tdd, dev-fix, dev-verify, dev-code-review, dev-commit-writer, and dev-finish. Does NOT invoke other skills, write code, or produce artifacts. Optional arguments — `[slug]`; `--status [slug]`; `--next [slug]`; `--recover [slug]`.
 ---
 
 # Dev Auto
 
 **指路,不替用户跑**。`dev-auto` 是 dev-skills 工具链的**入口推荐器** —— 接需求 / 接「下一步该做什么」的问题,**只输出建议**,绝不调起其他 skill,绝不写代码,绝不产出 artifact。
 
-它服务的是「我有个需求,该怎么走完整流程」「我跑完 X 了,该跑什么」「X skill 给我返回 BLOCK / REJECT,我该回哪一步」这三类场景。
+它服务的是「我有个需求,该怎么走完整流程」「UI 工作要不要先沉淀设计上下文」「我跑完 X 了,该跑什么」「X skill 给我返回 BLOCK / REJECT,我该回哪一步」这几类场景。
 
 ---
 
@@ -101,6 +101,18 @@ baseline 与本 skill 的关联:
 
 复杂度直接决定推荐模式参数(见 Step 4)。模糊时**默认 moderate**,但在输出里说明假设让用户纠正。
 
+### 设计上下文(design context)
+
+如果原始请求明显是 UI / landing page / 产品界面 / 品牌视觉 / 组件体验类工作,检查项目根目录是否已有 `.design-context.md`:
+
+| 情况 | 行为 |
+|---|---|
+| 是设计类工作,且 `.design-context.md` 不存在 | 在 feature 推荐链最前面加 `dev-design-context` |
+| 是设计类工作,且 `.design-context.md` 已存在 | 输出「设计上下文:已有」,不重复推荐 |
+| 不是设计类工作 | 不推荐 `dev-design-context` |
+
+`dev-design-context` 是一次性前置步骤,不是每个 feature 都必须跑。
+
 ---
 
 ## Step 3 — 扫描现状(只读 artifacts 存在性 + frontmatter status)
@@ -111,6 +123,7 @@ baseline 与本 skill 的关联:
 ls -la .claude/artifacts/designs/   # dev-spec 产物
 ls -la .claude/artifacts/plans/     # dev-plan 产物
 ls -la .claude/artifacts/fixes/     # dev-fix 产物
+test -f .design-context.md && echo "design context: present"
 ```
 
 ### 文件名匹配 + Slug 确认
@@ -250,6 +263,7 @@ Slug   : <feature-slug>(自动推断,你可以纠正)
 **关键规则**:
 
 - complex feature **强烈建议 dev-plan --deliberate**(自带 pre-mortem + expanded test plan)
+- UI / landing page / 产品界面类 feature 且没有 `.design-context.md` 时,在 feature 链路前追加 `dev-design-context`。
 - complex bug **强烈建议 dev-fix --deep**(强制 3-5 hypothesis + 反向追溯 + instrument)
 - feature / hotfix / refactor 等直接编码路径默认推荐 `dev-tdd`;bug 路径由 `dev-fix` 内置 failing test + red→green→red 验证,不要再追加第二套 `dev-tdd`。
 - 任何完成声明前默认推荐 `dev-verify`,避免把局部测试通过包装成完整 ready。

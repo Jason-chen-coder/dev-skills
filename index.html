@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>dev-skills - AI 开发工作流 Skill 库</title>
-  <meta name="description" content="9 个 AI 开发 skill,加上短版 always-on 规则、baseline rationale 和 team policy guide,串起需求对齐、实施方案、TDD、Bug 修复、验证、代码评审和分支收尾。">
+  <meta name="description" content="10 个 AI 开发 skill,加上短版 always-on 规则、baseline rationale 和 team policy guide,串起设计上下文、需求对齐、实施方案、TDD、Bug 修复、验证、代码评审和分支收尾。">
   <link rel="preload" href="./site/assets/logo.png" as="image">
-  <link rel="stylesheet" href="./site/styles.css?v=i18n-header-switch">
+  <link rel="stylesheet" href="./site/styles.css?v=dev-design-context">
 </head>
 <body>
   <header class="site-header">
@@ -40,7 +40,7 @@
       <div class="hero-copy">
         <p class="eyebrow">AI development workflow skills</p>
         <h1>从需求到提交,<br>每步可验证。</h1>
-        <p class="hero-text">dev-skills 为 Claude Code 与 Codex 提供 9 个工程流程 skill 和精简 always-on 团队规则,让需求、实现、验证、评审与收尾都有清晰边界和可复核结果。</p>
+        <p class="hero-text">dev-skills 为 Claude Code 与 Codex 提供 10 个工程流程 skill 和精简 always-on 团队规则,让设计上下文、需求、实现、验证、评审与收尾都有清晰边界和可复核结果。</p>
         <div class="hero-actions" aria-label="Primary actions">
           <a class="button primary" href="#install" aria-label="查看安装方式">Install</a>
           <a class="button secondary" href="#preview" aria-label="查看 skill 运行预览">Preview</a>
@@ -68,8 +68,8 @@
     <section id="skills" class="section">
       <div class="section-heading">
         <p class="eyebrow">Skill library</p>
-        <h2>9 个 skill,每个只做一件事。</h2>
-        <p>把它当成开发导航:不确定下一步就问 dev-auto。做新功能从 dev-spec 开始,再到 plan、TDD、verify、review、finish;修 bug 从 dev-fix 开始,同样经过 verify 和 review 收尾;只需要提交信息时用 dev-commit-writer。</p>
+        <h2>10 个 skill,每个只做一件事。</h2>
+        <p>把它当成开发导航:不确定下一步就问 dev-auto。做 UI 或 landing page 前先用 dev-design-context 沉淀设计上下文;做新功能从 dev-spec 开始,再到 plan、TDD、verify、review、finish;修 bug 从 dev-fix 开始。</p>
       </div>
       <div class="skill-grid" aria-label="dev-skills list">
         <article class="skill-card">
@@ -77,6 +77,12 @@
           <h3>dev-auto</h3>
           <p>不知道下一步该跑哪个时,扫描 artifacts 并推荐下一条命令。</p>
           <small>Artifact: none</small>
+        </article>
+        <article class="skill-card">
+          <span class="skill-kicker">设计上下文</span>
+          <h3>dev-design-context</h3>
+          <p>做 UI 前扫描项目视觉线索,只追问缺口,把设计原则写进 .design-context.md。</p>
+          <small>Artifact: .design-context.md</small>
         </article>
         <article class="skill-card">
           <span class="skill-kicker">需求对齐</span>
@@ -163,6 +169,7 @@
 
       <div class="skill-tabs" role="tablist" aria-label="Skill runtime previews">
         <button class="skill-tab is-active" type="button" data-skill="dev-auto" role="tab" aria-selected="true">dev-auto</button>
+        <button class="skill-tab" type="button" data-skill="dev-design-context" role="tab" aria-selected="false">dev-design-context</button>
         <button class="skill-tab" type="button" data-skill="dev-spec" role="tab" aria-selected="false">dev-spec</button>
         <button class="skill-tab" type="button" data-skill="dev-plan" role="tab" aria-selected="false">dev-plan</button>
         <button class="skill-tab" type="button" data-skill="dev-tdd" role="tab" aria-selected="false">dev-tdd</button>
@@ -203,6 +210,7 @@
         <div class="workflow-path">
           <h3>Feature path</h3>
           <ol>
+            <li><strong>dev-design-context optional</strong><span>UI 工作先沉淀设计上下文</span></li>
             <li><strong>dev-spec</strong><span>模糊需求变成 spec</span></li>
             <li><strong>dev-plan optional</strong><span>复杂 / 高风险改动先出实施方案</span></li>
             <li><strong>dev-tdd</strong><span>red -> green -> refactor</span></li>
@@ -306,6 +314,6 @@
   </footer>
 
   <script src="https://unpkg.com/@antv/g6@5.1.1/dist/g6.min.js"></script>
-  <script src="./site/app.js?v=i18n-header-switch"></script>
+  <script src="./site/app.js?v=dev-design-context"></script>
 </body>
 </html>

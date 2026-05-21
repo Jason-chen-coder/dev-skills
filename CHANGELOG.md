@@ -12,6 +12,7 @@
 ## [Unreleased]
 
 ### Added
+- **`dev-design-context` skill**:新增一次性设计上下文采集 skill。它会先扫描项目 README、组件、品牌资产、CSS token 和设计资料,再只问代码里无法推断的 UX / 品牌问题,最后把 `## Design Context` 写入 `.design-context.md`。
 - **Baseline rationale 文档**:新增 `docs/why-dev-baseline.md`,逐条说明四条 baseline 关闭的真实 LLM 编码失败模式,并把「冲突不平均 / 失败可见 / checkpoint / deterministic logic / debug budget」列为可放进模板或 skill 的推论,避免继续膨胀 baseline。
 - **Team policy guide**:新增 `docs/team-policy.md`,承接原 `CLAUDE.md.template` / `AGENTS.md.template` 中较长的分支、PR、测试、错误处理、日志、feature flag、AI 协作护栏等治理说明。
 - **Clean-tree worktree checkpoint**:在 `CLAUDE.md.template` / `AGENTS.md.template` / `dev-auto` / `dev-plan` / `dev-fix` 中加入编码前 worktree 检查与创建规范。AI 在 clean tree 且即将进行非平凡代码/多文件改动前,应先询问是否创建独立 worktree;默认分支命名 `codex/<short-slug>`,目录命名 `<repo>-<short-slug>`。
@@ -22,6 +23,7 @@
 - **Skill 重命名**:入口推荐器统一命名为 `dev-auto`,目录迁移到 `skills/dev-auto/`,并同步 README、onboarding、landing page、Claude/Codex plugin manifest、历史 changelog 和仓库校验脚本。
 - **Always-on 模板瘦身**:`CLAUDE.md.template` 和 `AGENTS.md.template` 改为短版常驻规则,保留 baseline、硬规则、agent 工作方式、dev-skills 路由和少量 team-specific placeholder;详细团队治理说明移到 `docs/team-policy.md`。
 - **文档入口同步**:README 和 onboarding 增加规则分层说明,把 `docs/why-dev-baseline.md` 与 `docs/team-policy.md` 纳入新用户阅读路径。
+- **Skill inventory 同步到 10 个**:README、onboarding、landing page、Claude/Codex plugin manifest、team templates 和仓库校验脚本同步加入 `dev-design-context`。
 
 ### Fixed
 - **GitHub Pages 根路径 404**:当前仓库 Pages 发布源是 `master` 根目录,新增根目录 `index.html` 和 `.nojekyll`,让 `https://jason-chen-coder.github.io/dev-skills/` 直接加载 H5 正式站点。
