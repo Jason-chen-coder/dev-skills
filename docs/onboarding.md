@@ -106,18 +106,27 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 ## 十个 skill 怎么选
 
+先记用户入口,再理解流程门禁。你不需要主动点名每个 skill。
+
+### 用户入口
+
 | 我想… | 用哪个 |
 |---|---|
-| 我有个需求 / 不知道下一步该跑哪个 / 失败了想恢复 | `dev-auto`(入口推荐器,只指路) |
-| 做 UI / landing page / 产品界面前,想让 agent 先理解设计方向 | `dev-design-context` |
+| 不知道下一步该跑哪个 / 失败了想恢复 | `dev-auto`(入口推荐器,只指路) |
 | 写代码前对模糊需求做对齐 | `dev-spec` |
 | 需求已对齐,要把 spec 转成 Critic-approved 的实施 plan(尤其复杂功能 / 高风险改动) | `dev-plan` |
-| 写生产代码前要走红绿重构 | `dev-tdd` |
 | 修 bug:复现 + 假设 + 反向追溯 + 修 root cause + defense-in-depth + regression test + pattern analysis | `dev-fix` |
-| 声称完成 / fixed / ready 前要证据门禁 | `dev-verify` |
 | 写完代码,commit 前要严格把关 | `dev-code-review` |
-| 改动很简单 / 已自审过,只想要个 commit message | `dev-commit-writer` |
-| 验证和 review 通过后要 merge / PR / keep / discard | `dev-finish` |
+
+### 流程门禁和特殊入口
+
+| 类型 | Skill | 什么时候出现 |
+|---|---|---|
+| 流程门禁 | `dev-tdd` | feature / hotfix / refactor 写生产代码前,由 agent 提醒走红绿重构。 |
+| 流程门禁 | `dev-verify` | 声称完成 / fixed / ready 前,由 agent 要求 fresh evidence。 |
+| 流程门禁 | `dev-finish` | 验证和 review 通过后,用于 merge / PR / keep / discard。 |
+| 一次性设置 | `dev-design-context` | UI / landing page / 产品界面首次进入项目前,让 agent 先理解设计方向。 |
+| 显式旁路 | `dev-commit-writer` | 只有改动很简单 / 已自审过,并且明确只想要 commit message 时使用。 |
 
 `dev-code-review` 和 `dev-commit-writer` 是**二选一**,不要都跑。
 `dev-design-context` 是设计类工作的**一次性前置步骤**,会写 `.design-context.md`;普通后端任务可以跳过。

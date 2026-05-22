@@ -89,28 +89,32 @@ dev-tdd -> dev-verify -> dev-code-review -> git commit
 
 ---
 
-## 10 个 skill 分别干什么
+## 10 个 skill 怎么记
 
-| Skill | 什么时候用 | 它会做什么 |
+不需要把 10 个名字都背下来。先记住用户最自然会主动说出口的入口,其他交给流程门禁。
+
+| 类型 | Skill | 什么时候出现 | 它会做什么 |
 |---|---|---|
-| [`dev-auto`](./skills/dev-auto/) | 不知道下一步 / 失败后想恢复 | 看当前状态,推荐下一条命令。它不自动调起其他 skill。 |
-| [`dev-design-context`](./skills/dev-design-context/) | 做 UI / landing page / 产品界面前 | 扫描项目设计上下文,只问代码里看不出来的问题,把设计原则写到 `.design-context.md`。 |
-| [`dev-spec`](./skills/dev-spec/) | 需求还模糊 | 先问清楚边界,再整理 scope、风险和验收标准。 |
-| [`dev-plan`](./skills/dev-plan/) | 功能复杂 / 风险高 | 把 spec 变成可执行方案,包括选项、取舍和验证方式。 |
-| [`dev-tdd`](./skills/dev-tdd/) | 要写生产代码前 | 先写会失败的测试,再写最小实现,最后重构。 |
-| [`dev-fix`](./skills/dev-fix/) | 修 bug / 排查问题 | 先复现,再找 root cause,最后留下 regression test。 |
-| [`dev-verify`](./skills/dev-verify/) | 想说“完成了”之前 | 要求拿出真实命令、测试名和结果,避免口头完成。 |
-| [`dev-code-review`](./skills/dev-code-review/) | 准备 commit 前 | 从规范、功能、闭环、注释、死代码等角度检查 diff。 |
-| [`dev-commit-writer`](./skills/dev-commit-writer/) | 只想要 commit message | 根据当前 diff 写符合仓库风格的 commit message。 |
-| [`dev-finish`](./skills/dev-finish/) | 验证和 review 通过后 | 帮你决定 merge / PR / keep / discard 等分支收尾动作。 |
+| 用户入口 | [`dev-auto`](./skills/dev-auto/) | 不知道下一步 / 失败后想恢复 | 看当前状态,推荐下一条命令。它不自动调起其他 skill。 |
+| 用户入口 | [`dev-spec`](./skills/dev-spec/) | 需求还模糊 | 先问清楚边界,再整理 scope、风险和验收标准。 |
+| 用户入口 | [`dev-plan`](./skills/dev-plan/) | 功能复杂 / 风险高 | 把 spec 变成可执行方案,包括选项、取舍和验证方式。 |
+| 用户入口 | [`dev-fix`](./skills/dev-fix/) | 修 bug / 排查问题 | 先复现,再找 root cause,最后留下 regression test。 |
+| 用户入口 | [`dev-code-review`](./skills/dev-code-review/) | 准备 commit 前 | 从规范、功能、闭环、注释、死代码等角度检查 diff。 |
+| 流程门禁 | [`dev-tdd`](./skills/dev-tdd/) | 写生产代码前 | 先写会失败的测试,再写最小实现,最后重构。 |
+| 流程门禁 | [`dev-verify`](./skills/dev-verify/) | 声称完成 / fixed / ready 前 | 要求拿出真实命令、测试名和结果,避免口头完成。 |
+| 流程门禁 | [`dev-finish`](./skills/dev-finish/) | 验证和 review 通过后 | 帮你决定 merge / PR / keep / discard 等分支收尾动作。 |
+| 一次性设置 | [`dev-design-context`](./skills/dev-design-context/) | UI / landing page / 产品界面首次进入项目前 | 扫描项目设计上下文,只问代码里看不出来的问题,把设计原则写到 `.design-context.md`。 |
+| 显式旁路 | [`dev-commit-writer`](./skills/dev-commit-writer/) | 明确跳过 review 且只要 commit message | 根据当前 diff 写符合仓库风格的 commit message。 |
 
 简单规则:
 
+- 日常入口只要记住 `dev-auto` / `dev-spec` / `dev-plan` / `dev-fix` / `dev-code-review`。
 - 新功能从 `dev-spec` 开始。
 - UI / landing page / 产品界面可以先跑一次 `dev-design-context`。
 - 修 bug 从 `dev-fix` 开始。
 - 不确定就先问 `dev-auto`。
 - 准备 commit 前默认跑 `dev-code-review`。
+- `dev-tdd` / `dev-verify` / `dev-finish` 更像流程门禁,通常由 agent 在正确阶段提醒。
 
 ---
 
@@ -215,34 +219,40 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 ## 怎么在对话里用
 
-你可以直接对 Claude Code / Codex 说:
+最常用的说法是这些:
 
 ```text
 用 dev-auto 看看下一步该做什么
-用 dev-design-context 先沉淀这个项目的设计上下文
 用 dev-spec 帮我梳理这个需求: ...
 用 dev-plan 基于这个 spec 出实施方案
-用 dev-tdd 实现这个功能
 用 dev-fix 排查这个 bug: ...
-用 dev-verify 检查这次改动是否真的完成
 用 dev-code-review 看下这次修改,准备 commit
 我自审过了,只要 dev-commit-writer 给 commit message
+```
+
+设计类项目第一次进入时,可以加一句:
+
+```text
+用 dev-design-context 先沉淀这个项目的设计上下文
+```
+
+`dev-tdd` / `dev-verify` / `dev-finish` 一般不用刻意记。它们是流程门禁:写代码前、声称完成前、分支收尾时由 agent 提醒。你也可以在需要手动控制时直接说:
+
+```text
+用 dev-tdd 实现这个功能
+用 dev-verify 检查这次改动是否真的完成
 用 dev-finish 收尾这个分支
 ```
 
-也可以使用 slash 命令形式:
+如果你的工具支持 slash 命令,常用入口和显式旁路是:
 
 ```text
 /dev-auto
-/dev-design-context
 /dev-spec
 /dev-plan
-/dev-tdd
 /dev-fix
-/dev-verify
 /dev-code-review
 /dev-commit-writer
-/dev-finish
 ```
 
 ---

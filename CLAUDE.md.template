@@ -40,7 +40,18 @@
 
 ---
 
-## 4. dev-skills 路由
+## 4. 执行协议
+
+- **小任务直接做**:单命令、typo、窄文档改动或明确单文件小修可以直接执行,但仍要在完成前给出检查结果。
+- **大任务先 explore / plan**:跨文件、重构、数据迁移、权限/支付/安全、公开 API、需求不清时,先读现状并给出计划;用户只要求分析时不要写代码。
+- **写作和 review 分开**:authoring pass 负责创建或修改;review / verification pass 必须重新看 diff、跑命令、拿证据,不能只复述刚才的实现判断。
+- **完成前清零 pending**:结束前确认没有未处理 finding、TODO、失败测试或挂起命令;如果仍有风险,明确列出而不是说 ready。
+- **失败按归属回流**:验证失败回实现或 `dev-fix`;review P0/P1 先修再 commit;spec / plan blocked 回用户决策,不要硬推进。
+- **流程保持显式**:不要用隐藏后台流程、魔法关键词或自动调起其他 skill 跳过用户可见步骤。
+
+---
+
+## 5. dev-skills 路由
 
 - 不知道下一步时跑 `dev-auto`;它只指路,不调起其他 skill。
 - UI / landing page / 产品界面类工作,首次进入项目前可跑 `dev-design-context`,把设计上下文沉淀到 `.design-context.md`。
@@ -53,7 +64,7 @@
 
 ---
 
-## 5. Team Specifics
+## 6. Team Specifics
 
 <!-- team:fill — 保持短。详细规则放项目自己的 docs/team-policy.md 或 wiki。 -->
 
@@ -69,7 +80,7 @@
 
 ---
 
-## 6. 冲突处理
+## 7. 冲突处理
 
 - 用户当下明确指令 > 本文件 > skill 局部流程 > `references/dev-baseline.md`。
 - 如果用户指令与本文件冲突,先一句话点明冲突并请求确认;用户确认后照办,并在 commit / PR 描述里记录例外原因。
