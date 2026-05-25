@@ -17,6 +17,22 @@ EXPECTED_SKILLS=(
   dev-design-context
 )
 
+AGENT_CAPABLE_SKILLS=(
+  dev-plan
+  dev-tdd
+  dev-fix
+  dev-verify
+  dev-code-review
+  dev-design-context
+)
+
+MAIN_AGENT_FIRST_SKILLS=(
+  dev-auto
+  dev-spec
+  dev-commit-writer
+  dev-finish
+)
+
 OLD_WORKFLOW_SKILL="dev-"
 OLD_WORKFLOW_SKILL+="workflow"
 OLD_WORKFLOW_TITLE="Dev "
@@ -55,10 +71,13 @@ echo "Checking team template guard..."
 [[ -f AGENTS.md.template ]] || fail "AGENTS.md.template missing"
 [[ -f docs/why-dev-baseline.md ]] || fail "docs/why-dev-baseline.md missing"
 [[ -f docs/team-policy.md ]] || fail "docs/team-policy.md missing"
+[[ -f docs/multi-agent-policy.md ]] || fail "docs/multi-agent-policy.md missing"
 grep -q 'docs/team-policy.md' CLAUDE.md.template || fail "CLAUDE.md.template should point to docs/team-policy.md"
 grep -q 'docs/team-policy.md' AGENTS.md.template || fail "AGENTS.md.template should point to docs/team-policy.md"
 grep -q 'docs/why-dev-baseline.md' CLAUDE.md.template || fail "CLAUDE.md.template should point to docs/why-dev-baseline.md"
 grep -q 'docs/why-dev-baseline.md' AGENTS.md.template || fail "AGENTS.md.template should point to docs/why-dev-baseline.md"
+grep -q 'docs/multi-agent-policy.md' CLAUDE.md.template || fail "CLAUDE.md.template should point to docs/multi-agent-policy.md"
+grep -q 'docs/multi-agent-policy.md' AGENTS.md.template || fail "AGENTS.md.template should point to docs/multi-agent-policy.md"
 
 echo "Checking baseline copies..."
 canonical_md5="$(md5sum references/dev-baseline.md | cut -d' ' -f1)"
@@ -119,13 +138,40 @@ grep -q 'dev-design-context' .codex-plugin/plugin.json || fail ".codex-plugin/pl
 grep -q 'dev-design-context' site/index.html || fail "site/index.html missing dev-design-context"
 grep -q 'dev-design-context' index.html || fail "index.html missing dev-design-context"
 grep -q 'dev-design-context' site/app.js || fail "site/app.js missing dev-design-context"
+grep -q 'agent-mode' site/index.html || fail "site/index.html missing agent-mode section"
+grep -q 'agent-mode' index.html || fail "index.html missing agent-mode section"
+grep -q 'agent.title' site/app.js || fail "site/app.js missing agent mode translations"
+grep -q 'experience-section' site/index.html || fail "site/index.html missing wrapped experience section"
+grep -q 'experience-section' index.html || fail "index.html missing wrapped experience section"
+grep -q 'data-experience-mode="agents"' site/index.html || fail "site/index.html missing agent top-level tab"
+grep -q 'data-experience-mode="agents"' index.html || fail "index.html missing agent top-level tab"
+grep -q 'data-experience-only="agents"' site/index.html || fail "site/index.html missing agent-only content marker"
+grep -q 'data-experience-only="agents"' index.html || fail "index.html missing agent-only content marker"
+grep -q 'workflow-grid-agents' site/index.html || fail "site/index.html missing agent workflow grid"
+grep -q 'workflow-grid-agents' index.html || fail "index.html missing agent workflow grid"
+grep -q 'agentPreviews' site/app.js || fail "site/app.js missing agent runtime preview data"
+grep -q 'workflowNodeSpecsByMode' site/app.js || fail "site/app.js missing mode-specific workflow graph data"
+grep -q 'setExperienceMode' site/app.js || fail "site/app.js missing top-level experience mode switch"
 grep -Fq "统一命名为 \`dev-auto\`" CHANGELOG.md || fail "CHANGELOG.md should document the dev-auto rename"
 grep -q 'docs/why-dev-baseline.md' README.md || fail "README.md missing docs/why-dev-baseline.md"
 grep -q 'docs/team-policy.md' README.md || fail "README.md missing docs/team-policy.md"
+grep -q 'docs/multi-agent-policy.md' README.md || fail "README.md missing docs/multi-agent-policy.md"
+grep -q 'docs/multi-agent-policy.md' docs/onboarding.md || fail "docs/onboarding.md missing docs/multi-agent-policy.md"
 for skill in dev-design-context dev-tdd dev-verify dev-finish; do
   grep -q "$skill" README.md || fail "README.md missing $skill"
   grep -q "$skill" CLAUDE.md.template || fail "CLAUDE.md.template missing $skill"
   grep -q "$skill" skills/dev-auto/SKILL.md || fail "dev-auto missing $skill"
+done
+
+echo "Checking multi-agent profile coverage..."
+for skill in "${AGENT_CAPABLE_SKILLS[@]}"; do
+  grep -q '^## Multi-Agent Profile' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md missing Multi-Agent Profile"
+  grep -q 'Recommended agent_type:' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md missing recommended agent_type"
+  grep -q 'docs/multi-agent-policy.md' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md should link docs/multi-agent-policy.md"
+done
+for skill in "${MAIN_AGENT_FIRST_SKILLS[@]}"; do
+  grep -q '^## Multi-Agent Note' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md missing Multi-Agent Note"
+  grep -q 'docs/multi-agent-policy.md' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md should link docs/multi-agent-policy.md"
 done
 
 if grep -RIEq "$OLD_WORKFLOW_SKILL|$OLD_WORKFLOW_TITLE" \

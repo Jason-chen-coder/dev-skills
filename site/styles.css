@@ -23,6 +23,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -107,7 +111,7 @@ code {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
   margin-left: auto;
   color: var(--muted);
   font-size: 14px;
@@ -226,6 +230,7 @@ code {
 }
 
 .section {
+  scroll-margin-top: 96px;
   width: min(1160px, calc(100% - 44px));
   margin: 0 auto;
   padding: clamp(64px, 9vw, 112px) 0;
@@ -324,6 +329,8 @@ h3 {
 .button:focus-visible,
 .copy-button:hover,
 .copy-button:focus-visible,
+.mode-button:hover,
+.mode-button:focus-visible,
 .skill-tab:hover,
 .install-tab:hover {
   transform: translateY(-1px);
@@ -376,6 +383,18 @@ h3 {
   font-weight: 680;
 }
 
+.terminal-bar small {
+  margin-left: auto;
+  padding: 3px 8px;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--code-text) 88%, var(--accent));
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 pre {
   margin: 0;
   max-width: 100%;
@@ -392,33 +411,41 @@ pre {
   overflow-x: auto;
 }
 
+.hero-terminal pre,
+.hero-terminal code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .section-heading {
   margin-bottom: 34px;
 }
 
-.skill-map {
+.skill-guide {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(280px, 1.1fr) repeat(3, minmax(0, 1fr));
   gap: 16px;
-  margin-bottom: 18px;
 }
 
-.skill-map-card {
-  min-height: 184px;
-  padding: 24px;
+.skill-guide-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 240px;
+  padding: 26px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--surface-strong) 90%, var(--bg));
+  background: color-mix(in srgb, var(--surface-strong) 88%, var(--bg));
 }
 
-.skill-map-card-entry {
+.skill-guide-card-primary {
   border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, white), var(--surface-strong) 58%),
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 11%, white), var(--surface-strong) 62%),
     var(--surface-strong);
 }
 
-.skill-map-card span {
+.skill-guide-card span {
   display: block;
   margin-bottom: 16px;
   color: var(--accent);
@@ -427,107 +454,181 @@ pre {
   text-transform: uppercase;
 }
 
-.skill-map-card p {
+.skill-guide-card p {
   color: var(--muted);
 }
 
-.skill-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.skill-card {
+.skill-guide-card ul {
   display: flex;
-  flex-direction: column;
-  min-height: 216px;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--surface-strong) 88%, var(--bg));
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: auto 0 0;
+  padding: 22px 0 0;
+  list-style: none;
 }
 
-.skill-card-entry {
-  border-color: color-mix(in srgb, var(--accent) 26%, var(--line));
-}
-
-.skill-card-gate {
-  border-color: color-mix(in srgb, var(--green) 24%, var(--line));
-}
-
-.skill-card-setup {
-  border-color: color-mix(in srgb, var(--amber) 26%, var(--line));
-}
-
-.skill-card-bypass {
-  border-color: color-mix(in srgb, var(--rust) 24%, var(--line));
-}
-
-.skill-card p {
-  color: var(--muted);
-}
-
-.skill-card small {
-  margin-top: auto;
-  padding-top: 18px;
-  color: var(--accent);
+.skill-guide-card li {
+  max-width: 100%;
+  padding: 6px 9px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent-strong);
   font-family: "SFMono-Regular", Menlo, monospace;
   font-size: 12px;
-  line-height: 1.5;
-}
-
-.skill-kicker {
-  display: block;
-  margin-bottom: 18px;
-  color: var(--amber);
-  font-size: 12px;
   font-weight: 800;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-.rules-section {
-  width: min(1180px, calc(100% - 44px));
-}
-
-.rules-grid {
+.agent-mode-section {
   display: grid;
-  grid-template-columns: 1.15fr repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
+  width: min(1220px, calc(100% - 44px));
 }
 
-.rule-card {
-  min-height: 236px;
-  padding: 26px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--surface-strong) 90%, var(--bg));
+.workflow-agent-note,
+.agent-mode-note {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.24fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
-.rule-card-strong {
-  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, white), var(--surface-strong) 52%),
-    var(--surface-strong);
-}
-
-.rule-card span {
-  display: block;
-  margin-bottom: 18px;
+.workflow-agent-note span,
+.agent-mode-note span {
   color: var(--accent);
   font-size: 12px;
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.rule-card h3 {
-  overflow-wrap: anywhere;
+.workflow-agent-note h3,
+.agent-mode-note h3 {
+  margin-bottom: 8px;
+  font-size: clamp(20px, 2.2vw, 27px);
 }
 
-.rule-card p {
+.workflow-agent-note p,
+.agent-mode-note p {
+  max-width: 780px;
   color: var(--muted);
+}
+
+.agent-lanes span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.agent-lanes p {
+  color: var(--muted);
+}
+
+.agent-lanes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.agent-lanes article {
+  min-width: 0;
+  min-height: 150px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface-strong) 90%, var(--bg));
+}
+
+.agent-lanes article:nth-child(1) {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+
+.agent-lanes article:nth-child(2) {
+  border-color: color-mix(in srgb, var(--green) 24%, var(--line));
+}
+
+.agent-lanes article:nth-child(3) {
+  border-color: color-mix(in srgb, var(--amber) 26%, var(--line));
+}
+
+.agent-lanes article:nth-child(4) {
+  border-color: color-mix(in srgb, var(--rust) 24%, var(--line));
 }
 
 .runtime-section {
   width: min(1220px, calc(100% - 44px));
+}
+
+.experience-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 48px);
+  width: min(1220px, calc(100% - 44px));
+}
+
+.experience-section > * {
+  min-width: 0;
+}
+
+.experience-tabs-section {
+  width: 100%;
+  padding: 0;
+}
+
+.experience-section .agent-mode-section,
+.experience-section .runtime-section,
+.experience-section .workflow-section {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.mode-switch {
+  display: inline-flex;
+  max-width: 100%;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 5px;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--line-strong) 78%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface-strong) 72%, var(--bg));
+  scrollbar-width: thin;
+}
+
+.experience-mode-switch {
+  margin-bottom: 0;
+}
+
+.mode-button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.mode-button.is-active {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--accent-strong);
+}
+
+.experience-mode-switch .mode-button {
+  min-width: 150px;
 }
 
 .skill-tabs,
@@ -721,6 +822,30 @@ pre {
   outline: none;
 }
 
+.workflow-fallback-edges,
+.workflow-fallback-nodes {
+  position: absolute;
+  inset: 0;
+}
+
+.workflow-fallback-edges {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.workflow-fallback-edge {
+  transition:
+    opacity 180ms var(--ease),
+    stroke-width 180ms var(--ease),
+    filter 180ms var(--ease);
+}
+
+.workflow-fallback-node {
+  position: absolute;
+  z-index: 1;
+}
+
 .workflow-graph-fallback {
   position: absolute;
   inset: 24px;
@@ -731,7 +856,8 @@ pre {
   text-align: center;
 }
 
-.workflow-graph:not(.is-fallback) .workflow-graph-fallback {
+.workflow-graph:not(.is-fallback) .workflow-graph-fallback,
+.workflow-graph.is-fallback .workflow-graph-fallback {
   display: none;
 }
 
@@ -832,13 +958,20 @@ pre {
   transform: translateY(-2px);
 }
 
-.workflow-graph.is-focusing-branch .workflow-g6-node.is-muted {
+.workflow-graph.is-focusing-chain .workflow-g6-node.is-muted {
   filter: grayscale(0.92) saturate(0.32);
   opacity: 0.24;
 }
 
-.workflow-graph.is-focusing-branch .workflow-g6-node[data-branch="shared"] {
-  opacity: 0.74;
+.workflow-graph.is-focusing-chain .workflow-fallback-edge.is-muted {
+  opacity: 0.12;
+  stroke-width: 2;
+}
+
+.workflow-graph.is-focusing-chain .workflow-fallback-edge.is-active {
+  opacity: 1;
+  stroke-width: 5;
+  filter: drop-shadow(0 6px 10px rgba(31, 95, 120, 0.16));
 }
 
 .install-panel {
@@ -926,18 +1059,14 @@ details p {
   .hero,
   .runtime-grid,
   .workflow-grid,
-  .skill-map,
-  .rules-grid,
+  .skill-guide,
+  .agent-lanes,
   .install-panel {
     grid-template-columns: 1fr;
   }
 
   .hero {
     min-height: auto;
-  }
-
-  .skill-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1006,9 +1135,21 @@ details p {
 
   .section,
   .runtime-section,
-  .rules-section {
+  .experience-section,
+  .agent-mode-section {
     width: min(1160px, calc(100% - 32px));
     padding: 58px 0;
+  }
+
+  .experience-section {
+    gap: 28px;
+  }
+
+  .experience-section .agent-mode-section,
+  .experience-section .runtime-section,
+  .experience-section .workflow-section {
+    width: 100%;
+    padding: 0;
   }
 
   h1,
@@ -1018,13 +1159,27 @@ details p {
     overflow-wrap: anywhere;
   }
 
-  .skill-grid {
+  .agent-lanes {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-agent-note,
+  .agent-mode-note {
     grid-template-columns: 1fr;
   }
 
   .hero-actions {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .mode-switch {
+    display: flex;
+    width: 100%;
+  }
+
+  .mode-button {
+    flex: 1 0 auto;
   }
 
   .workflow-path li {

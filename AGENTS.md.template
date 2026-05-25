@@ -51,7 +51,16 @@
 
 ---
 
-## 5. dev-skills 路由
+## 5. Multi-Agent 协议
+
+- 多 agent 只用于边界清晰的并行探索、实现、验证或 review;详细规则见 `docs/multi-agent-policy.md`。
+- 主 agent 始终负责用户沟通、任务拆分、最终整合、git 操作和完成声明。
+- 子 agent 必须有明确 ownership,不得修改未分配文件,不得回滚他人改动。
+- verifier / reviewer 应尽量独立于实现上下文,并输出命令证据、changed files 和残余风险。
+
+---
+
+## 6. dev-skills 路由
 
 - 不知道下一步时跑 `dev-auto`;它只指路,不调起其他 skill。
 - UI / landing page / 产品界面类工作,首次进入项目前可跑 `dev-design-context`,把设计上下文沉淀到 `.design-context.md`。
@@ -64,7 +73,7 @@
 
 ---
 
-## 6. Team Specifics
+## 7. Team Specifics
 
 <!-- team:fill — 保持短。详细规则放项目自己的 docs/team-policy.md 或 wiki。 -->
 
@@ -80,7 +89,7 @@
 
 ---
 
-## 7. 冲突处理
+## 8. 冲突处理
 
 - 用户当下明确指令 > 本文件 > skill 局部流程 > `references/dev-baseline.md`。
 - 如果用户指令与本文件冲突,先一句话点明冲突并请求确认;用户确认后照办,并在 commit / PR 描述里记录例外原因。

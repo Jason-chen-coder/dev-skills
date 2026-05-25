@@ -5,11 +5,10 @@ const translations = {
   zh: {
     "page.lang": "zh-CN",
     "page.title": "dev-skills - AI 开发工作流 Skill 库",
-    "page.description": "10 个 AI 开发 skill,分清用户入口、流程门禁、一次性设置和显式旁路,加上短版 always-on 规则、baseline rationale 和 team policy guide。",
+    "page.description": "10 个 AI 开发 skill,分清用户入口、流程门禁、一次性设置和显式旁路,加上短版 always-on 规则、multi-agent 分工协议和团队治理文档。",
     "brand.aria": "dev-skills 首页",
     "nav.aria": "主导航",
     "nav.skills": "Skills",
-    "nav.rules": "Rules",
     "nav.preview": "Preview",
     "nav.workflow": "Workflow",
     "nav.install": "Install",
@@ -29,72 +28,66 @@ const translations = {
     "hero.install.aria": "查看安装方式",
     "hero.preview.aria": "查看 skill 运行预览",
     "hero.github.aria": "打开 GitHub 仓库",
-    "hero.preview.ariaLabel": "dev-skills 工作流预览",
-    "hero.terminal": "$ codex\n> 用 dev-auto 帮我串起来,下一步该做什么?\n\n━━━ Dev Auto ━━━\n路径   : feature\n复杂度 : moderate\n下一步 : dev-spec --default user-export",
+    "hero.preview.ariaLabel": "dev-skills workflow 和 multi-agent 预览",
+    "hero.terminal.workflow.label": "Workflow",
+    "hero.terminal.workflow": "$ codex\n> 帮我设计一个登录页面\n\n可以。我会先确认这个登录页服务谁、出现在什么产品场景里,以及需要支持哪些登录方式。\n\n如果项目里还没有设计上下文,我会先补齐它;然后把页面范围收敛成一份 spec,再实现表单状态、校验、错误提示、移动端布局和可访问性。完成后我会用截图和验证命令交付结果。",
+    "hero.terminal.agents.label": "Multi-agent",
+    "hero.terminal.agents": "$ codex\n> 帮我设计一个登录页面\n\n可以。我会由主 agent 先确认目标、边界和验收标准,再把任务拆给设计、实现和验证三条线。\n\n设计 agent 负责布局、状态和文案方向;实现 agent 只改页面相关文件;验证 agent 检查响应式、可访问性和主要登录流程。最后由主 agent 汇总结果和证据。",
     "skills.eyebrow": "Skill library",
-    "skills.title": "不用记住 10 个名字,先认入口。",
-    "skills.text": "用户自然会说“下一步”“写方案”“修 bug”“commit 前看一下”。dev-skills 把这些入口留在前台,把 TDD、验证和收尾放回流程门禁,让 agent 在正确阶段提醒。",
-    "skills.map.aria": "dev-skills 使用地图",
-    "skills.map.entry.label": "用户入口",
-    "skills.map.entry.title": "日常只记这组",
-    "skills.map.entry.text": "dev-auto / dev-spec / dev-plan / dev-fix / dev-code-review 对应下一步、方案、计划、修复和提交前检查。",
-    "skills.map.gate.label": "流程门禁",
-    "skills.map.gate.title": "agent 负责提醒",
-    "skills.map.gate.text": "dev-tdd、dev-verify、dev-finish 不要求用户主动点名,但会卡住实现、完成声明和分支收尾。",
-    "skills.map.setup.label": "一次性设置",
-    "skills.map.setup.title": "UI 项目前置",
-    "skills.map.setup.text": "dev-design-context 只在 UI、产品界面或 landing page 首次进入项目时沉淀设计上下文。",
-    "skills.map.bypass.label": "显式旁路",
-    "skills.map.bypass.title": "少用但明确",
-    "skills.map.bypass.text": "dev-commit-writer 只在用户明确跳过 review 且只要 commit message 时使用。",
-    "skills.list.aria": "dev-skills 列表",
-    "skill.auto.kicker": "用户入口",
-    "skill.auto.desc": "不知道下一步该跑哪个时,扫描 artifacts 并推荐下一条命令。",
-    "skill.auto.hint": "用户会说:下一步该做什么?",
-    "skill.designContext.kicker": "一次性设置",
-    "skill.designContext.desc": "做 UI 前扫描项目视觉线索,只追问缺口,把设计原则写进 .design-context.md。",
-    "skill.designContext.hint": "触发时机:UI / landing page 首次进入",
-    "skill.spec.kicker": "用户入口",
-    "skill.spec.desc": "先暴露歧义,再把模糊需求整理成 scope、风险和验收标准。",
-    "skill.spec.hint": "用户会说:这个需求怎么做?",
-    "skill.plan.kicker": "用户入口",
-    "skill.plan.desc": "把 spec 转成 RALPLAN-DR 方案,包含选项、ADR 和 Critic 验证。",
-    "skill.plan.hint": "用户会说:出个实施计划",
-    "skill.tdd.kicker": "流程门禁",
-    "skill.tdd.desc": "写生产代码前先定义行为测试,按 red -> green -> refactor 收敛。",
-    "skill.tdd.hint": "agent 会在实现前提醒",
-    "skill.fix.kicker": "用户入口",
-    "skill.fix.desc": "以 failing test 和 root cause 为核心,避免猜测式 symptom patch。",
-    "skill.fix.hint": "用户会说:修个 bug / 排查一下",
-    "skill.verify.kicker": "流程门禁",
-    "skill.verify.desc": "声称完成前补齐 fresh evidence,把“应该可以”变成可验证结果。",
-    "skill.verify.hint": "agent 会在 ready 前提醒",
-    "skill.review.kicker": "用户入口",
-    "skill.review.desc": "按规范、功能、闭环、注释、废码 5 轴检查当前 diff。",
-    "skill.review.hint": "用户会说:commit 前看一下",
-    "skill.commit.kicker": "显式旁路",
-    "skill.commit.desc": "只在明确跳过 review 且只要 message 时,生成符合仓库风格的提交信息。",
-    "skill.commit.hint": "用户会说:只要 commit message",
-    "skill.finish.kicker": "流程门禁",
-    "skill.finish.desc": "验证和 review 后处理 PR、merge、keep、discard 或发布动作,避免口头收尾。",
-    "skill.finish.hint": "agent 会在收尾阶段提醒",
-    "rules.eyebrow": "Rules layer",
-    "rules.title": "常驻规则变短,解释和政策各归其位。",
-    "rules.text": "这次更新把模板从团队治理手册压回 agent 必须常驻读取的短规则,同时新增 rationale 和 policy 文档,让规则可解释、可传播、可维护。",
-    "rules.list.aria": "dev-skills 规则层",
-    "rules.always.label": "Always-on",
-    "rules.always.desc": "短版团队规则,只保留 baseline、硬规则、agent 工作方式、skill 路由和少量 team-specific placeholder。",
-    "rules.why.label": "Why",
-    "rules.why.desc": "逐条解释“不假设、最小代码、外科手术式、可验证成功标准”关闭的失败模式。",
-    "rules.policy.label": "Policy",
-    "rules.policy.desc": "承接分支、PR、测试、错误处理、日志、feature flag 和 AI 协作护栏等详细治理说明。",
+    "skills.title": "按你现在要做的事，选择对应的 skill。",
+    "skills.text": "日常只要回答“现在卡在哪一步”。dev-skills 会把需求、实现、修复、验证和提交收进同一条工程流程。",
+    "skills.guide.aria": "dev-skills 使用入口",
+    "skills.guide.related.aria": "相关 skills",
+    "skills.guide.auto.label": "不确定下一步",
+    "skills.guide.auto.title": "让 agent 先判断路径",
+    "skills.guide.auto.text": "当你只知道目标,但不知道该先写需求、计划还是直接修复时,从这里开始。",
+    "skills.guide.scope.label": "需求和方案",
+    "skills.guide.scope.title": "先把要做什么说清",
+    "skills.guide.scope.text": "模糊需求先收敛成 spec;复杂或高风险改动再补 plan。UI 工作先沉淀设计上下文。",
+    "skills.guide.build.label": "实现和修复",
+    "skills.guide.build.title": "写代码前先锁住行为",
+    "skills.guide.build.text": "新功能走 TDD;问题修复从复现和 root cause 开始,避免只修表面症状。",
+    "skills.guide.ship.label": "完成和提交",
+    "skills.guide.ship.title": "先验证,再 review",
+    "skills.guide.ship.text": "完成声明必须有证据;提交前检查 diff。只需要 message 时再单独使用 commit writer。",
+    "experience.tabs.aria": "Workflow 和 Multi-agent 内容模式",
+    "experience.workflow": "Workflow",
+    "experience.agents": "Multi-agent",
+    "workflow.agentNote.aria": "Workflow 模式下的 agent 说明",
+    "workflow.agentNote.label": "Agent mode",
+    "workflow.agentNote.title": "Workflow 模式下,主 agent 负责推进。",
+    "workflow.agentNote.text": "普通 workflow 会由主 agent 根据当前阶段选择合适的 skill,按需求、实现、验证和评审顺序推进。它不会自动分派子 agent;需要并行探索、实现或独立验证时,再切到 Multi-agent。",
+    "agent.aria": "Multi-agent 模式下的 agent 说明",
+    "agent.eyebrow": "Agent mode",
+    "agent.title": "Multi-agent 模式下,主 agent 负责分派和整合。",
+    "agent.text": "主 agent 先确认目标、边界和不可修改范围,再把探索、实现、验证或 review 分派给子 agent。子 agent 只处理范围明确、能交付证据的任务;最终判断、git 操作和用户沟通仍然回到主 agent。",
+    "agent.lanes.aria": "multi-agent 分工方式",
+    "agent.main.label": "Main agent",
+    "agent.main.title": "主控",
+    "agent.main.text": "确认目标、写清边界,整合所有子 agent 结果。",
+    "agent.explorer.label": "Explorer",
+    "agent.explorer.title": "探索",
+    "agent.explorer.text": "只读查调用链、相似实现、设计系统和已有约定。",
+    "agent.worker.label": "Worker",
+    "agent.worker.title": "实现",
+    "agent.worker.text": "只改分配范围内的页面、模块或测试。",
+    "agent.check.label": "Verifier / Reviewer",
+    "agent.check.title": "独立把关",
+    "agent.check.text": "独立检查命令证据、响应式、可访问性和 diff 风险。",
     "preview.eyebrow": "Runtime preview",
     "preview.title": "像真实 Codex CLI 一样看 skill 怎么跑。",
     "preview.text": "切换 tab 查看用户输入和代表性输出。左侧输入会播放打字机效果;开启减少动效时直接显示完整文本。",
+    "preview.mode.aria": "Runtime preview 模式",
+    "preview.mode.skills": "Skill workflow",
+    "preview.mode.agents": "Multi-agent",
     "preview.tabs.aria": "Skill 运行预览",
+    "preview.tabs.agents.aria": "Agent 运行预览",
     "preview.input.aria": "Codex CLI 输入预览",
     "workflow.eyebrow": "Workflow",
     "workflow.title": "纵向流程图,三条分支最后汇合到验证、评审和提交。",
+    "workflow.mode.aria": "Workflow 图模式",
+    "workflow.mode.skills": "Skill workflow",
+    "workflow.mode.agents": "Multi-agent",
     "workflow.feature.heading": "功能需求路径",
     "workflow.feature.0": "UI 工作先沉淀设计上下文",
     "workflow.feature.1": "模糊需求变成 spec",
@@ -122,9 +115,39 @@ const translations = {
     "workflow.strong.planOptional": "dev-plan 可选",
     "workflow.strong.commitOptional": "dev-commit-writer 可选",
     "workflow.strong.finishOptional": "dev-finish 可选",
+    "workflow.agent.main.heading": "Main agent lane",
+    "workflow.agent.main.0.strong": "Intake",
+    "workflow.agent.main.0": "确认目标、风险和是否值得分派",
+    "workflow.agent.main.1.strong": "Scope",
+    "workflow.agent.main.1": "写清 objective、write scope、do-not-edit",
+    "workflow.agent.main.2.strong": "Integrate",
+    "workflow.agent.main.2": "合并子 agent 结果并处理冲突",
+    "workflow.agent.main.3.strong": "Ship",
+    "workflow.agent.main.3": "最终验证、commit、PR 或收尾",
+    "workflow.agent.parallel.heading": "Parallel lanes",
+    "workflow.agent.parallel.0.strong": "Explorer",
+    "workflow.agent.parallel.0": "查调用链、类似实现和设计约定",
+    "workflow.agent.parallel.1.strong": "Planner",
+    "workflow.agent.parallel.1": "复杂任务先做方案取舍和风险检查",
+    "workflow.agent.parallel.2.strong": "Worker",
+    "workflow.agent.parallel.2": "只改明确分配的文件或模块",
+    "workflow.agent.parallel.3.strong": "Verifier",
+    "workflow.agent.parallel.3": "独立跑命令,验证完成声明",
+    "workflow.agent.guard.heading": "Guardrails",
+    "workflow.agent.guard.0.strong": "No overlap",
+    "workflow.agent.guard.0": "多个 worker 不改同一批文件",
+    "workflow.agent.guard.1.strong": "No hidden chain",
+    "workflow.agent.guard.1": "dev-auto 只推荐,不自动调起其他 skill",
+    "workflow.agent.guard.2.strong": "No risky git",
+    "workflow.agent.guard.2": "merge、push、discard 留给主 agent 和用户",
+    "workflow.agent.guard.3.strong": "Evidence",
+    "workflow.agent.guard.3": "每个子 agent 都要输出证据和风险",
     "workflow.diagram.aria": "dev-skills 简化工作流图,展示 feature、hotfix 和 bug 三条分支如何汇合到验证、评审、提交和收尾",
     "workflow.graph.aria": "Feature、Simple hotfix 和 Bug 三条工作流分支最终汇合到验证、评审、提交和收尾",
     "workflow.fallback": "Feature、Simple hotfix 和 Bug 三条路径最终都会汇合到 dev-verify、dev-code-review、git commit 和 dev-finish。",
+    "workflow.agent.diagram.aria": "dev-skills multi-agent 分工流程图,展示主 agent 如何分派探索、实现、验证和评审并最终整合收尾",
+    "workflow.agent.graph.aria": "主 agent 定界任务后并行分派 Explorer、Worker、Verifier 和 Reviewer,最后整合到验证、commit 和 PR 收尾",
+    "workflow.agent.fallback": "主 agent 先定界任务,再把探索、实现、验证和评审分派给边界明确的子 agent,最后回到主 agent 整合与收尾。",
     "workflow.node.start.phase": "Start",
     "workflow.node.start.title": "需求进入",
     "workflow.node.start.desc": "feature / hotfix / bug",
@@ -143,6 +166,30 @@ const translations = {
     "workflow.node.ship.phase": "Ship",
     "workflow.node.ship.title": "提交与收尾",
     "workflow.node.ship.desc": "git commit -> dev-finish",
+    "workflow.agent.node.request.phase": "Start",
+    "workflow.agent.node.request.title": "任务进入",
+    "workflow.agent.node.request.desc": "目标 / 风险 / 边界",
+    "workflow.agent.node.main.phase": "Main",
+    "workflow.agent.node.main.title": "主 agent 定界",
+    "workflow.agent.node.main.desc": "拆分任务与所有权",
+    "workflow.agent.node.explorer.phase": "Explore",
+    "workflow.agent.node.explorer.title": "Explorer",
+    "workflow.agent.node.explorer.desc": "调用链 / 约定 / 参考",
+    "workflow.agent.node.worker.phase": "Work",
+    "workflow.agent.node.worker.title": "Worker",
+    "workflow.agent.node.worker.desc": "按限定范围实现",
+    "workflow.agent.node.verifier.phase": "Verify",
+    "workflow.agent.node.verifier.title": "Verifier",
+    "workflow.agent.node.verifier.desc": "命令和完成证据",
+    "workflow.agent.node.reviewer.phase": "Review",
+    "workflow.agent.node.reviewer.title": "Reviewer",
+    "workflow.agent.node.reviewer.desc": "diff 风险和测试缺口",
+    "workflow.agent.node.integrate.phase": "Integrate",
+    "workflow.agent.node.integrate.title": "结果整合",
+    "workflow.agent.node.integrate.desc": "冲突 / 缺口 / 下一步",
+    "workflow.agent.node.ship.phase": "Ship",
+    "workflow.agent.node.ship.title": "收尾",
+    "workflow.agent.node.ship.desc": "验证 / commit / PR",
     "install.eyebrow": "Install and upgrade",
     "install.title": "Claude Code 和 Codex 分开安装。",
     "install.text": "选择你的入口,复制对应命令。升级 skill 不会自动覆盖项目里的短版团队规则模板;详细政策可参考或复制 docs/team-policy.md。",
@@ -170,11 +217,10 @@ const translations = {
   en: {
     "page.lang": "en",
     "page.title": "dev-skills - AI development workflow skills",
-    "page.description": "Ten AI development workflow skills organized as user entries, flow gates, one-time setup, and explicit bypasses, plus concise always-on rules, baseline rationale, and a team policy guide.",
+    "page.description": "Ten AI development workflow skills organized as user entries, flow gates, one-time setup, and explicit bypasses, plus concise always-on rules, a multi-agent delegation policy, and team governance docs.",
     "brand.aria": "dev-skills home",
     "nav.aria": "Primary navigation",
     "nav.skills": "Skills",
-    "nav.rules": "Rules",
     "nav.preview": "Preview",
     "nav.workflow": "Workflow",
     "nav.install": "Install",
@@ -194,72 +240,66 @@ const translations = {
     "hero.install.aria": "View install options",
     "hero.preview.aria": "View skill runtime previews",
     "hero.github.aria": "Open the GitHub repository",
-    "hero.preview.ariaLabel": "dev-skills workflow preview",
-    "hero.terminal": "$ codex\n> Use dev-auto to connect the workflow. What should I do next?\n\n━━━ Dev Auto ━━━\nPath       : feature\nComplexity : moderate\nNext       : dev-spec --default user-export",
+    "hero.preview.ariaLabel": "dev-skills workflow and multi-agent preview",
+    "hero.terminal.workflow.label": "Workflow",
+    "hero.terminal.workflow": "$ codex\n> Design a login page for me\n\nSure. I’ll first clarify who the login page serves, where it appears in the product, and which sign-in methods it needs.\n\nIf the project has no design context yet, I’ll capture it first. Then I’ll turn the page scope into a spec, implement form states, validation, error handling, responsive layout, and accessibility, and hand off screenshots plus verification evidence.",
+    "hero.terminal.agents.label": "Multi-agent",
+    "hero.terminal.agents": "$ codex\n> Design a login page for me\n\nSure. The main agent would confirm the goal, boundaries, and acceptance criteria first, then split the work across design, implementation, and verification lanes.\n\nThe design agent handles layout, states, and copy direction; the worker edits only page-related files; the verifier checks responsive behavior, accessibility, and the core sign-in flow. The main agent then integrates the result and evidence.",
     "skills.eyebrow": "Skill library",
-    "skills.title": "Do not memorize ten names. Learn the entries first.",
-    "skills.text": "Users naturally ask for the next step, a design, a plan, a bug fix, or a pre-commit check. dev-skills keeps those entries up front and moves TDD, verification, and branch closure back into flow gates the agent can prompt at the right time.",
-    "skills.map.aria": "dev-skills usage map",
-    "skills.map.entry.label": "User entries",
-    "skills.map.entry.title": "Remember this set",
-    "skills.map.entry.text": "dev-auto / dev-spec / dev-plan / dev-fix / dev-code-review map to next step, design, plan, fix, and pre-commit review.",
-    "skills.map.gate.label": "Flow gates",
-    "skills.map.gate.title": "Agent prompts these",
-    "skills.map.gate.text": "dev-tdd, dev-verify, and dev-finish do not need to be named by users, but they gate implementation, completion claims, and branch closure.",
-    "skills.map.setup.label": "One-time setup",
-    "skills.map.setup.title": "Before UI work",
-    "skills.map.setup.text": "dev-design-context captures design context the first time a project enters UI, product, or landing-page work.",
-    "skills.map.bypass.label": "Explicit bypass",
-    "skills.map.bypass.title": "Rare but clear",
-    "skills.map.bypass.text": "dev-commit-writer is only for cases where the user explicitly skips review and wants only a commit message.",
-    "skills.list.aria": "dev-skills list",
-    "skill.auto.kicker": "User entry",
-    "skill.auto.desc": "Scans artifacts and recommends the next command when you are unsure which skill to run.",
-    "skill.auto.hint": "User says: what should I do next?",
-    "skill.designContext.kicker": "One-time setup",
-    "skill.designContext.desc": "Scans project visual cues before UI work, asks only for gaps, and writes design principles to .design-context.md.",
-    "skill.designContext.hint": "Trigger: first UI / landing-page pass",
-    "skill.spec.kicker": "User entry",
-    "skill.spec.desc": "Surfaces ambiguity first, then turns fuzzy requests into scope, risks, and acceptance criteria.",
-    "skill.spec.hint": "User says: how should this work?",
-    "skill.plan.kicker": "User entry",
-    "skill.plan.desc": "Turns a spec into a RALPLAN-DR plan with options, an ADR, and Critic validation.",
-    "skill.plan.hint": "User says: make an implementation plan",
-    "skill.tdd.kicker": "Flow gate",
-    "skill.tdd.desc": "Defines behavior tests before production code and drives work through red -> green -> refactor.",
-    "skill.tdd.hint": "Agent prompts before implementation",
-    "skill.fix.kicker": "User entry",
-    "skill.fix.desc": "Centers the work on a failing test and root cause, avoiding guessed symptom patches.",
-    "skill.fix.hint": "User says: fix this bug / investigate",
-    "skill.verify.kicker": "Flow gate",
-    "skill.verify.desc": "Requires fresh evidence before claiming done, turning “should work” into checkable results.",
-    "skill.verify.hint": "Agent prompts before ready",
-    "skill.review.kicker": "User entry",
-    "skill.review.desc": "Reviews the current diff across conventions, behavior, closure, comments, and dead code.",
-    "skill.review.hint": "User says: check before commit",
-    "skill.commit.kicker": "Explicit bypass",
-    "skill.commit.desc": "Writes a repo-style commit message only when review is explicitly skipped and only a message is requested.",
-    "skill.commit.hint": "User says: just write the commit message",
-    "skill.finish.kicker": "Flow gate",
-    "skill.finish.desc": "Handles PR, merge, keep, discard, or publish decisions after verification and review.",
-    "skill.finish.hint": "Agent prompts during closure",
-    "rules.eyebrow": "Rules layer",
-    "rules.title": "Short always-on rules, with rationale and policy separated.",
-    "rules.text": "The templates are reduced back to the rules agents must always read, while rationale and policy documents explain and carry the broader governance details.",
-    "rules.list.aria": "dev-skills rules layer",
-    "rules.always.label": "Always-on",
-    "rules.always.desc": "Short team rules covering the baseline, hard rules, agent working style, skill routing, and a few team-specific placeholders.",
-    "rules.why.label": "Why",
-    "rules.why.desc": "Explains the failure modes closed by “do not assume,” minimal code, surgical changes, and verifiable success criteria.",
-    "rules.policy.label": "Policy",
-    "rules.policy.desc": "Holds detailed governance for branches, PRs, tests, errors, logging, feature flags, and AI collaboration guardrails.",
+    "skills.title": "Choose the skill for the job in front of you.",
+    "skills.text": "Most days, you only need to answer where the work is stuck. dev-skills keeps requirements, implementation, fixes, verification, and commits in one engineering flow.",
+    "skills.guide.aria": "dev-skills usage entries",
+    "skills.guide.related.aria": "Related skills",
+    "skills.guide.auto.label": "Unsure what is next",
+    "skills.guide.auto.title": "Let the agent pick the path",
+    "skills.guide.auto.text": "Start here when you know the goal but not whether to write a spec, plan, or fix first.",
+    "skills.guide.scope.label": "Requirements and plans",
+    "skills.guide.scope.title": "Clarify what to build",
+    "skills.guide.scope.text": "Turn fuzzy requests into specs, add a plan for complex or risky work, and capture design context before UI work.",
+    "skills.guide.build.label": "Build and fix",
+    "skills.guide.build.title": "Lock behavior before coding",
+    "skills.guide.build.text": "Use TDD for new work; debug from reproduction and root cause instead of patching symptoms.",
+    "skills.guide.ship.label": "Finish and commit",
+    "skills.guide.ship.title": "Verify, then review",
+    "skills.guide.ship.text": "Completion needs evidence; review the diff before commit. Use the commit writer only when you need just a message.",
+    "experience.tabs.aria": "Workflow and multi-agent content mode",
+    "experience.workflow": "Workflow",
+    "experience.agents": "Multi-agent",
+    "workflow.agentNote.aria": "Agent mode note in Workflow mode",
+    "workflow.agentNote.label": "Agent mode",
+    "workflow.agentNote.title": "In Workflow mode, the main agent drives the work.",
+    "workflow.agentNote.text": "The standard workflow lets the main agent choose the right skill for the current phase and move through requirements, implementation, verification, and review in order. It does not automatically delegate to sub-agents; switch to Multi-agent when exploration, implementation, or independent verification should run in parallel.",
+    "agent.aria": "Agent mode note in Multi-agent mode",
+    "agent.eyebrow": "Agent mode",
+    "agent.title": "In Multi-agent mode, the main agent delegates and integrates.",
+    "agent.text": "The main agent confirms the goal, boundaries, and do-not-edit scope, then delegates exploration, implementation, verification, or review to sub-agents. Sub-agents only take bounded tasks that can return evidence; final judgment, git operations, and user communication stay with the main agent.",
+    "agent.lanes.aria": "multi-agent delegation model",
+    "agent.main.label": "Main agent",
+    "agent.main.title": "Control",
+    "agent.main.text": "Confirms the goal, writes boundaries, and integrates sub-agent results.",
+    "agent.explorer.label": "Explorer",
+    "agent.explorer.title": "Explore",
+    "agent.explorer.text": "Reads call chains, similar code, design systems, and conventions.",
+    "agent.worker.label": "Worker",
+    "agent.worker.title": "Implement",
+    "agent.worker.text": "Edits only the assigned page, module, or test scope.",
+    "agent.check.label": "Verifier / Reviewer",
+    "agent.check.title": "Check",
+    "agent.check.text": "Checks command evidence, responsive behavior, accessibility, and diff risk.",
     "preview.eyebrow": "Runtime preview",
     "preview.title": "See how each skill runs in a Codex CLI-like flow.",
     "preview.text": "Switch tabs to view representative user input and output. The left side uses a typewriter effect; reduced motion shows the full text immediately.",
+    "preview.mode.aria": "Runtime preview mode",
+    "preview.mode.skills": "Skill workflow",
+    "preview.mode.agents": "Multi-agent",
     "preview.tabs.aria": "Skill runtime previews",
+    "preview.tabs.agents.aria": "Agent runtime previews",
     "preview.input.aria": "Codex CLI input preview",
     "workflow.eyebrow": "Workflow",
     "workflow.title": "A top-down flow where three paths converge into verification, review, and commit.",
+    "workflow.mode.aria": "Workflow diagram mode",
+    "workflow.mode.skills": "Skill workflow",
+    "workflow.mode.agents": "Multi-agent",
     "workflow.feature.heading": "Feature path",
     "workflow.feature.0": "Capture design context first for UI work",
     "workflow.feature.1": "Turn a fuzzy request into a spec",
@@ -287,9 +327,39 @@ const translations = {
     "workflow.strong.planOptional": "dev-plan optional",
     "workflow.strong.commitOptional": "dev-commit-writer optional",
     "workflow.strong.finishOptional": "dev-finish optional",
+    "workflow.agent.main.heading": "Main agent lane",
+    "workflow.agent.main.0.strong": "Intake",
+    "workflow.agent.main.0": "Confirm the goal, risks, and whether delegation is worth it",
+    "workflow.agent.main.1.strong": "Scope",
+    "workflow.agent.main.1": "Write the objective, write scope, and do-not-edit boundaries",
+    "workflow.agent.main.2.strong": "Integrate",
+    "workflow.agent.main.2": "Merge sub-agent results and resolve conflicts",
+    "workflow.agent.main.3.strong": "Ship",
+    "workflow.agent.main.3": "Run final verification, commit, PR, or closure",
+    "workflow.agent.parallel.heading": "Parallel lanes",
+    "workflow.agent.parallel.0.strong": "Explorer",
+    "workflow.agent.parallel.0": "Inspect call chains, similar code, and design conventions",
+    "workflow.agent.parallel.1.strong": "Planner",
+    "workflow.agent.parallel.1": "Evaluate options and risks for complex tasks",
+    "workflow.agent.parallel.2.strong": "Worker",
+    "workflow.agent.parallel.2": "Edit only the assigned files or modules",
+    "workflow.agent.parallel.3.strong": "Verifier",
+    "workflow.agent.parallel.3": "Run commands independently and verify the done claim",
+    "workflow.agent.guard.heading": "Guardrails",
+    "workflow.agent.guard.0.strong": "No overlap",
+    "workflow.agent.guard.0": "Do not let multiple workers edit the same files",
+    "workflow.agent.guard.1.strong": "No hidden chain",
+    "workflow.agent.guard.1": "dev-auto recommends only; it does not invoke other skills",
+    "workflow.agent.guard.2.strong": "No risky git",
+    "workflow.agent.guard.2": "Keep merge, push, and discard with the main agent and user",
+    "workflow.agent.guard.3.strong": "Evidence",
+    "workflow.agent.guard.3": "Every sub-agent returns evidence and risks",
     "workflow.diagram.aria": "Simplified dev-skills workflow diagram showing feature, hotfix, and bug paths converging into verification, review, commit, and closure",
     "workflow.graph.aria": "Feature, simple hotfix, and bug paths converge into verification, review, commit, and closure",
     "workflow.fallback": "Feature, simple hotfix, and bug paths all converge into dev-verify, dev-code-review, git commit, and dev-finish.",
+    "workflow.agent.diagram.aria": "dev-skills multi-agent delegation diagram showing the main agent delegating exploration, implementation, verification, and review before integration and closure",
+    "workflow.agent.graph.aria": "The main agent scopes the task, delegates Explorer, Worker, Verifier, and Reviewer lanes in parallel, then integrates results for verification, commit, and PR closure",
+    "workflow.agent.fallback": "The main agent scopes the task, delegates bounded exploration, implementation, verification, and review, then integrates the evidence and closes the work.",
     "workflow.node.start.phase": "Start",
     "workflow.node.start.title": "Request intake",
     "workflow.node.start.desc": "feature / hotfix / bug",
@@ -308,6 +378,30 @@ const translations = {
     "workflow.node.ship.phase": "Ship",
     "workflow.node.ship.title": "Commit & Finish",
     "workflow.node.ship.desc": "git commit -> dev-finish",
+    "workflow.agent.node.request.phase": "Start",
+    "workflow.agent.node.request.title": "Task intake",
+    "workflow.agent.node.request.desc": "goal / risk / boundary",
+    "workflow.agent.node.main.phase": "Main",
+    "workflow.agent.node.main.title": "Scope delegation",
+    "workflow.agent.node.main.desc": "tasks and ownership",
+    "workflow.agent.node.explorer.phase": "Explore",
+    "workflow.agent.node.explorer.title": "Explorer",
+    "workflow.agent.node.explorer.desc": "call chains / conventions",
+    "workflow.agent.node.worker.phase": "Work",
+    "workflow.agent.node.worker.title": "Worker",
+    "workflow.agent.node.worker.desc": "assigned scope only",
+    "workflow.agent.node.verifier.phase": "Verify",
+    "workflow.agent.node.verifier.title": "Verifier",
+    "workflow.agent.node.verifier.desc": "commands and evidence",
+    "workflow.agent.node.reviewer.phase": "Review",
+    "workflow.agent.node.reviewer.title": "Reviewer",
+    "workflow.agent.node.reviewer.desc": "diff risks and test gaps",
+    "workflow.agent.node.integrate.phase": "Integrate",
+    "workflow.agent.node.integrate.title": "Integrate",
+    "workflow.agent.node.integrate.desc": "conflicts / gaps / next step",
+    "workflow.agent.node.ship.phase": "Ship",
+    "workflow.agent.node.ship.title": "Close",
+    "workflow.agent.node.ship.desc": "verify / commit / PR",
     "install.eyebrow": "Install and upgrade",
     "install.title": "Claude Code and Codex install separately.",
     "install.text": "Choose your entry point and copy the command. Upgrading skills does not automatically overwrite the short team-rule templates in your project; use docs/team-policy.md for the detailed policy.",
@@ -335,12 +429,13 @@ const translations = {
 };
 
 let currentLanguage = getInitialLanguage();
+let currentExperienceMode = "skills";
+let currentPreviewMode = "skills";
 
 const localizedTargets = [
   { selector: ".brand", key: "brand.aria", attr: "aria-label" },
   { selector: ".nav-links", key: "nav.aria", attr: "aria-label" },
   { selector: ".nav-links a[href='#skills']", key: "nav.skills" },
-  { selector: ".nav-links a[href='#rules']", key: "nav.rules" },
   { selector: ".nav-links a[href='#preview']", key: "nav.preview" },
   { selector: ".nav-links a[href='#workflow']", key: "nav.workflow" },
   { selector: ".nav-links a[href='#install']", key: "nav.install" },
@@ -357,99 +452,113 @@ const localizedTargets = [
   { selector: ".hero-actions .ghost", key: "hero.github" },
   { selector: ".hero-actions .ghost", key: "hero.github.aria", attr: "aria-label" },
   { selector: ".hero-preview", key: "hero.preview.ariaLabel", attr: "aria-label" },
-  { selector: ".hero-terminal code", key: "hero.terminal" },
   { selector: "#skills .section-heading .eyebrow", key: "skills.eyebrow" },
   { selector: "#skills .section-heading h2", key: "skills.title" },
   { selector: "#skills .section-heading p:last-child", key: "skills.text" },
-  { selector: ".skill-map", key: "skills.map.aria", attr: "aria-label" },
-  { selector: ".skill-map-card:nth-child(1) span", key: "skills.map.entry.label" },
-  { selector: ".skill-map-card:nth-child(1) h3", key: "skills.map.entry.title" },
-  { selector: ".skill-map-card:nth-child(1) p", key: "skills.map.entry.text" },
-  { selector: ".skill-map-card:nth-child(2) span", key: "skills.map.gate.label" },
-  { selector: ".skill-map-card:nth-child(2) h3", key: "skills.map.gate.title" },
-  { selector: ".skill-map-card:nth-child(2) p", key: "skills.map.gate.text" },
-  { selector: ".skill-map-card:nth-child(3) span", key: "skills.map.setup.label" },
-  { selector: ".skill-map-card:nth-child(3) h3", key: "skills.map.setup.title" },
-  { selector: ".skill-map-card:nth-child(3) p", key: "skills.map.setup.text" },
-  { selector: ".skill-map-card:nth-child(4) span", key: "skills.map.bypass.label" },
-  { selector: ".skill-map-card:nth-child(4) h3", key: "skills.map.bypass.title" },
-  { selector: ".skill-map-card:nth-child(4) p", key: "skills.map.bypass.text" },
-  { selector: ".skill-grid", key: "skills.list.aria", attr: "aria-label" },
-  { selector: ".skill-card:nth-child(1) .skill-kicker", key: "skill.auto.kicker" },
-  { selector: ".skill-card:nth-child(1) p", key: "skill.auto.desc" },
-  { selector: ".skill-card:nth-child(1) small", key: "skill.auto.hint" },
-  { selector: ".skill-card:nth-child(2) .skill-kicker", key: "skill.designContext.kicker" },
-  { selector: ".skill-card:nth-child(2) p", key: "skill.designContext.desc" },
-  { selector: ".skill-card:nth-child(2) small", key: "skill.designContext.hint" },
-  { selector: ".skill-card:nth-child(3) .skill-kicker", key: "skill.spec.kicker" },
-  { selector: ".skill-card:nth-child(3) p", key: "skill.spec.desc" },
-  { selector: ".skill-card:nth-child(3) small", key: "skill.spec.hint" },
-  { selector: ".skill-card:nth-child(4) .skill-kicker", key: "skill.plan.kicker" },
-  { selector: ".skill-card:nth-child(4) p", key: "skill.plan.desc" },
-  { selector: ".skill-card:nth-child(4) small", key: "skill.plan.hint" },
-  { selector: ".skill-card:nth-child(5) .skill-kicker", key: "skill.tdd.kicker" },
-  { selector: ".skill-card:nth-child(5) p", key: "skill.tdd.desc" },
-  { selector: ".skill-card:nth-child(5) small", key: "skill.tdd.hint" },
-  { selector: ".skill-card:nth-child(6) .skill-kicker", key: "skill.fix.kicker" },
-  { selector: ".skill-card:nth-child(6) p", key: "skill.fix.desc" },
-  { selector: ".skill-card:nth-child(6) small", key: "skill.fix.hint" },
-  { selector: ".skill-card:nth-child(7) .skill-kicker", key: "skill.verify.kicker" },
-  { selector: ".skill-card:nth-child(7) p", key: "skill.verify.desc" },
-  { selector: ".skill-card:nth-child(7) small", key: "skill.verify.hint" },
-  { selector: ".skill-card:nth-child(8) .skill-kicker", key: "skill.review.kicker" },
-  { selector: ".skill-card:nth-child(8) p", key: "skill.review.desc" },
-  { selector: ".skill-card:nth-child(8) small", key: "skill.review.hint" },
-  { selector: ".skill-card:nth-child(9) .skill-kicker", key: "skill.commit.kicker" },
-  { selector: ".skill-card:nth-child(9) p", key: "skill.commit.desc" },
-  { selector: ".skill-card:nth-child(9) small", key: "skill.commit.hint" },
-  { selector: ".skill-card:nth-child(10) .skill-kicker", key: "skill.finish.kicker" },
-  { selector: ".skill-card:nth-child(10) p", key: "skill.finish.desc" },
-  { selector: ".skill-card:nth-child(10) small", key: "skill.finish.hint" },
-  { selector: "#rules .section-heading .eyebrow", key: "rules.eyebrow" },
-  { selector: "#rules .section-heading h2", key: "rules.title" },
-  { selector: "#rules .section-heading p:last-child", key: "rules.text" },
-  { selector: ".rules-grid", key: "rules.list.aria", attr: "aria-label" },
-  { selector: ".rule-card:nth-child(1) span", key: "rules.always.label" },
-  { selector: ".rule-card:nth-child(1) p", key: "rules.always.desc" },
-  { selector: ".rule-card:nth-child(2) span", key: "rules.why.label" },
-  { selector: ".rule-card:nth-child(2) p", key: "rules.why.desc" },
-  { selector: ".rule-card:nth-child(3) span", key: "rules.policy.label" },
-  { selector: ".rule-card:nth-child(3) p", key: "rules.policy.desc" },
+  { selector: ".skill-guide", key: "skills.guide.aria", attr: "aria-label" },
+  { selector: ".skill-guide-card:nth-child(1) span", key: "skills.guide.auto.label" },
+  { selector: ".skill-guide-card:nth-child(1) h3", key: "skills.guide.auto.title" },
+  { selector: ".skill-guide-card:nth-child(1) p", key: "skills.guide.auto.text" },
+  { selector: ".skill-guide-card:nth-child(1) ul", key: "skills.guide.related.aria", attr: "aria-label" },
+  { selector: ".skill-guide-card:nth-child(2) span", key: "skills.guide.scope.label" },
+  { selector: ".skill-guide-card:nth-child(2) h3", key: "skills.guide.scope.title" },
+  { selector: ".skill-guide-card:nth-child(2) p", key: "skills.guide.scope.text" },
+  { selector: ".skill-guide-card:nth-child(2) ul", key: "skills.guide.related.aria", attr: "aria-label" },
+  { selector: ".skill-guide-card:nth-child(3) span", key: "skills.guide.build.label" },
+  { selector: ".skill-guide-card:nth-child(3) h3", key: "skills.guide.build.title" },
+  { selector: ".skill-guide-card:nth-child(3) p", key: "skills.guide.build.text" },
+  { selector: ".skill-guide-card:nth-child(3) ul", key: "skills.guide.related.aria", attr: "aria-label" },
+  { selector: ".skill-guide-card:nth-child(4) span", key: "skills.guide.ship.label" },
+  { selector: ".skill-guide-card:nth-child(4) h3", key: "skills.guide.ship.title" },
+  { selector: ".skill-guide-card:nth-child(4) p", key: "skills.guide.ship.text" },
+  { selector: ".skill-guide-card:nth-child(4) ul", key: "skills.guide.related.aria", attr: "aria-label" },
+  { selector: ".experience-mode-switch", key: "experience.tabs.aria", attr: "aria-label" },
+  { selector: "[data-experience-mode='skills']", key: "experience.workflow" },
+  { selector: "[data-experience-mode='agents']", key: "experience.agents" },
+  { selector: ".workflow-agent-note", key: "workflow.agentNote.aria", attr: "aria-label" },
+  { selector: ".workflow-agent-note span", key: "workflow.agentNote.label" },
+  { selector: ".workflow-agent-note h3", key: "workflow.agentNote.title" },
+  { selector: ".workflow-agent-note p", key: "workflow.agentNote.text" },
+  { selector: ".agent-mode-note", key: "agent.aria", attr: "aria-label" },
+  { selector: ".agent-mode-note span", key: "agent.eyebrow" },
+  { selector: ".agent-mode-note h3", key: "agent.title" },
+  { selector: ".agent-mode-note p", key: "agent.text" },
+  { selector: ".agent-lanes", key: "agent.lanes.aria", attr: "aria-label" },
+  { selector: ".agent-lanes article:nth-child(1) span", key: "agent.main.label" },
+  { selector: ".agent-lanes article:nth-child(1) h3", key: "agent.main.title" },
+  { selector: ".agent-lanes article:nth-child(1) p", key: "agent.main.text" },
+  { selector: ".agent-lanes article:nth-child(2) span", key: "agent.explorer.label" },
+  { selector: ".agent-lanes article:nth-child(2) h3", key: "agent.explorer.title" },
+  { selector: ".agent-lanes article:nth-child(2) p", key: "agent.explorer.text" },
+  { selector: ".agent-lanes article:nth-child(3) span", key: "agent.worker.label" },
+  { selector: ".agent-lanes article:nth-child(3) h3", key: "agent.worker.title" },
+  { selector: ".agent-lanes article:nth-child(3) p", key: "agent.worker.text" },
+  { selector: ".agent-lanes article:nth-child(4) span", key: "agent.check.label" },
+  { selector: ".agent-lanes article:nth-child(4) h3", key: "agent.check.title" },
+  { selector: ".agent-lanes article:nth-child(4) p", key: "agent.check.text" },
   { selector: "#preview .section-heading .eyebrow", key: "preview.eyebrow" },
   { selector: "#preview .section-heading h2", key: "preview.title" },
   { selector: "#preview .section-heading p:last-child", key: "preview.text" },
-  { selector: ".skill-tabs", key: "preview.tabs.aria", attr: "aria-label" },
+  { selector: "[data-preview-tabs='skills']", key: "preview.tabs.aria", attr: "aria-label" },
+  { selector: "[data-preview-tabs='agents']", key: "preview.tabs.agents.aria", attr: "aria-label" },
   { selector: ".terminal-panel", key: "preview.input.aria", attr: "aria-label" },
-  { selector: "#workflow .section-heading .eyebrow", key: "workflow.eyebrow" },
-  { selector: "#workflow .section-heading h2", key: "workflow.title" },
-  { selector: ".workflow-path:nth-child(1) h3", key: "workflow.feature.heading" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(1) strong", key: "workflow.strong.designContextOptional" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(1) span", key: "workflow.feature.0" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(2) span", key: "workflow.feature.1" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(3) strong", key: "workflow.strong.planOptional" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(3) span", key: "workflow.feature.2" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(4) span", key: "workflow.feature.3" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(5) span", key: "workflow.feature.4" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(6) span", key: "workflow.feature.5" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(7) strong", key: "workflow.strong.commitOptional" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(7) span", key: "workflow.feature.6" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(8) span", key: "workflow.feature.7" },
-  { selector: ".workflow-path:nth-child(1) li:nth-child(9) span", key: "workflow.feature.8" },
-  { selector: ".workflow-path:nth-child(2) h3", key: "workflow.bug.heading" },
-  { selector: ".workflow-path:nth-child(2) li:nth-child(1) span", key: "workflow.bug.1" },
-  { selector: ".workflow-path:nth-child(2) li:nth-child(2) span", key: "workflow.bug.2" },
-  { selector: ".workflow-path:nth-child(2) li:nth-child(3) span", key: "workflow.bug.3" },
-  { selector: ".workflow-path:nth-child(2) li:nth-child(4) strong", key: "workflow.strong.commitOptional" },
-  { selector: ".workflow-path:nth-child(2) li:nth-child(4) span", key: "workflow.bug.4" },
-  { selector: ".workflow-path:nth-child(2) li:nth-child(5) span", key: "workflow.bug.5" },
-  { selector: ".workflow-path:nth-child(2) li:nth-child(6) span", key: "workflow.bug.6" },
-  { selector: ".workflow-path:nth-child(3) h3", key: "workflow.hotfix.heading" },
-  { selector: ".workflow-path:nth-child(3) li:nth-child(1) span", key: "workflow.hotfix.1" },
-  { selector: ".workflow-path:nth-child(3) li:nth-child(2) span", key: "workflow.hotfix.2" },
-  { selector: ".workflow-path:nth-child(3) li:nth-child(3) span", key: "workflow.hotfix.3" },
-  { selector: ".workflow-path:nth-child(3) li:nth-child(4) span", key: "workflow.hotfix.4" },
-  { selector: ".workflow-path:nth-child(3) li:nth-child(5) strong", key: "workflow.strong.finishOptional" },
-  { selector: ".workflow-path:nth-child(3) li:nth-child(5) span", key: "workflow.hotfix.5" },
+  { selector: ".workflow-section .section-heading .eyebrow", key: "workflow.eyebrow" },
+  { selector: ".workflow-section .section-heading h2", key: "workflow.title" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) h3", key: "workflow.feature.heading" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(1) strong", key: "workflow.strong.designContextOptional" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(1) span", key: "workflow.feature.0" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(2) span", key: "workflow.feature.1" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(3) strong", key: "workflow.strong.planOptional" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(3) span", key: "workflow.feature.2" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(4) span", key: "workflow.feature.3" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(5) span", key: "workflow.feature.4" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(6) span", key: "workflow.feature.5" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(7) strong", key: "workflow.strong.commitOptional" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(7) span", key: "workflow.feature.6" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(8) span", key: "workflow.feature.7" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(9) span", key: "workflow.feature.8" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(2) h3", key: "workflow.bug.heading" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(2) li:nth-child(1) span", key: "workflow.bug.1" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(2) li:nth-child(2) span", key: "workflow.bug.2" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(2) li:nth-child(3) span", key: "workflow.bug.3" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(2) li:nth-child(4) strong", key: "workflow.strong.commitOptional" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(2) li:nth-child(4) span", key: "workflow.bug.4" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(2) li:nth-child(5) span", key: "workflow.bug.5" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(2) li:nth-child(6) span", key: "workflow.bug.6" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(3) h3", key: "workflow.hotfix.heading" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(3) li:nth-child(1) span", key: "workflow.hotfix.1" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(3) li:nth-child(2) span", key: "workflow.hotfix.2" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(3) li:nth-child(3) span", key: "workflow.hotfix.3" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(3) li:nth-child(4) span", key: "workflow.hotfix.4" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(3) li:nth-child(5) strong", key: "workflow.strong.finishOptional" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(3) li:nth-child(5) span", key: "workflow.hotfix.5" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) h3", key: "workflow.agent.main.heading" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) li:nth-child(1) strong", key: "workflow.agent.main.0.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) li:nth-child(1) span", key: "workflow.agent.main.0" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) li:nth-child(2) strong", key: "workflow.agent.main.1.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) li:nth-child(2) span", key: "workflow.agent.main.1" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) li:nth-child(3) strong", key: "workflow.agent.main.2.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) li:nth-child(3) span", key: "workflow.agent.main.2" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) li:nth-child(4) strong", key: "workflow.agent.main.3.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(1) li:nth-child(4) span", key: "workflow.agent.main.3" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) h3", key: "workflow.agent.parallel.heading" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) li:nth-child(1) strong", key: "workflow.agent.parallel.0.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) li:nth-child(1) span", key: "workflow.agent.parallel.0" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) li:nth-child(2) strong", key: "workflow.agent.parallel.1.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) li:nth-child(2) span", key: "workflow.agent.parallel.1" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) li:nth-child(3) strong", key: "workflow.agent.parallel.2.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) li:nth-child(3) span", key: "workflow.agent.parallel.2" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) li:nth-child(4) strong", key: "workflow.agent.parallel.3.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(2) li:nth-child(4) span", key: "workflow.agent.parallel.3" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) h3", key: "workflow.agent.guard.heading" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) li:nth-child(1) strong", key: "workflow.agent.guard.0.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) li:nth-child(1) span", key: "workflow.agent.guard.0" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) li:nth-child(2) strong", key: "workflow.agent.guard.1.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) li:nth-child(2) span", key: "workflow.agent.guard.1" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) li:nth-child(3) strong", key: "workflow.agent.guard.2.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) li:nth-child(3) span", key: "workflow.agent.guard.2" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) li:nth-child(4) strong", key: "workflow.agent.guard.3.strong" },
+  { selector: ".workflow-grid-agents .workflow-path:nth-child(3) li:nth-child(4) span", key: "workflow.agent.guard.3" },
   { selector: ".workflow-diagram", key: "workflow.diagram.aria", attr: "aria-label" },
   { selector: "#workflow-graph", key: "workflow.graph.aria", attr: "aria-label" },
   { selector: ".workflow-graph-fallback", key: "workflow.fallback" },
@@ -580,6 +689,63 @@ const skillPreviews = {
   }
 };
 
+const agentPreviews = {
+  zh: {
+    orchestrator: {
+      title: "Main Agent / Orchestrator",
+      input: "$ codex\n> 这个改动涉及 README、landing page 和校验,帮我拆给 multi-agent 跑",
+      output: "Plan\n  1. Explorer: 查现有页面结构和文档约定\n  2. Worker: 只改 landing page 与 README\n  3. Verifier: 独立跑脚本和预览检查\nGuardrails\n  主 agent 保留 git、最终判断和用户沟通"
+    },
+    explorer: {
+      title: "Explorer",
+      input: "$ subagent explorer\nobjective: 找出 workflow 和 runtime preview 的现有渲染入口\nwrite_scope: none",
+      output: "Evidence\n  site/index.html: preview tabs + workflow cards\n  site/app.js: skillPreviews + workflowNodeSpecs\n  site/styles.css: tab/card/graph styles\nRisk\n  语言切换和自动轮播需要一起更新"
+    },
+    worker: {
+      title: "Worker",
+      input: "$ subagent worker\nobjective: 实现两种模式切换\nwrite_scope: site/index.html site/app.js site/styles.css",
+      output: "Changed\n  Runtime preview: skills / agents 两套 tab\n  Workflow: skills / agents 两套 cards + graph data\n  CSS: mode switch + hidden grids\nVerify\n  node --check site/app.js"
+    },
+    verifier: {
+      title: "Verifier",
+      input: "$ subagent verifier\nobjective: 独立验证 landing page 改动\nwrite_scope: none",
+      output: "Commands\n  bash scripts/validate-repo.sh\n  node --check site/app.js\n  git diff --check\nBrowser\n  Desktop + mobile: no horizontal overflow\nResult\n  evidence ready for main agent"
+    },
+    reviewer: {
+      title: "Reviewer",
+      input: "$ subagent reviewer\nobjective: 检查 diff 是否越界或破坏原 skill 安装",
+      output: "Review\n  Scope: landing page + docs validation only\n  Risk: hidden tab active state, graph fallback text\n  Verdict: READY if mode switch and language switch both pass"
+    }
+  },
+  en: {
+    orchestrator: {
+      title: "Main Agent / Orchestrator",
+      input: "$ codex\n> This touches README, the landing page, and validation. Split it for multi-agent work.",
+      output: "Plan\n  1. Explorer: inspect page structure and doc conventions\n  2. Worker: edit only landing page and README surfaces\n  3. Verifier: run scripts and preview checks independently\nGuardrails\n  Main agent keeps git, final judgment, and user communication"
+    },
+    explorer: {
+      title: "Explorer",
+      input: "$ subagent explorer\nobjective: find current workflow and runtime preview render points\nwrite_scope: none",
+      output: "Evidence\n  site/index.html: preview tabs + workflow cards\n  site/app.js: skillPreviews + workflowNodeSpecs\n  site/styles.css: tab/card/graph styles\nRisk\n  Language switching and auto-cycle must be updated together"
+    },
+    worker: {
+      title: "Worker",
+      input: "$ subagent worker\nobjective: implement two mode switches\nwrite_scope: site/index.html site/app.js site/styles.css",
+      output: "Changed\n  Runtime preview: separate skills / agents tabs\n  Workflow: separate skills / agents cards + graph data\n  CSS: mode switch + hidden grids\nVerify\n  node --check site/app.js"
+    },
+    verifier: {
+      title: "Verifier",
+      input: "$ subagent verifier\nobjective: independently verify landing page changes\nwrite_scope: none",
+      output: "Commands\n  bash scripts/validate-repo.sh\n  node --check site/app.js\n  git diff --check\nBrowser\n  Desktop + mobile: no horizontal overflow\nResult\n  evidence ready for the main agent"
+    },
+    reviewer: {
+      title: "Reviewer",
+      input: "$ subagent reviewer\nobjective: check whether the diff exceeds scope or breaks skill install",
+      output: "Review\n  Scope: landing page + docs validation only\n  Risk: hidden tab active state, graph fallback text\n  Verdict: READY if mode switch and language switch both pass"
+    }
+  }
+};
+
 const installOptions = {
   claude: {
     title: "Claude Code",
@@ -600,8 +766,10 @@ const installOptions = {
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const PREVIEW_AUTO_CYCLE_MS = 10000;
+const HERO_TERMINAL_HOLD_MS = 6000;
 let previewRunId = 0;
 let heroTypingRunId = 0;
+let heroTerminalIndex = 0;
 let headerFrame = 0;
 let previewAutoCycleTimer = 0;
 let previewCountdownFrame = 0;
@@ -609,11 +777,16 @@ let previewAutoCycling = false;
 let previewUserInteracted = false;
 const mobileNavMedia = window.matchMedia("(max-width: 860px)");
 let workflowGraph = null;
+let activeWorkflowMode = "skills";
 let workflowRenderFrame = 0;
 let workflowObservedWidth = 0;
 
 const workflowPalette = {
   shared: { color: "#1f5f78", soft: "#e8f4f6" },
+  main: { color: "#1f5f78", soft: "#e8f4f6" },
+  explore: { color: "#23725f", soft: "#e6f5ee" },
+  work: { color: "#a46a16", soft: "#fff5dc" },
+  check: { color: "#6733b8", soft: "#f1ebff" },
   feature: { color: "#1465d9", soft: "#e9f0ff" },
   hotfix: { color: "#16835f", soft: "#e6f5ee" },
   bug: { color: "#ef5b12", soft: "#fff0e8" },
@@ -622,24 +795,49 @@ const workflowPalette = {
   dark: { color: "#202d45", soft: "#eef1f6" }
 };
 
-const workflowNodeSpecs = [
-  { id: "start", branch: "shared", tone: "shared", icon: "in", phaseKey: "workflow.node.start.phase", titleKey: "workflow.node.start.title", descKey: "workflow.node.start.desc", column: "center", y: "start", size: "wide" },
-  { id: "feature", branch: "feature", tone: "feature", icon: "1", phaseKey: "workflow.node.feature.phase", titleKey: "workflow.node.feature.title", descKey: "workflow.node.feature.desc", column: "left", y: "feature", size: "branch" },
-  { id: "hotfix", branch: "hotfix", tone: "hotfix", icon: "2", phaseKey: "workflow.node.hotfix.phase", titleKey: "workflow.node.hotfix.title", descKey: "workflow.node.hotfix.desc", column: "center", y: "hotfix", size: "branch" },
-  { id: "bug", branch: "bug", tone: "bug", icon: "3", phaseKey: "workflow.node.bug.phase", titleKey: "workflow.node.bug.title", descKey: "workflow.node.bug.desc", column: "right", y: "bug", size: "branch" },
-  { id: "quality", branch: "shared", tone: "review", icon: "Q", phaseKey: "workflow.node.quality.phase", titleKey: "workflow.node.quality.title", descKey: "workflow.node.quality.desc", column: "center", y: "quality", size: "wide" },
-  { id: "ship", branch: "shared", tone: "dark", icon: "S", phaseKey: "workflow.node.ship.phase", titleKey: "workflow.node.ship.title", descKey: "workflow.node.ship.desc", column: "center", y: "ship", size: "wide" }
-];
+const workflowNodeSpecsByMode = {
+  skills: [
+    { id: "start", branch: "shared", tone: "shared", icon: "in", phaseKey: "workflow.node.start.phase", titleKey: "workflow.node.start.title", descKey: "workflow.node.start.desc", column: "center", y: "start", size: "wide" },
+    { id: "feature", branch: "feature", tone: "feature", icon: "1", phaseKey: "workflow.node.feature.phase", titleKey: "workflow.node.feature.title", descKey: "workflow.node.feature.desc", column: "left", y: "feature", size: "branch" },
+    { id: "hotfix", branch: "hotfix", tone: "hotfix", icon: "2", phaseKey: "workflow.node.hotfix.phase", titleKey: "workflow.node.hotfix.title", descKey: "workflow.node.hotfix.desc", column: "center", y: "hotfix", size: "branch" },
+    { id: "bug", branch: "bug", tone: "bug", icon: "3", phaseKey: "workflow.node.bug.phase", titleKey: "workflow.node.bug.title", descKey: "workflow.node.bug.desc", column: "right", y: "bug", size: "branch" },
+    { id: "quality", branch: "shared", tone: "review", icon: "Q", phaseKey: "workflow.node.quality.phase", titleKey: "workflow.node.quality.title", descKey: "workflow.node.quality.desc", column: "center", y: "quality", size: "wide" },
+    { id: "ship", branch: "shared", tone: "dark", icon: "S", phaseKey: "workflow.node.ship.phase", titleKey: "workflow.node.ship.title", descKey: "workflow.node.ship.desc", column: "center", y: "ship", size: "wide" }
+  ],
+  agents: [
+    { id: "request", branch: "shared", tone: "shared", icon: "in", phaseKey: "workflow.agent.node.request.phase", titleKey: "workflow.agent.node.request.title", descKey: "workflow.agent.node.request.desc", column: "center", y: "start", size: "wide" },
+    { id: "main", branch: "shared", tone: "main", icon: "M", phaseKey: "workflow.agent.node.main.phase", titleKey: "workflow.agent.node.main.title", descKey: "workflow.agent.node.main.desc", column: "center", y: "scope", size: "wide" },
+    { id: "explorer", branch: "explore", tone: "explore", icon: "E", phaseKey: "workflow.agent.node.explorer.phase", titleKey: "workflow.agent.node.explorer.title", descKey: "workflow.agent.node.explorer.desc", column: "left", y: "explore", size: "branch" },
+    { id: "worker", branch: "work", tone: "work", icon: "W", phaseKey: "workflow.agent.node.worker.phase", titleKey: "workflow.agent.node.worker.title", descKey: "workflow.agent.node.worker.desc", column: "right", y: "work", size: "branch" },
+    { id: "verifier", branch: "check", tone: "check", icon: "V", phaseKey: "workflow.agent.node.verifier.phase", titleKey: "workflow.agent.node.verifier.title", descKey: "workflow.agent.node.verifier.desc", column: "left", y: "verify", size: "branch" },
+    { id: "reviewer", branch: "check", tone: "review", icon: "R", phaseKey: "workflow.agent.node.reviewer.phase", titleKey: "workflow.agent.node.reviewer.title", descKey: "workflow.agent.node.reviewer.desc", column: "right", y: "review", size: "branch" },
+    { id: "integrate", branch: "shared", tone: "decision", icon: "I", phaseKey: "workflow.agent.node.integrate.phase", titleKey: "workflow.agent.node.integrate.title", descKey: "workflow.agent.node.integrate.desc", column: "center", y: "integrate", size: "wide" },
+    { id: "ship-agent", branch: "shared", tone: "dark", icon: "S", phaseKey: "workflow.agent.node.ship.phase", titleKey: "workflow.agent.node.ship.title", descKey: "workflow.agent.node.ship.desc", column: "center", y: "ship", size: "wide" }
+  ]
+};
 
-const workflowEdgeSpecs = [
-  { id: "start-feature", source: "start", target: "feature", branch: "feature" },
-  { id: "start-hotfix", source: "start", target: "hotfix", branch: "hotfix" },
-  { id: "start-bug", source: "start", target: "bug", branch: "bug" },
-  { id: "feature-quality", source: "feature", target: "quality", branch: "feature" },
-  { id: "hotfix-quality", source: "hotfix", target: "quality", branch: "hotfix" },
-  { id: "bug-quality", source: "bug", target: "quality", branch: "bug" },
-  { id: "quality-ship", source: "quality", target: "ship", branch: "shared" }
-];
+const workflowEdgeSpecsByMode = {
+  skills: [
+    { id: "start-feature", source: "start", target: "feature", branch: "feature" },
+    { id: "start-hotfix", source: "start", target: "hotfix", branch: "hotfix" },
+    { id: "start-bug", source: "start", target: "bug", branch: "bug" },
+    { id: "feature-quality", source: "feature", target: "quality", branch: "feature" },
+    { id: "hotfix-quality", source: "hotfix", target: "quality", branch: "hotfix" },
+    { id: "bug-quality", source: "bug", target: "quality", branch: "bug" },
+    { id: "quality-ship", source: "quality", target: "ship", branch: "shared" }
+  ],
+  agents: [
+    { id: "request-main", source: "request", target: "main", branch: "shared" },
+    { id: "main-explorer", source: "main", target: "explorer", branch: "explore" },
+    { id: "main-worker", source: "main", target: "worker", branch: "work" },
+    { id: "explorer-integrate", source: "explorer", target: "integrate", branch: "explore" },
+    { id: "worker-verifier", source: "worker", target: "verifier", branch: "check" },
+    { id: "worker-reviewer", source: "worker", target: "reviewer", branch: "check" },
+    { id: "verifier-integrate", source: "verifier", target: "integrate", branch: "check" },
+    { id: "reviewer-integrate", source: "reviewer", target: "integrate", branch: "check" },
+    { id: "integrate-ship", source: "integrate", target: "ship-agent", branch: "shared" }
+  ]
+};
 
 function getInitialLanguage() {
   try {
@@ -657,7 +855,21 @@ function translate(key, language = currentLanguage) {
 }
 
 function activeSkillPreviewData() {
-  return skillPreviews[currentLanguage] || skillPreviews.zh;
+  const previewsByMode = currentPreviewMode === "agents" ? agentPreviews : skillPreviews;
+  return previewsByMode[currentLanguage] || previewsByMode.zh;
+}
+
+function heroTerminalScripts() {
+  return [
+    {
+      label: translate("hero.terminal.workflow.label"),
+      text: translate("hero.terminal.workflow")
+    },
+    {
+      label: translate("hero.terminal.agents.label"),
+      text: translate("hero.terminal.agents")
+    }
+  ];
 }
 
 function applyLocalizedTarget(target) {
@@ -676,9 +888,6 @@ function applyLocalizedTarget(target) {
     element.textContent = value;
   }
 
-  if (target.selector === ".hero-terminal code") {
-    delete element.dataset.sourceText;
-  }
 }
 
 function renderActiveInstallOption() {
@@ -717,6 +926,7 @@ function applyLanguage() {
   document.querySelector("meta[name='description']")?.setAttribute("content", translate("page.description"));
   localizedTargets.forEach(applyLocalizedTarget);
   updateLanguageSwitch();
+  updateWorkflowModeText();
   renderActiveInstallOption();
 
   const toggle = document.querySelector(".nav-toggle");
@@ -739,9 +949,10 @@ function setLanguage(language, persist = true) {
   }
 
   applyLanguage();
+  heroTerminalIndex = 0;
   renderHeroTerminal();
   renderWorkflowGraph();
-  const activePreview = document.querySelector(".skill-tab.is-active") || document.querySelector(".skill-tab");
+  const activePreview = previewButtons().find((button) => button.classList.contains("is-active")) || previewButtons()[0];
   renderPreview(activePreview?.dataset.skill || "dev-auto");
 }
 
@@ -774,10 +985,16 @@ async function renderHeroTerminal() {
   const code = terminal?.querySelector("code");
   if (!terminal || !pre || !code) return;
 
-  const text = code.dataset.sourceText || code.textContent;
+  const scripts = heroTerminalScripts();
+  const activeIndex = heroTerminalIndex % scripts.length;
+  const script = scripts[activeIndex];
   const runId = heroTypingRunId + 1;
-  code.dataset.sourceText = text;
   heroTypingRunId = runId;
+  terminal.dataset.heroTerminalMode = activeIndex === 0 ? "workflow" : "agents";
+  terminal.classList.remove("is-typed");
+
+  const mode = terminal.querySelector("[data-hero-terminal-label]");
+  if (mode) mode.textContent = script.label;
 
   if (!pre.querySelector(".hero-cursor")) {
     const cursor = document.createElement("span");
@@ -787,10 +1004,16 @@ async function renderHeroTerminal() {
   }
 
   terminal.classList.add("is-typing");
-  const typed = await typeText(code, text, 17, () => runId === heroTypingRunId);
+  const typed = await typeText(code, script.text, 17, () => runId === heroTypingRunId);
   if (!typed) return;
   terminal.classList.remove("is-typing");
   terminal.classList.add("is-typed");
+
+  await sleep(HERO_TERMINAL_HOLD_MS);
+  if (runId !== heroTypingRunId) return;
+
+  heroTerminalIndex = (activeIndex + 1) % scripts.length;
+  renderHeroTerminal();
 }
 
 async function renderPreview(skill) {
@@ -837,7 +1060,7 @@ function setActiveButton(buttons, activeButton) {
 }
 
 function previewButtons() {
-  return [...document.querySelectorAll(".skill-tab")];
+  return [...document.querySelectorAll(`.skill-tab[data-preview-mode="${currentPreviewMode}"]`)];
 }
 
 function stopPreviewAutoCycle() {
@@ -851,7 +1074,7 @@ function stopPreviewAutoCycle() {
     previewCountdownFrame = 0;
   }
 
-  previewButtons().forEach((button) => {
+  document.querySelectorAll(".skill-tab").forEach((button) => {
     button.classList.remove("is-auto-counting");
     button.style.removeProperty("--preview-progress-angle");
   });
@@ -920,7 +1143,7 @@ function activatePreview(button, userInitiated = false) {
     stopPreviewAutoCycle();
   }
 
-  setActiveButton(previewButtons(), button);
+  setActiveButton(document.querySelectorAll(".skill-tab"), button);
   renderPreview(button.dataset.skill);
 
   if (!userInitiated) {
@@ -934,6 +1157,24 @@ function startPreviewAutoCycle() {
 
   const activeButton = buttons.find((button) => button.classList.contains("is-active")) || buttons[0];
   schedulePreviewAutoCycle(activeButton);
+}
+
+function setPreviewMode(mode, userInitiated = true) {
+  if (!["skills", "agents"].includes(mode)) return;
+
+  if (userInitiated) {
+    previewUserInteracted = true;
+    stopPreviewAutoCycle();
+  }
+
+  currentPreviewMode = mode;
+  document.querySelectorAll("[data-preview-tabs]").forEach((tablist) => {
+    tablist.hidden = tablist.dataset.previewTabs !== mode;
+  });
+
+  const buttons = previewButtons();
+  const activeButton = buttons.find((button) => button.classList.contains("is-active")) || buttons[0];
+  activatePreview(activeButton, userInitiated);
 }
 
 function escapeHtml(value) {
@@ -956,11 +1197,57 @@ function workflowNodeMarkup(node) {
   `;
 }
 
-function workflowLayout(width) {
+function activeWorkflowNodeSpecs() {
+  return workflowNodeSpecsByMode[activeWorkflowMode] || workflowNodeSpecsByMode.skills;
+}
+
+function activeWorkflowEdgeSpecs() {
+  return workflowEdgeSpecsByMode[activeWorkflowMode] || workflowEdgeSpecsByMode.skills;
+}
+
+function updateWorkflowModeText() {
+  const textKeys = activeWorkflowMode === "agents"
+    ? {
+        diagram: "workflow.agent.diagram.aria",
+        graph: "workflow.agent.graph.aria",
+        fallback: "workflow.agent.fallback"
+      }
+    : {
+        diagram: "workflow.diagram.aria",
+        graph: "workflow.graph.aria",
+        fallback: "workflow.fallback"
+      };
+
+  document.querySelector(".workflow-diagram")?.setAttribute("aria-label", translate(textKeys.diagram));
+  document.querySelector("#workflow-graph")?.setAttribute("aria-label", translate(textKeys.graph));
+  const fallback = document.querySelector(".workflow-graph-fallback");
+  if (fallback) fallback.textContent = translate(textKeys.fallback);
+}
+
+function workflowLayout(width, mode = activeWorkflowMode) {
   const compact = width < 760;
   const center = width * 0.5;
   const sideInset = compact ? Math.max(105, width * 0.28) : Math.max(126, width * 0.2);
   const oppositeSide = width - sideInset;
+  if (mode === "agents") {
+    return {
+      compact,
+      height: compact ? 930 : 760,
+      columns: {
+        left: sideInset,
+        center,
+        right: oppositeSide
+      },
+      rows: compact
+        ? { start: 58, scope: 160, explore: 282, work: 392, verify: 506, review: 618, integrate: 746, ship: 846 }
+        : { start: 58, scope: 152, explore: 292, work: 292, verify: 438, review: 438, integrate: 594, ship: 700 },
+      sizes: {
+        branch: compact ? [198, 84] : [230, 86],
+        wide: compact ? [226, 82] : [298, 78]
+      }
+    };
+  }
+
   const height = compact ? 660 : 540;
   return {
     compact,
@@ -982,7 +1269,7 @@ function workflowLayout(width) {
 
 function buildWorkflowGraphData(width) {
   const layout = workflowLayout(width);
-  const nodes = workflowNodeSpecs.map((node) => {
+  const nodes = activeWorkflowNodeSpecs().map((node) => {
     const [nodeWidth, nodeHeight] = layout.sizes[node.size];
     return {
       ...node,
@@ -997,7 +1284,7 @@ function buildWorkflowGraphData(width) {
     };
   });
 
-  const edges = workflowEdgeSpecs.map((edge) => {
+  const edges = activeWorkflowEdgeSpecs().map((edge) => {
     const tone = workflowPalette[edge.branch] || workflowPalette.shared;
     const isShared = edge.branch === "shared";
     return {
@@ -1015,58 +1302,145 @@ function buildWorkflowGraphData(width) {
   return { height: layout.height, nodes, edges };
 }
 
-function applyWorkflowEdgeState(branch) {
+function workflowFallbackEdgePath(sourceNode, targetNode) {
+  const [sourceWidth, sourceHeight] = sourceNode.style.size;
+  const [targetWidth, targetHeight] = targetNode.style.size;
+  const x1 = sourceNode.style.x;
+  const y1 = sourceNode.style.y + sourceHeight / 2;
+  const x2 = targetNode.style.x;
+  const y2 = targetNode.style.y - targetHeight / 2;
+  const midY = y1 + Math.max(34, (y2 - y1) * 0.5);
+  return `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+}
+
+function workflowChainForNode(nodeId) {
+  const edgeSpecs = activeWorkflowEdgeSpecs();
+  const nodeIds = new Set([nodeId]);
+  const edgeIds = new Set();
+  const incoming = new Map();
+  const outgoing = new Map();
+
+  edgeSpecs.forEach((edge) => {
+    if (!incoming.has(edge.target)) incoming.set(edge.target, []);
+    if (!outgoing.has(edge.source)) outgoing.set(edge.source, []);
+    incoming.get(edge.target).push(edge);
+    outgoing.get(edge.source).push(edge);
+  });
+
+  const visitIncoming = (currentNodeId) => {
+    (incoming.get(currentNodeId) || []).forEach((edge) => {
+      if (edgeIds.has(edge.id)) return;
+      edgeIds.add(edge.id);
+      nodeIds.add(edge.source);
+      visitIncoming(edge.source);
+    });
+  };
+
+  const visitOutgoing = (currentNodeId) => {
+    (outgoing.get(currentNodeId) || []).forEach((edge) => {
+      if (edgeIds.has(edge.id)) return;
+      edgeIds.add(edge.id);
+      nodeIds.add(edge.target);
+      visitOutgoing(edge.target);
+    });
+  };
+
+  visitIncoming(nodeId);
+  visitOutgoing(nodeId);
+
+  return { nodeIds, edgeIds };
+}
+
+function renderWorkflowFallbackGraph(graphContainer, width, data) {
+  const nodeById = new Map(data.nodes.map((node) => [node.id, node]));
+  const edgeMarkup = data.edges.map((edge) => {
+    const sourceNode = nodeById.get(edge.source);
+    const targetNode = nodeById.get(edge.target);
+    const tone = workflowPalette[edge.branch] || workflowPalette.shared;
+    if (!sourceNode || !targetNode) return "";
+
+    return `<path class="workflow-fallback-edge" data-edge-id="${escapeHtml(edge.id)}" d="${workflowFallbackEdgePath(sourceNode, targetNode)}" stroke="${tone.color}" stroke-width="${edge.branch === "shared" ? 4 : 3.4}" fill="none" opacity="${edge.branch === "shared" ? 0.72 : 0.86}" stroke-linecap="round" />`;
+  }).join("");
+
+  const nodeMarkup = data.nodes.map((node) => {
+    const [nodeWidth, nodeHeight] = node.style.size;
+    const left = node.style.x - nodeWidth / 2;
+    const top = node.style.y - nodeHeight / 2;
+    return `
+      <div class="workflow-fallback-node" style="left:${left}px;top:${top}px;width:${nodeWidth}px;height:${nodeHeight}px;">
+        ${workflowNodeMarkup(node)}
+      </div>
+    `;
+  }).join("");
+
+  graphContainer.classList.add("is-fallback");
+  graphContainer.style.height = `${data.height}px`;
+  graphContainer.innerHTML = `
+    <svg class="workflow-fallback-edges" viewBox="0 0 ${width} ${data.height}" aria-hidden="true" focusable="false">
+      ${edgeMarkup}
+    </svg>
+    <div class="workflow-fallback-nodes" aria-hidden="true">
+      ${nodeMarkup}
+    </div>
+    <p class="workflow-graph-fallback">${escapeHtml(translate(activeWorkflowMode === "agents" ? "workflow.agent.fallback" : "workflow.fallback"))}</p>
+  `;
+  setupWorkflowGraphFocus();
+}
+
+function applyWorkflowEdgeState(edgeIds) {
   if (!workflowGraph) return;
 
-  workflowEdgeSpecs.forEach((edge) => {
-    const state = !branch || edge.branch === "shared"
-      ? []
-      : edge.branch === branch
-        ? ["active"]
-        : ["inactive"];
-    workflowGraph.setElementState(edge.id, state);
+  activeWorkflowEdgeSpecs().forEach((edge) => {
+    workflowGraph.setElementState(edge.id, edgeIds ? (edgeIds.has(edge.id) ? ["active"] : ["inactive"]) : []);
   });
 }
 
-function clearWorkflowBranchFocus() {
+function clearWorkflowChainFocus() {
   const graphContainer = document.querySelector("#workflow-graph");
   if (!graphContainer) return;
 
-  graphContainer.classList.remove("is-focusing-branch");
+  graphContainer.classList.remove("is-focusing-chain");
   graphContainer.querySelectorAll(".workflow-g6-node").forEach((node) => {
     node.classList.remove("is-active", "is-muted");
+  });
+  graphContainer.querySelectorAll(".workflow-fallback-edge").forEach((edge) => {
+    edge.classList.remove("is-active", "is-muted");
   });
   applyWorkflowEdgeState(null);
 }
 
-function focusWorkflowBranch(branch) {
+function focusWorkflowChain(nodeId) {
   const graphContainer = document.querySelector("#workflow-graph");
-  if (!graphContainer || !branch || branch === "shared") return;
+  if (!graphContainer || !nodeId) return;
 
-  graphContainer.classList.add("is-focusing-branch");
+  const { nodeIds, edgeIds } = workflowChainForNode(nodeId);
+  graphContainer.classList.add("is-focusing-chain");
   graphContainer.querySelectorAll(".workflow-g6-node").forEach((node) => {
-    const nodeBranch = node.dataset.branch;
-    const isCurrentBranch = nodeBranch === branch;
-    node.classList.toggle("is-active", isCurrentBranch);
-    node.classList.toggle("is-muted", nodeBranch !== "shared" && !isCurrentBranch);
+    const isInChain = nodeIds.has(node.dataset.nodeId);
+    node.classList.toggle("is-active", isInChain);
+    node.classList.toggle("is-muted", !isInChain);
   });
-  applyWorkflowEdgeState(branch);
+  graphContainer.querySelectorAll(".workflow-fallback-edge").forEach((edge) => {
+    const isInChain = edgeIds.has(edge.dataset.edgeId);
+    edge.classList.toggle("is-active", isInChain);
+    edge.classList.toggle("is-muted", !isInChain);
+  });
+  applyWorkflowEdgeState(edgeIds);
 }
 
 function setupWorkflowGraphFocus() {
   const graphContainer = document.querySelector("#workflow-graph");
   if (!graphContainer) return;
 
-  graphContainer.querySelectorAll(".workflow-g6-node[data-branch]").forEach((node) => {
-    if (node.dataset.branch === "shared") return;
-    node.addEventListener("mouseenter", () => focusWorkflowBranch(node.dataset.branch));
+  graphContainer.querySelectorAll(".workflow-g6-node[data-node-id]").forEach((node) => {
+    node.addEventListener("mouseenter", () => focusWorkflowChain(node.dataset.nodeId));
     node.addEventListener("mouseleave", (event) => {
-      if (event.relatedTarget?.closest?.(".workflow-g6-node[data-branch]")) return;
-      clearWorkflowBranchFocus();
+      if (event.relatedTarget?.closest?.(".workflow-g6-node[data-node-id]")) return;
+      clearWorkflowChainFocus();
     });
   });
 
-  graphContainer.onmouseleave = clearWorkflowBranchFocus;
+  graphContainer.onmouseleave = clearWorkflowChainFocus;
 }
 
 function renderWorkflowGraph() {
@@ -1074,20 +1448,26 @@ function renderWorkflowGraph() {
   const G6 = window.G6;
   if (!graphContainer) return;
 
+  updateWorkflowModeText();
+  const width = Math.max(320, Math.floor(graphContainer.getBoundingClientRect().width || graphContainer.clientWidth));
+  const data = buildWorkflowGraphData(width);
   if (!G6?.Graph) {
-    graphContainer.classList.add("is-fallback");
+    if (workflowGraph) {
+      workflowGraph.destroy();
+      workflowGraph = null;
+    }
+    renderWorkflowFallbackGraph(graphContainer, width, data);
     return;
   }
 
-  const width = Math.max(320, Math.floor(graphContainer.getBoundingClientRect().width || graphContainer.clientWidth));
-  const data = buildWorkflowGraphData(width);
   graphContainer.style.height = `${data.height}px`;
   graphContainer.classList.remove("is-fallback");
-  graphContainer.innerHTML = "";
 
   if (workflowGraph) {
     workflowGraph.destroy();
+    workflowGraph = null;
   }
+  graphContainer.innerHTML = "";
 
   workflowGraph = new G6.Graph({
     container: graphContainer,
@@ -1136,9 +1516,47 @@ function setupWorkflowGraphResizeObserver() {
   observer.observe(graphContainer);
 }
 
+function setWorkflowMode(mode) {
+  if (!["skills", "agents"].includes(mode)) return;
+
+  clearWorkflowChainFocus();
+  activeWorkflowMode = mode;
+  document.querySelectorAll("[data-workflow-grid]").forEach((grid) => {
+    grid.hidden = grid.dataset.workflowGrid !== mode;
+  });
+
+  updateWorkflowModeText();
+  renderWorkflowGraph();
+}
+
+function setExperienceMode(mode, userInitiated = true) {
+  if (!["skills", "agents"].includes(mode)) return;
+
+  currentExperienceMode = mode;
+  document.querySelectorAll("[data-experience-mode]").forEach((button) => {
+    const isActive = button.dataset.experienceMode === mode;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+    button.setAttribute("tabindex", isActive ? "0" : "-1");
+  });
+
+  document.querySelectorAll("[data-experience-only]").forEach((element) => {
+    element.hidden = element.dataset.experienceOnly !== mode;
+  });
+
+  setPreviewMode(mode, userInitiated);
+  setWorkflowMode(mode);
+}
+
 document.querySelectorAll(".skill-tab").forEach((button) => {
   button.addEventListener("click", () => {
     activatePreview(button, !previewAutoCycling);
+  });
+});
+
+document.querySelectorAll("[data-experience-mode]").forEach((button) => {
+  button.addEventListener("click", () => {
+    setExperienceMode(button.dataset.experienceMode);
   });
 });
 
@@ -1252,10 +1670,10 @@ window.addEventListener("resize", () => {
 });
 window.addEventListener("scroll", scheduleHeaderStateUpdate, { passive: true });
 
-renderWorkflowGraph();
+window.renderWorkflowGraph = renderWorkflowGraph;
+setExperienceMode(currentExperienceMode, false);
 setupWorkflowGraphResizeObserver();
 window.addEventListener("load", renderWorkflowGraph);
 window.addEventListener("resize", scheduleWorkflowGraphRender);
 renderHeroTerminal();
-renderPreview("dev-auto");
 startPreviewAutoCycle();

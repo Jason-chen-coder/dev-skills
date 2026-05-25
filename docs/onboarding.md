@@ -146,9 +146,26 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 后续按需查阅:
 - `docs/team-policy.md` —— 分支 / PR / 测试 / 错误处理 / 日志等详细团队治理参考。
+- `docs/multi-agent-policy.md` —— 支持多 agent runtime 时的分工、ownership、verifier / reviewer 协议。
 - `references/team-conventions.md` —— 写到具体语言时查。
 - `skills/dev-code-review/references/lang-conventions.md` —— 跨语言通用规范(dev-code-review 专属)。
 - `references/calibration-cases.md` —— 想理解 P0 / P1 / P2 边界 / dev-spec ambiguity 评分 / dev-plan Critic verdict 边界时看。
+
+---
+
+## Multi-agent 使用说明
+
+如果你的工具支持多 agent,先把它当成高级模式使用,不要让 skill 自动互相调用。
+
+推荐分工:
+
+- 主 agent:负责用户沟通、拆分任务、最终整合、git 操作和完成声明。
+- explorer:查调用链、类似实现、设计系统和约定。
+- worker:只改明确分配的文件或模块。
+- verifier:独立跑验证命令,检查完成声明是否有证据。
+- reviewer:独立看 diff,不参与实现。
+
+使用前先读 [`docs/multi-agent-policy.md`](./multi-agent-policy.md)。子 agent 的任务必须写清楚 objective、write scope、do-not-edit、verification expected 和 output required。
 
 ---
 
