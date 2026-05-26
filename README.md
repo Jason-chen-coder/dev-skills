@@ -151,8 +151,7 @@ mv CLAUDE.md.template CLAUDE.md
 ```bash
 git clone https://github.com/Jason-chen-coder/dev-skills.git
 cd dev-skills
-mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
-cp -R skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
+bash scripts/install-codex-skills.sh
 ```
 
 如果还想让团队规则一直生效,把 Codex 模板复制到项目根目录:
@@ -197,16 +196,7 @@ Codex 当前是复制目录安装,所以升级时需要重新同步:
 
 ```bash
 cd dev-skills
-git pull --ff-only
-
-CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
-mkdir -p "$CODEX_SKILLS_DIR"
-
-for skill in dev-auto dev-spec dev-plan dev-tdd dev-fix dev-verify dev-code-review dev-commit-writer dev-finish dev-design-context; do
-  rm -rf "$CODEX_SKILLS_DIR/$skill"
-done
-
-cp -R skills/* "$CODEX_SKILLS_DIR/"
+bash scripts/install-codex-skills.sh --upgrade
 ```
 
 ### npx skills

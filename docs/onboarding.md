@@ -45,8 +45,7 @@ mv CLAUDE.md.template CLAUDE.md   # 重命名后按 <!-- team:fill --> 填团队
 ```bash
 git clone https://github.com/Jason-chen-coder/dev-skills.git
 cd dev-skills
-mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
-cp -R skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
+bash scripts/install-codex-skills.sh
 ```
 
 如果需要团队级 always-on 规则,复制 Codex 模板到项目根:
@@ -77,6 +76,47 @@ ls .claude/skills/
 ### 其他 agent CLI(Cursor / Gemini CLI)
 
 skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 system prompt 或 rules 区。具体路径问 leader。
+
+---
+
+## 升级
+
+升级只更新 skill 文件,不会自动覆盖你项目里的 `CLAUDE.md` / `AGENTS.md`。如果模板更新了,需要自己对比后同步。
+
+### Claude Code
+
+```bash
+/plugin update dev-skills
+```
+
+如果没生效,卸载后重装:
+
+```bash
+/plugin uninstall dev-skills
+/plugin install dev-skills
+```
+
+### Codex
+
+Codex 当前是复制目录安装,升级时需要重新同步:
+
+```bash
+cd dev-skills
+bash scripts/install-codex-skills.sh --upgrade
+```
+
+### npx skills
+
+```bash
+npx skills update
+```
+
+如果你的版本没有 `update`,用 force 重新安装:
+
+```bash
+npx skills add Jason-chen-coder/dev-skills --force
+npx skills add Jason-chen-coder/dev-skills --global --force
+```
 
 ---
 

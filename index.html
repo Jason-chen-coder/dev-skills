@@ -128,17 +128,22 @@
         <button class="install-tab" type="button" data-install="npx" role="tab" aria-selected="false">npx skills</button>
       </div>
 
+      <div class="install-action-switch" role="tablist" aria-label="安装或升级">
+        <button class="mode-button install-action is-active" type="button" data-install-action="install" role="tab" aria-selected="true">Install</button>
+        <button class="mode-button install-action" type="button" data-install-action="upgrade" role="tab" aria-selected="false">Upgrade</button>
+      </div>
+
       <div class="install-panel" id="install-panel">
         <div class="command-card">
           <div class="command-header">
-            <h3 id="install-title">Claude Code</h3>
+            <h3 id="install-title">Claude Code · Install</h3>
             <button class="copy-button" type="button" data-copy-target="#install-command" aria-label="复制安装命令">Copy</button>
           </div>
           <pre><code id="install-command">/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills
 /plugin install dev-skills</code></pre>
         </div>
         <div class="install-notes" id="install-notes">
-          <p>升级: `/plugin update dev-skills`。短版团队规则复制 `CLAUDE.md.template` 到项目根 `CLAUDE.md`;详细政策参考 `docs/team-policy.md`。</p>
+          <p>首次安装后,如需团队规则,复制 `CLAUDE.md.template` 到项目根 `CLAUDE.md`;详细政策参考 `docs/team-policy.md`。</p>
         </div>
       </div>
     </section>

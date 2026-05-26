@@ -695,6 +695,24 @@ pre {
   scrollbar-width: thin;
 }
 
+.install-action-switch {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  gap: 4px;
+  margin-bottom: 18px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface-strong) 82%, var(--bg));
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.install-action-switch .mode-button {
+  min-width: 112px;
+}
+
 .skill-tab,
 .install-tab,
 .copy-button {

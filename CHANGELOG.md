@@ -31,6 +31,7 @@
 
 ### Fixed
 - **GitHub Pages 根路径 404**:当前仓库 Pages 发布源是 `master` 根目录,新增根目录 `index.html` 和 `.nojekyll`,让 `https://jason-chen-coder.github.io/dev-skills/` 直接加载 H5 正式站点。
+- **H5 升级命令入口缺失**:安装区新增 Install / Upgrade 操作切换,Claude Code / Codex / `npx skills` 都可以直接复制对应升级命令;Codex 的安装 / 升级细节收进 `scripts/install-codex-skills.sh`,页面和文档只暴露短命令。
 - **Codex skill metadata 加载兼容性**:缩短并重写全部 6 个 dev skill 的 `SKILL.md` frontmatter `description`,在 Codex 1024 字符限制内保留关键中英文触发词;将完整触发词、路由规则和参数说明移入正文 `Trigger routing` 段。
 - **Codex 安装 / 升级文档**:补充 Codex 的 `AGENTS.md.template` 同步步骤,同步 `docs/onboarding.md` 的 Claude Code / Codex / `npx skills` 安装分流,并将模板下载 URL 修正为当前远端默认分支 `master`。
 - **CI metadata 防回归**:GitHub Actions 新增 Codex skill metadata 校验,检查 frontmatter YAML、仅允许 `name` / `description`、`description <= 1024`、以及每个 skill 都有 `Trigger routing` 段。

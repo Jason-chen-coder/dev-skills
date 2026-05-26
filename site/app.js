@@ -207,13 +207,21 @@ const translations = {
     "install.title": "Claude Code 和 Codex 分开安装。",
     "install.text": "选择你的入口,复制对应命令。升级 skill 不会自动覆盖项目里的短版团队规则模板;详细政策可参考或复制 docs/team-policy.md。",
     "install.tabs.aria": "安装选项",
+    "install.action.aria": "安装或升级",
+    "install.action.install": "Install",
+    "install.action.upgrade": "Upgrade",
     "install.copy": "Copy",
     "install.copied": "Copied",
     "install.select": "Select text",
     "install.copy.aria": "复制安装命令",
-    "install.claude.notes": "升级: /plugin update dev-skills。短版团队规则复制 CLAUDE.md.template 到项目根 CLAUDE.md;详细政策参考 docs/team-policy.md。",
-    "install.codex.notes": "升级: git pull --ff-only 后重新同步 skills/*。短版团队规则复制 AGENTS.md.template 到项目根 AGENTS.md;详细政策参考 docs/team-policy.md。",
-    "install.npx.notes": "升级优先使用 npx skills update;如果版本不支持 update,使用 add --force 重新安装。团队规则模板仍需人工同步。",
+    "install.copy.install.aria": "复制安装命令",
+    "install.copy.upgrade.aria": "复制升级命令",
+    "install.claude.installNotes": "首次安装后,如需团队规则,复制 CLAUDE.md.template 到项目根 CLAUDE.md;详细政策参考 docs/team-policy.md。",
+    "install.claude.upgradeNotes": "如果 /plugin update 未生效,先 /plugin uninstall dev-skills 再 /plugin install dev-skills。团队规则模板仍需人工对比同步。",
+    "install.codex.installNotes": "脚本会同步 10 个 dev-skills 到 CODEX_HOME skills。短版团队规则复制 AGENTS.md.template 到项目根 AGENTS.md。",
+    "install.codex.upgradeNotes": "脚本会先拉最新仓库,再重新同步 10 个 dev-skills。AGENTS.md 不会自动覆盖。",
+    "install.npx.installNotes": "按需要安装到当前项目或全局。团队规则模板仍需按项目手动复制。",
+    "install.npx.upgradeNotes": "优先使用 npx skills update;如果版本不支持 update,使用 add --force 重新安装。团队规则模板仍需人工同步。",
     "faq.eyebrow": "FAQ",
     "faq.title": "常见问题。",
     "faq.1.summary": "Claude Code 和 Codex 为什么安装方式不一样?",
@@ -432,13 +440,21 @@ const translations = {
     "install.title": "Claude Code and Codex install separately.",
     "install.text": "Choose your entry point and copy the command. Upgrading skills does not automatically overwrite the short team-rule templates in your project; use docs/team-policy.md for the detailed policy.",
     "install.tabs.aria": "Install options",
+    "install.action.aria": "Install or upgrade",
+    "install.action.install": "Install",
+    "install.action.upgrade": "Upgrade",
     "install.copy": "Copy",
     "install.copied": "Copied",
     "install.select": "Select text",
     "install.copy.aria": "Copy install command",
-    "install.claude.notes": "Upgrade with /plugin update dev-skills. Copy CLAUDE.md.template to CLAUDE.md at your project root; use docs/team-policy.md for the detailed policy.",
-    "install.codex.notes": "Upgrade by running git pull --ff-only and syncing skills/* again. Copy AGENTS.md.template to AGENTS.md at your project root; use docs/team-policy.md for the detailed policy.",
-    "install.npx.notes": "Prefer npx skills update for upgrades. If your version does not support update, reinstall with add --force. Team-rule templates still need manual sync.",
+    "install.copy.install.aria": "Copy install command",
+    "install.copy.upgrade.aria": "Copy upgrade command",
+    "install.claude.installNotes": "After first install, copy CLAUDE.md.template to CLAUDE.md at your project root if you need always-on team rules; use docs/team-policy.md for the detailed policy.",
+    "install.claude.upgradeNotes": "If /plugin update does not take effect, run /plugin uninstall dev-skills and then /plugin install dev-skills. Team-rule templates still need manual comparison.",
+    "install.codex.installNotes": "The script syncs the ten dev-skills into CODEX_HOME skills. Copy AGENTS.md.template to AGENTS.md at your project root for always-on rules.",
+    "install.codex.upgradeNotes": "The script pulls the latest repo, then resyncs the ten dev-skills. AGENTS.md is not overwritten automatically.",
+    "install.npx.installNotes": "Install into the current project or globally as needed. Team-rule templates still need to be copied per project.",
+    "install.npx.upgradeNotes": "Prefer npx skills update. If your version does not support update, reinstall with add --force. Team-rule templates still need manual sync.",
     "faq.eyebrow": "FAQ",
     "faq.title": "Common questions.",
     "faq.1.summary": "Why are Claude Code and Codex installed differently?",
@@ -605,6 +621,9 @@ const localizedTargets = [
   { selector: "#install .section-heading h2", key: "install.title" },
   { selector: "#install .section-heading p:last-child", key: "install.text" },
   { selector: ".install-tabs", key: "install.tabs.aria", attr: "aria-label" },
+  { selector: ".install-action-switch", key: "install.action.aria", attr: "aria-label" },
+  { selector: "[data-install-action='install']", key: "install.action.install" },
+  { selector: "[data-install-action='upgrade']", key: "install.action.upgrade" },
   { selector: ".copy-button", key: "install.copy" },
   { selector: ".copy-button", key: "install.copy.aria", attr: "aria-label" },
   { selector: "#faq .section-heading .eyebrow", key: "faq.eyebrow" },
@@ -788,18 +807,24 @@ const agentPreviews = {
 const installOptions = {
   claude: {
     title: "Claude Code",
-    command: "/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills\n/plugin install dev-skills",
-    notesKey: "install.claude.notes"
+    installCommand: "/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills\n/plugin install dev-skills",
+    upgradeCommand: "/plugin update dev-skills",
+    installNotesKey: "install.claude.installNotes",
+    upgradeNotesKey: "install.claude.upgradeNotes"
   },
   codex: {
     title: "Codex",
-    command: "git clone https://github.com/Jason-chen-coder/dev-skills.git\ncd dev-skills\nmkdir -p \"${CODEX_HOME:-$HOME/.codex}/skills\"\ncp -R skills/* \"${CODEX_HOME:-$HOME/.codex}/skills/\"",
-    notesKey: "install.codex.notes"
+    installCommand: "git clone https://github.com/Jason-chen-coder/dev-skills.git\ncd dev-skills\nbash scripts/install-codex-skills.sh",
+    upgradeCommand: "cd dev-skills\nbash scripts/install-codex-skills.sh --upgrade",
+    installNotesKey: "install.codex.installNotes",
+    upgradeNotesKey: "install.codex.upgradeNotes"
   },
   npx: {
     title: "npx skills",
-    command: "npx skills add Jason-chen-coder/dev-skills\nnpx skills add Jason-chen-coder/dev-skills --global",
-    notesKey: "install.npx.notes"
+    installCommand: "npx skills add Jason-chen-coder/dev-skills\nnpx skills add Jason-chen-coder/dev-skills --global",
+    upgradeCommand: "npx skills update",
+    installNotesKey: "install.npx.installNotes",
+    upgradeNotesKey: "install.npx.upgradeNotes"
   }
 };
 
@@ -935,16 +960,23 @@ function applyLocalizedTarget(target) {
 
 function renderActiveInstallOption() {
   const activeButton = document.querySelector(".install-tab.is-active") || document.querySelector(".install-tab");
+  const activeActionButton = document.querySelector(".install-action.is-active") || document.querySelector(".install-action");
   const option = installOptions[activeButton?.dataset.install];
+  const action = activeActionButton?.dataset.installAction === "upgrade" ? "upgrade" : "install";
   const title = document.querySelector("#install-title");
   const command = document.querySelector("#install-command");
   const notes = document.querySelector("#install-notes");
+  const copyButton = document.querySelector(".copy-button[data-copy-target='#install-command']");
   if (!option || !title || !command || !notes) return;
 
-  title.textContent = option.title;
-  command.textContent = option.command;
+  title.textContent = `${option.title} · ${translate(`install.action.${action}`)}`;
+  command.textContent = option[`${action}Command`];
+  if (copyButton) {
+    copyButton.textContent = translate("install.copy");
+    copyButton.setAttribute("aria-label", translate(`install.copy.${action}.aria`));
+  }
   notes.replaceChildren(Object.assign(document.createElement("p"), {
-    textContent: translate(option.notesKey)
+    textContent: translate(option[`${action}NotesKey`])
   }));
 }
 
@@ -1628,6 +1660,15 @@ document.querySelectorAll(".install-tab").forEach((button) => {
     if (!installOptions[button.dataset.install]) return;
 
     setActiveButton(document.querySelectorAll(".install-tab"), button);
+    renderActiveInstallOption();
+  });
+});
+
+document.querySelectorAll(".install-action").forEach((button) => {
+  button.addEventListener("click", () => {
+    if (!["install", "upgrade"].includes(button.dataset.installAction)) return;
+
+    setActiveButton(document.querySelectorAll(".install-action"), button);
     renderActiveInstallOption();
   });
 });

@@ -70,6 +70,8 @@ done
 
 echo "Checking expected skill directories..."
 [[ ! -d "skills/$OLD_WORKFLOW_SKILL" ]] || fail "old $OLD_WORKFLOW_SKILL directory should be removed"
+[[ -x "scripts/install-codex-skills.sh" ]] || fail "scripts/install-codex-skills.sh missing or not executable"
+bash -n scripts/install-codex-skills.sh || fail "scripts/install-codex-skills.sh has a syntax error"
 for skill in "${EXPECTED_SKILLS[@]}"; do
   [[ -f "skills/$skill/SKILL.md" ]] || fail "skills/$skill/SKILL.md missing"
   [[ -f "skills/$skill/references/dev-baseline.md" ]] || fail "skills/$skill/references/dev-baseline.md missing"
@@ -160,9 +162,23 @@ grep -q 'data-experience-only="agents"' site/index.html || fail "site/index.html
 grep -q 'data-experience-only="agents"' index.html || fail "index.html missing agent-only content marker"
 grep -q 'workflow-grid-agents' site/index.html || fail "site/index.html missing agent workflow grid"
 grep -q 'workflow-grid-agents' index.html || fail "index.html missing agent workflow grid"
+grep -q 'data-install-action="upgrade"' site/index.html || fail "site/index.html missing upgrade install action"
+grep -q 'data-install-action="upgrade"' index.html || fail "index.html missing upgrade install action"
+grep -q 'install.action.upgrade' site/app.js || fail "site/app.js missing upgrade action translation"
+grep -q 'upgradeCommand' site/app.js || fail "site/app.js missing upgrade commands"
+grep -q '/plugin update dev-skills' site/app.js || fail "site/app.js missing Claude upgrade command"
+grep -q 'bash scripts/install-codex-skills.sh' site/app.js || fail "site/app.js missing simple Codex install command"
+grep -q 'bash scripts/install-codex-skills.sh --upgrade' site/app.js || fail "site/app.js missing simple Codex upgrade command"
+grep -q 'bash scripts/install-codex-skills.sh --upgrade' README.md || fail "README.md missing simple Codex upgrade command"
+grep -q 'bash scripts/install-codex-skills.sh --upgrade' docs/onboarding.md || fail "docs/onboarding.md missing simple Codex upgrade command"
+grep -q 'npx skills update' site/app.js || fail "site/app.js missing npx upgrade command"
 grep -q 'agentPreviews' site/app.js || fail "site/app.js missing agent runtime preview data"
 grep -q 'workflowNodeSpecsByMode' site/app.js || fail "site/app.js missing mode-specific workflow graph data"
 grep -q 'setExperienceMode' site/app.js || fail "site/app.js missing top-level experience mode switch"
+grep -q '^## 升级' docs/onboarding.md || fail "docs/onboarding.md missing upgrade section"
+if grep -q 'for skill in dev-auto' README.md docs/onboarding.md site/app.js; then
+  fail "Codex user-facing install docs should use scripts/install-codex-skills.sh instead of exposing the sync loop"
+fi
 grep -Fq "统一命名为 \`dev-auto\`" CHANGELOG.md || fail "CHANGELOG.md should document the dev-auto rename"
 grep -q 'docs/why-dev-baseline.md' README.md || fail "README.md missing docs/why-dev-baseline.md"
 grep -q 'docs/team-policy.md' README.md || fail "README.md missing docs/team-policy.md"
