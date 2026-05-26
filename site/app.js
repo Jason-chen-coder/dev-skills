@@ -32,7 +32,7 @@ const translations = {
     "hero.terminal.workflow.label": "Workflow",
     "hero.terminal.workflow": "$ codex\n> 做一个登录页,别直接开写,先帮我收敛一下\n\n收到。我先把需求落成 spec:\n- 目标:谁在什么产品场景里登录\n- 范围:登录方式、错误态、移动端、无障碍\n- 不做:注册、找回密码、SSO,除非你确认\n\n如果复杂度升高,我会再补 plan / ADR。实现、验证和 review 都会回到这份 artifact 对齐。",
     "hero.terminal.agents.label": "Multi-agent",
-    "hero.terminal.agents": "$ codex\n> 这个登录页可以用 multi-agent 跑吗?\n\n可以,但先由主 agent 定界:\nsource artifact: designs/login-page.md\nwrite scope: 只限登录页相关文件\ndo-not-edit: auth backend、路由守卫、全局主题\n\n然后再分派 explorer / worker / verifier。子 agent 交付证据,最终由主 agent 整合并处理 artifact drift。",
+    "hero.terminal.agents": "$ codex\n> 登录页涉及设计、实现、验证,帮我拆成 multi-agent\n\n可以,先定契约再并行:\nsource: designs/login-page.md\nscope: 登录页视图、状态、测试\n不要改:auth backend、全局主题\n\nExplorer 查约定;Worker 改指定文件;Verifier 对照 artifact 验证。主 agent 整合并处理 drift。",
     "skills.eyebrow": "Skill library",
     "skills.title": "按你现在要做的事，选择对应的 skill。",
     "skills.text": "日常只要回答“现在卡在哪一步”。dev-skills 会把需求、方案、实现、修复、验证和提交收进同一条 SDD 工程流程。",
@@ -57,6 +57,19 @@ const translations = {
     "workflow.agentNote.label": "Agent mode",
     "workflow.agentNote.title": "Workflow 模式下,主 agent 负责推进。",
     "workflow.agentNote.text": "普通 workflow 会由主 agent 根据当前阶段选择合适的 skill,按 spec、plan、实现、验证和评审顺序推进。它不会自动分派子 agent;需要并行探索、实现或独立验证时,再切到 Multi-agent。",
+    "workflow.agentLanes.aria": "Workflow 模式下的阶段推进方式",
+    "workflow.agentLanes.intake.label": "Main agent",
+    "workflow.agentLanes.intake.title": "定阶段",
+    "workflow.agentLanes.intake.text": "理解目标、判断当前卡点,决定该走 spec、plan、实现、修复还是验证。",
+    "workflow.agentLanes.scope.label": "Spec / Plan",
+    "workflow.agentLanes.scope.title": "收敛",
+    "workflow.agentLanes.scope.text": "模糊需求先落 spec;复杂或高风险改动再补 plan / ADR。",
+    "workflow.agentLanes.build.label": "Build / Fix",
+    "workflow.agentLanes.build.title": "执行",
+    "workflow.agentLanes.build.text": "实现或修复时锁住行为,只按当前 artifact 和范围改代码。",
+    "workflow.agentLanes.check.label": "Verify / Review",
+    "workflow.agentLanes.check.title": "把关",
+    "workflow.agentLanes.check.text": "完成前跑验证,提交前检查 diff、风险和夹带改动。",
     "agent.aria": "Multi-agent 模式下的 agent 说明",
     "agent.eyebrow": "Agent mode",
     "agent.title": "Multi-agent 模式下,主 agent 负责分派和整合。",
@@ -231,7 +244,7 @@ const translations = {
     "language.zh": "中文",
     "language.en": "EN",
     "hero.eyebrow": "AI development workflow skills",
-    "hero.title": "From request to commit,<br>every step verified.",
+    "hero.title": "From request to commit, <br>every step verified.",
     "hero.text": "dev-skills gives Claude Code and Codex ten engineering workflow skills plus concise always-on team rules, using lightweight SDD so design context, specs, plans, implementation, verification, review, and closure each have clear boundaries and checkable evidence.",
     "hero.actions.label": "Primary actions",
     "hero.install": "Install",
@@ -244,7 +257,7 @@ const translations = {
     "hero.terminal.workflow.label": "Workflow",
     "hero.terminal.workflow": "$ codex\n> Build a login page, but scope it before coding\n\nUnderstood. I’ll turn the request into a spec first:\n- goal: who signs in and where this page appears\n- scope: sign-in methods, error states, mobile, accessibility\n- out of scope: sign-up, password reset, SSO unless confirmed\n\nIf risk grows, I’ll add a plan / ADR. Implementation, verification, and review will all trace back to that artifact.",
     "hero.terminal.agents.label": "Multi-agent",
-    "hero.terminal.agents": "$ codex\n> Can this login page use multi-agent?\n\nYes, after the main agent defines the contract:\nsource artifact: designs/login-page.md\nwrite scope: login-page files only\ndo-not-edit: auth backend, route guards, global theme\n\nThen explorer / worker / verifier can run in separate lanes. Sub-agents return evidence; the main agent integrates and handles artifact drift.",
+    "hero.terminal.agents": "$ codex\n> Login page needs design, code, and verification. Split it for multi-agent.\n\nYes. Define the contract first:\nsource: designs/login-page.md\nscope: login view, state, tests\ndo not edit: auth backend, global theme\n\nExplorer checks conventions; Worker edits assigned files; Verifier checks the artifact. Main agent integrates and handles drift.",
     "skills.eyebrow": "Skill library",
     "skills.title": "Choose the skill for the job in front of you.",
     "skills.text": "Most days, you only need to answer where the work is stuck. dev-skills keeps requirements, plans, implementation, fixes, verification, and commits in one SDD engineering flow.",
@@ -269,6 +282,19 @@ const translations = {
     "workflow.agentNote.label": "Agent mode",
     "workflow.agentNote.title": "In Workflow mode, the main agent drives the work.",
     "workflow.agentNote.text": "The standard workflow lets the main agent choose the right skill for the current phase and move through specs, plans, implementation, verification, and review in order. It does not automatically delegate to sub-agents; switch to Multi-agent when exploration, implementation, or independent verification should run in parallel.",
+    "workflow.agentLanes.aria": "Sequential agent flow in Workflow mode",
+    "workflow.agentLanes.intake.label": "Main agent",
+    "workflow.agentLanes.intake.title": "Set phase",
+    "workflow.agentLanes.intake.text": "Understands the goal, finds the current blockage, and chooses spec, plan, build, fix, or verify.",
+    "workflow.agentLanes.scope.label": "Spec / Plan",
+    "workflow.agentLanes.scope.title": "Scope",
+    "workflow.agentLanes.scope.text": "Turns fuzzy requests into specs; adds a plan / ADR for complex or risky changes.",
+    "workflow.agentLanes.build.label": "Build / Fix",
+    "workflow.agentLanes.build.title": "Execute",
+    "workflow.agentLanes.build.text": "Locks behavior and edits only what the current artifact and scope allow.",
+    "workflow.agentLanes.check.label": "Verify / Review",
+    "workflow.agentLanes.check.title": "Check",
+    "workflow.agentLanes.check.text": "Runs verification before completion and checks diff risk before commit.",
     "agent.aria": "Agent mode note in Multi-agent mode",
     "agent.eyebrow": "Agent mode",
     "agent.title": "In Multi-agent mode, the main agent delegates and integrates.",
@@ -479,6 +505,19 @@ const localizedTargets = [
   { selector: ".workflow-agent-note span", key: "workflow.agentNote.label" },
   { selector: ".workflow-agent-note h3", key: "workflow.agentNote.title" },
   { selector: ".workflow-agent-note p", key: "workflow.agentNote.text" },
+  { selector: ".workflow-agent-lanes", key: "workflow.agentLanes.aria", attr: "aria-label" },
+  { selector: ".workflow-agent-lanes article:nth-child(1) span", key: "workflow.agentLanes.intake.label" },
+  { selector: ".workflow-agent-lanes article:nth-child(1) h3", key: "workflow.agentLanes.intake.title" },
+  { selector: ".workflow-agent-lanes article:nth-child(1) p", key: "workflow.agentLanes.intake.text" },
+  { selector: ".workflow-agent-lanes article:nth-child(2) span", key: "workflow.agentLanes.scope.label" },
+  { selector: ".workflow-agent-lanes article:nth-child(2) h3", key: "workflow.agentLanes.scope.title" },
+  { selector: ".workflow-agent-lanes article:nth-child(2) p", key: "workflow.agentLanes.scope.text" },
+  { selector: ".workflow-agent-lanes article:nth-child(3) span", key: "workflow.agentLanes.build.label" },
+  { selector: ".workflow-agent-lanes article:nth-child(3) h3", key: "workflow.agentLanes.build.title" },
+  { selector: ".workflow-agent-lanes article:nth-child(3) p", key: "workflow.agentLanes.build.text" },
+  { selector: ".workflow-agent-lanes article:nth-child(4) span", key: "workflow.agentLanes.check.label" },
+  { selector: ".workflow-agent-lanes article:nth-child(4) h3", key: "workflow.agentLanes.check.title" },
+  { selector: ".workflow-agent-lanes article:nth-child(4) p", key: "workflow.agentLanes.check.text" },
   { selector: ".agent-mode-note", key: "agent.aria", attr: "aria-label" },
   { selector: ".agent-mode-note span", key: "agent.eyebrow" },
   { selector: ".agent-mode-note h3", key: "agent.title" },
@@ -767,6 +806,10 @@ const installOptions = {
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const PREVIEW_AUTO_CYCLE_MS = 10000;
 const HERO_TERMINAL_HOLD_MS = 6000;
+const SECTION_REVEAL_SELECTOR = ".section, .runtime-section, .workflow-section, .agent-mode-section";
+const SECTION_REVEAL_TRIGGER_RATIO = 0.78;
+const EXPERIENCE_TAB_CONTENT_SELECTOR = ".experience-section [data-experience-only]:not([hidden]), .experience-section .runtime-section, .experience-section .workflow-section";
+const TAB_CONTENT_FADE_MS = 800;
 let previewRunId = 0;
 let heroTypingRunId = 0;
 let heroTerminalIndex = 0;
@@ -1529,6 +1572,24 @@ function setWorkflowMode(mode) {
   renderWorkflowGraph();
 }
 
+function animateExperienceContent() {
+  if (reduceMotion) return;
+
+  document.querySelectorAll(EXPERIENCE_TAB_CONTENT_SELECTOR).forEach((element) => {
+    element.classList.remove("is-tab-content-entering");
+    const animationRun = String(Number(element.dataset.tabContentAnimationRun || 0) + 1);
+    element.dataset.tabContentAnimationRun = animationRun;
+    void element.offsetWidth;
+    element.classList.add("is-tab-content-entering");
+    window.setTimeout(() => {
+      if (element.dataset.tabContentAnimationRun !== animationRun) return;
+
+      element.classList.remove("is-tab-content-entering");
+      delete element.dataset.tabContentAnimationRun;
+    }, TAB_CONTENT_FADE_MS + 80);
+  });
+}
+
 function setExperienceMode(mode, userInitiated = true) {
   if (!["skills", "agents"].includes(mode)) return;
 
@@ -1544,8 +1605,10 @@ function setExperienceMode(mode, userInitiated = true) {
     element.hidden = element.dataset.experienceOnly !== mode;
   });
 
+  revealVisibleSections();
   setPreviewMode(mode, userInitiated);
   setWorkflowMode(mode);
+  if (userInitiated) animateExperienceContent();
 }
 
 document.querySelectorAll(".skill-tab").forEach((button) => {
@@ -1649,6 +1712,53 @@ function setupMobileNav() {
   });
 }
 
+function revealSection(section) {
+  section.classList.add("is-revealed");
+}
+
+function revealVisibleSections() {
+  document.querySelectorAll(".section-reveal:not(.is-revealed)").forEach((section) => {
+    if (section.hidden || section.offsetParent === null) return;
+
+    const rect = section.getBoundingClientRect();
+    if (rect.top < window.innerHeight * SECTION_REVEAL_TRIGGER_RATIO && rect.bottom > 0) {
+      revealSection(section);
+    }
+  });
+}
+
+function setupSectionReveal() {
+  const sections = document.querySelectorAll(SECTION_REVEAL_SELECTOR);
+  if (!sections.length) return;
+
+  sections.forEach((section) => {
+    section.classList.add("section-reveal");
+  });
+
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    sections.forEach(revealSection);
+    return;
+  }
+
+  document.body.classList.add("has-section-reveal");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      revealSection(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, {
+    rootMargin: "0px 0px -22% 0px",
+    threshold: 0.01
+  });
+
+  sections.forEach((section) => {
+    observer.observe(section);
+  });
+  revealVisibleSections();
+}
+
 function scheduleHeaderStateUpdate() {
   if (headerFrame) return;
 
@@ -1660,6 +1770,7 @@ function scheduleHeaderStateUpdate() {
 
 applyLanguage();
 setupMobileNav();
+setupSectionReveal();
 updateHeaderState();
 window.addEventListener("load", updateHeaderState);
 window.addEventListener("resize", () => {

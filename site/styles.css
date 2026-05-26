@@ -236,6 +236,25 @@ code {
   padding: clamp(64px, 9vw, 112px) 0;
 }
 
+.section-reveal {
+  opacity: 1;
+}
+
+body.has-section-reveal .section-reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 800ms ease,
+    transform 800ms var(--ease);
+  will-change: opacity, transform;
+}
+
+body.has-section-reveal .section-reveal.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
@@ -481,6 +500,7 @@ pre {
   overflow-wrap: anywhere;
 }
 
+.workflow-agent-section,
 .agent-mode-section {
   display: grid;
   gap: 18px;
@@ -518,6 +538,7 @@ pre {
   color: var(--muted);
 }
 
+.workflow-agent-lanes span,
 .agent-lanes span {
   display: block;
   margin-bottom: 12px;
@@ -527,16 +548,19 @@ pre {
   text-transform: uppercase;
 }
 
+.workflow-agent-lanes p,
 .agent-lanes p {
   color: var(--muted);
 }
 
+.workflow-agent-lanes,
 .agent-lanes {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
+.workflow-agent-lanes article,
 .agent-lanes article {
   min-width: 0;
   min-height: 150px;
@@ -546,18 +570,22 @@ pre {
   background: color-mix(in srgb, var(--surface-strong) 90%, var(--bg));
 }
 
+.workflow-agent-lanes article:nth-child(1),
 .agent-lanes article:nth-child(1) {
   border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
 }
 
+.workflow-agent-lanes article:nth-child(2),
 .agent-lanes article:nth-child(2) {
   border-color: color-mix(in srgb, var(--green) 24%, var(--line));
 }
 
+.workflow-agent-lanes article:nth-child(3),
 .agent-lanes article:nth-child(3) {
   border-color: color-mix(in srgb, var(--amber) 26%, var(--line));
 }
 
+.workflow-agent-lanes article:nth-child(4),
 .agent-lanes article:nth-child(4) {
   border-color: color-mix(in srgb, var(--rust) 24%, var(--line));
 }
@@ -578,16 +606,35 @@ pre {
 }
 
 .experience-tabs-section {
+  display: flex;
+  justify-content: center;
   width: 100%;
   padding: 0;
 }
 
+.experience-section .workflow-agent-section,
 .experience-section .agent-mode-section,
 .experience-section .runtime-section,
 .experience-section .workflow-section {
   width: 100%;
   margin: 0;
   padding: 0;
+}
+
+.experience-section .is-tab-content-entering {
+  animation: tab-content-fade-in 800ms var(--ease) both;
+}
+
+@keyframes tab-content-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .mode-switch {
@@ -604,7 +651,10 @@ pre {
 }
 
 .experience-mode-switch {
+  gap: 8px;
   margin-bottom: 0;
+  padding: 7px;
+  border-radius: 12px;
 }
 
 .mode-button {
@@ -628,7 +678,11 @@ pre {
 }
 
 .experience-mode-switch .mode-button {
-  min-width: 150px;
+  min-width: 178px;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 8px;
+  font-size: 14px;
 }
 
 .skill-tabs,
@@ -1010,6 +1064,8 @@ pre {
   color: var(--text);
   font-size: 14px;
   line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   overflow-x: auto;
 }
 
@@ -1136,6 +1192,7 @@ details p {
   .section,
   .runtime-section,
   .experience-section,
+  .workflow-agent-section,
   .agent-mode-section {
     width: min(1160px, calc(100% - 32px));
     padding: 58px 0;
@@ -1145,6 +1202,7 @@ details p {
     gap: 28px;
   }
 
+  .experience-section .workflow-agent-section,
   .experience-section .agent-mode-section,
   .experience-section .runtime-section,
   .experience-section .workflow-section {
@@ -1159,6 +1217,7 @@ details p {
     overflow-wrap: anywhere;
   }
 
+  .workflow-agent-lanes,
   .agent-lanes {
     grid-template-columns: 1fr;
   }
@@ -1180,6 +1239,10 @@ details p {
 
   .mode-button {
     flex: 1 0 auto;
+  }
+
+  .experience-mode-switch .mode-button {
+    min-width: 0;
   }
 
   .workflow-path li {
@@ -1231,5 +1294,14 @@ details p {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+
+  body.has-section-reveal .section-reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .experience-section .is-tab-content-entering {
+    animation: none;
   }
 }

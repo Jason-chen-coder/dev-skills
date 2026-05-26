@@ -6,7 +6,7 @@
   <title>dev-skills - AI 开发工作流 Skill 库</title>
   <meta name="description" content="10 个 AI 开发 skill,用轻量 SDD 串起 spec、plan、实现、验证和 review,再配上短版 always-on 规则、multi-agent 分工协议和团队治理文档。">
   <link rel="preload" href="./site/assets/logo.png" as="image">
-  <link rel="stylesheet" href="./site/styles.css?v=dev-design-context">
+  <link rel="stylesheet" href="./site/styles.css?v=sdd-mobile-polish">
 </head>
 <body>
   <header class="site-header">
@@ -151,13 +151,37 @@
         </div>
       </div>
 
-      <aside class="workflow-agent-note" data-experience-only="skills" aria-label="Workflow 模式下的 agent 说明">
-        <span>Agent mode</span>
-        <div>
-          <h3>Workflow 模式下,主 agent 负责推进。</h3>
-          <p>普通 workflow 会由主 agent 根据当前阶段选择合适的 skill,按 spec、plan、实现、验证和评审顺序推进。它不会自动分派子 agent;需要并行探索、实现或独立验证时,再切到 Multi-agent。</p>
+      <section class="workflow-agent-section" data-experience-only="skills">
+        <aside class="workflow-agent-note" aria-label="Workflow 模式下的 agent 说明">
+          <span>Agent mode</span>
+          <div>
+            <h3>Workflow 模式下,主 agent 负责推进。</h3>
+            <p>普通 workflow 会由主 agent 根据当前阶段选择合适的 skill,按 spec、plan、实现、验证和评审顺序推进。它不会自动分派子 agent;需要并行探索、实现或独立验证时,再切到 Multi-agent。</p>
+          </div>
+        </aside>
+        <div class="workflow-agent-lanes" aria-label="Workflow 模式下的阶段推进方式">
+          <article>
+            <span>Main agent</span>
+            <h3>定阶段</h3>
+            <p>理解目标、判断当前卡点,决定该走 spec、plan、实现、修复还是验证。</p>
+          </article>
+          <article>
+            <span>Spec / Plan</span>
+            <h3>收敛</h3>
+            <p>模糊需求先落 spec;复杂或高风险改动再补 plan / ADR。</p>
+          </article>
+          <article>
+            <span>Build / Fix</span>
+            <h3>执行</h3>
+            <p>实现或修复时锁住行为,只按当前 artifact 和范围改代码。</p>
+          </article>
+          <article>
+            <span>Verify / Review</span>
+            <h3>把关</h3>
+            <p>完成前跑验证,提交前检查 diff、风险和夹带改动。</p>
+          </article>
         </div>
-      </aside>
+      </section>
 
       <section id="agent-mode" class="agent-mode-section" data-experience-only="agents" hidden>
         <aside class="agent-mode-note" aria-label="Multi-agent 模式下的 agent 说明">
@@ -355,6 +379,6 @@
   </footer>
 
   <script async src="https://unpkg.com/@antv/g6@5.1.1/dist/g6.min.js" onload="window.renderWorkflowGraph && window.renderWorkflowGraph()"></script>
-  <script src="./site/app.js?v=sdd-workflow"></script>
+  <script src="./site/app.js?v=sdd-mobile-polish"></script>
 </body>
 </html>
