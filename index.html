@@ -55,11 +55,14 @@
             <small data-hero-terminal-label>Workflow</small>
           </div>
           <pre><code>$ codex
-&gt; 帮我设计一个登录页面
+&gt; 做一个登录页,别直接开写,先帮我收敛一下
 
-可以。我会先确认这个登录页服务谁、出现在什么产品场景里,以及需要支持哪些登录方式。
+收到。我先把需求落成 spec:
+- 目标:谁在什么产品场景里登录
+- 范围:登录方式、错误态、移动端、无障碍
+- 不做:注册、找回密码、SSO,除非你确认
 
-如果项目里还没有设计上下文,我会先补齐它;然后把页面范围收敛成一份 spec,复杂时再补 plan。实现、验证和 review 都会对照这些 artifact 交付证据。</code></pre>
+如果复杂度升高,我会再补 plan / ADR。实现、验证和 review 都会回到这份 artifact 对齐。</code></pre>
         </div>
       </div>
     </section>
