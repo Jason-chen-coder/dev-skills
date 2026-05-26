@@ -33,6 +33,16 @@ MAIN_AGENT_FIRST_SKILLS=(
   dev-finish
 )
 
+SDD_AWARE_SKILLS=(
+  dev-auto
+  dev-spec
+  dev-plan
+  dev-tdd
+  dev-fix
+  dev-verify
+  dev-code-review
+)
+
 OLD_WORKFLOW_SKILL="dev-"
 OLD_WORKFLOW_SKILL+="workflow"
 OLD_WORKFLOW_TITLE="Dev "
@@ -71,6 +81,7 @@ echo "Checking team template guard..."
 [[ -f AGENTS.md.template ]] || fail "AGENTS.md.template missing"
 [[ -f docs/why-dev-baseline.md ]] || fail "docs/why-dev-baseline.md missing"
 [[ -f docs/team-policy.md ]] || fail "docs/team-policy.md missing"
+[[ -f docs/sdd-workflow.md ]] || fail "docs/sdd-workflow.md missing"
 [[ -f docs/multi-agent-policy.md ]] || fail "docs/multi-agent-policy.md missing"
 grep -q 'docs/team-policy.md' CLAUDE.md.template || fail "CLAUDE.md.template should point to docs/team-policy.md"
 grep -q 'docs/team-policy.md' AGENTS.md.template || fail "AGENTS.md.template should point to docs/team-policy.md"
@@ -155,8 +166,19 @@ grep -q 'setExperienceMode' site/app.js || fail "site/app.js missing top-level e
 grep -Fq "统一命名为 \`dev-auto\`" CHANGELOG.md || fail "CHANGELOG.md should document the dev-auto rename"
 grep -q 'docs/why-dev-baseline.md' README.md || fail "README.md missing docs/why-dev-baseline.md"
 grep -q 'docs/team-policy.md' README.md || fail "README.md missing docs/team-policy.md"
+grep -q 'docs/sdd-workflow.md' README.md || fail "README.md missing docs/sdd-workflow.md"
+grep -q 'docs/sdd-workflow.md' docs/onboarding.md || fail "docs/onboarding.md missing docs/sdd-workflow.md"
+grep -q 'docs/sdd-workflow.md' docs/multi-agent-policy.md || fail "docs/multi-agent-policy.md missing docs/sdd-workflow.md"
+grep -q 'SDD artifact 对齐' CLAUDE.md.template || fail "CLAUDE.md.template missing SDD artifact rule"
+grep -q 'SDD artifact 对齐' AGENTS.md.template || fail "AGENTS.md.template missing SDD artifact rule"
+grep -q '轻量 SDD' site/app.js || fail "site/app.js missing SDD landing copy"
+grep -q '轻量 SDD' site/index.html || fail "site/index.html missing SDD fallback copy"
+grep -q '轻量 SDD' index.html || fail "index.html missing SDD fallback copy"
 grep -q 'docs/multi-agent-policy.md' README.md || fail "README.md missing docs/multi-agent-policy.md"
 grep -q 'docs/multi-agent-policy.md' docs/onboarding.md || fail "docs/onboarding.md missing docs/multi-agent-policy.md"
+grep -q 'Spec-anchored' docs/sdd-workflow.md || fail "docs/sdd-workflow.md missing Spec-anchored guidance"
+grep -q 'Multi-Agent Contract' docs/sdd-workflow.md || fail "docs/sdd-workflow.md missing multi-agent SDD contract"
+grep -q 'Source artifact:' docs/multi-agent-policy.md || fail "docs/multi-agent-policy.md missing Source artifact contract"
 for skill in dev-design-context dev-tdd dev-verify dev-finish; do
   grep -q "$skill" README.md || fail "README.md missing $skill"
   grep -q "$skill" CLAUDE.md.template || fail "CLAUDE.md.template missing $skill"
@@ -172,6 +194,11 @@ done
 for skill in "${MAIN_AGENT_FIRST_SKILLS[@]}"; do
   grep -q '^## Multi-Agent Note' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md missing Multi-Agent Note"
   grep -q 'docs/multi-agent-policy.md' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md should link docs/multi-agent-policy.md"
+done
+
+echo "Checking SDD contract coverage..."
+for skill in "${SDD_AWARE_SKILLS[@]}"; do
+  grep -q 'SDD' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md missing SDD handoff language"
 done
 
 if grep -RIEq "$OLD_WORKFLOW_SKILL|$OLD_WORKFLOW_TITLE" \

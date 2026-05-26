@@ -500,6 +500,21 @@ grep -rn "bug-<slug>" .             # 期望:0 条匹配
 
 ---
 
+## SDD Contract
+
+`dev-fix` is the bug-path SDD contract. It replaces a feature spec with a failure contract:
+
+- `Symptom` and `Expected` define the behavior gap.
+- `Reproduction` and `Regression test` define executable proof.
+- `Hypotheses & diagnosis` prevents guessing.
+- `Root cause` defines the only path the fix should change.
+- `Verification` defines what `dev-verify` must check before completion.
+- `Pattern analysis` defines follow-ups without expanding this fix.
+
+If the confirmed root cause requires a broader redesign, mark the artifact `NEEDS_DESIGN_CHANGE` and route to `dev-plan` instead of hiding a refactor inside the bug fix.
+
+---
+
 ## Multi-Agent Profile
 
 Recommended agent_type: worker

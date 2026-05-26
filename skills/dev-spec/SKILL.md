@@ -388,3 +388,17 @@ AC-N  ...
 `dev-spec` is main-agent-first because it negotiates scope with the user.
 
 Explorers may gather codebase facts before or during spec work, but the main agent owns the interview, ambiguity scoring, assumptions ledger, and final scope confirmation. Apply `../../docs/multi-agent-policy.md` only for bounded read-only exploration.
+
+## SDD Contract
+
+`dev-spec` produces the feature intent contract for the rest of the workflow.
+
+Required downstream anchors:
+
+- `In scope`: what later agents may implement.
+- `Out of scope`: what later agents must not expand into without user approval.
+- `Assumptions`: accepted defaults that must stay visible during implementation and review.
+- `Open questions`: blockers or known uncertainty; do not route to `dev-plan` while status is `STUCK`.
+- `Acceptance criteria`: the checklist consumed by `dev-plan`, `dev-tdd`, `dev-verify`, and `dev-code-review`.
+
+If implementation later changes behavior beyond the spec, update the spec or explicitly report spec drift before commit.

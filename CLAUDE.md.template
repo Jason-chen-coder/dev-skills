@@ -44,6 +44,7 @@
 
 - **小任务直接做**:单命令、typo、窄文档改动或明确单文件小修可以直接执行,但仍要在完成前给出检查结果。
 - **大任务先 explore / plan**:跨文件、重构、数据迁移、权限/支付/安全、公开 API、需求不清时,先读现状并给出计划;用户只要求分析时不要写代码。
+- **SDD artifact 对齐**:如果存在 `.claude/artifacts/designs|plans|fixes/<slug>.md`,后续实现、验证和 review 要把它当作 source artifact;发现 drift 先说明或更新,不要静默扩范围。
 - **写作和 review 分开**:authoring pass 负责创建或修改;review / verification pass 必须重新看 diff、跑命令、拿证据,不能只复述刚才的实现判断。
 - **完成前清零 pending**:结束前确认没有未处理 finding、TODO、失败测试或挂起命令;如果仍有风险,明确列出而不是说 ready。
 - **失败按归属回流**:验证失败回实现或 `dev-fix`;review P0/P1 先修再 commit;spec / plan blocked 回用户决策,不要硬推进。
@@ -56,6 +57,7 @@
 - 多 agent 只用于边界清晰的并行探索、实现、验证或 review;详细规则见 `docs/multi-agent-policy.md`。
 - 主 agent 始终负责用户沟通、任务拆分、最终整合、git 操作和完成声明。
 - 子 agent 必须有明确 ownership,不得修改未分配文件,不得回滚他人改动。
+- 子 agent 任务应写明 source artifact、objective、write scope、do-not-edit 和 verification expected。
 - verifier / reviewer 应尽量独立于实现上下文,并输出命令证据、changed files 和残余风险。
 
 ---

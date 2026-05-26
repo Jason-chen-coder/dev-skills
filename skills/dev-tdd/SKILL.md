@@ -56,6 +56,16 @@ Production target: <实现文件>
 
 如果写不出 `Expected`,说明需求还没清楚,回 `dev-spec` 或向用户澄清。
 
+### SDD source check
+
+如果存在匹配的 `.claude/artifacts/designs/<slug>.md` 或 `.claude/artifacts/plans/<slug>.md`,本轮 behavior 应从其中一个来源选择:
+
+- spec acceptance criteria
+- plan implementation step
+- plan verification step
+
+输出时标明 `Source: spec/<slug> AC-<n>` 或 `Source: plan/<slug> step <n>`。如果没有 artifact,用用户当前请求作为 source,但不要把未确认的范围扩成额外行为。
+
 ---
 
 ## Step 3 — RED: write the failing test first

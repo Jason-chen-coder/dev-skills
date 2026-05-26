@@ -12,6 +12,13 @@
 
 ## Workflow 约定
 
+### SDD artifact contract
+
+- 复杂或中等复杂度 feature 默认把 `.claude/artifacts/designs/<slug>.md` 当作 intent contract,后续 plan / implementation / verify / review 都要对齐它。
+- 高风险或跨模块改动把 `.claude/artifacts/plans/<slug>.md` 当作 implementation contract;如果实现偏离 ADR,先更新 plan 或在 review 里显式说明 drift。
+- bug 路径把 `.claude/artifacts/fixes/<slug>.md` 当作 failure contract;它记录 symptom、root cause、regression test 和 verification evidence。
+- artifact 不是形式文档。它们存在时,`dev-verify` 和 `dev-code-review` 应对照检查;发现过期就报告 drift,不要静默忽略。
+
 ### 设计前置
 
 - 复杂改动(跨 ≥ 3 模块 / 鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)先过 `dev-spec` 和 `dev-plan --deliberate`。

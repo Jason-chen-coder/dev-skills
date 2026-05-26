@@ -354,6 +354,20 @@ ADR 是最终决定的**单一入口**,后续 dev-code-review 评审时如果 di
 - **下游**:本 skill 的 plan(`.claude/artifacts/plans/<feature>.md`)是 `dev-code-review` 的对齐参考(若存在,审查时应检查 diff 是否落实了 plan 的 AC 与 ADR;但触发 dev-code-review 仍由用户主动)。
 - **不调用**:本 skill 不主动 invoke 其他 skill —— 跨 skill 的衔接由用户控制。
 
+## SDD Contract
+
+`dev-plan` turns an aligned spec into the implementation contract.
+
+Required downstream anchors:
+
+- `ADR`: the decision reviewers should compare the diff against.
+- `Implementation steps`: the ownership and sequencing workers should follow.
+- `Risks / mitigations`: the issues verifier and reviewer should re-check.
+- `Verification steps`: the command plan `dev-verify` should start from.
+- `Open questions`: unresolved items that must not be silently implemented.
+
+If code needs to deviate from the ADR or implementation steps, update this plan or call out plan drift before review.
+
 ---
 
 ## Multi-Agent Profile

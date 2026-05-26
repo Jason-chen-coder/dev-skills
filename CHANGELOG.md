@@ -12,6 +12,8 @@
 ## [Unreleased]
 
 ### Added
+- **SDD workflow guide**:新增 `docs/sdd-workflow.md`,把现有 dev-skills 流程定义为轻量 Spec-Driven Development:Spec-first / Spec-anchored 为主,明确 artifact contract、feature path、bug path、multi-agent contract 和 drift control。
+- **SDD artifact contract**:README、onboarding、team policy、multi-agent policy 和关键 skill 增加 SDD handoff 规则,把 `.claude/artifacts/designs|plans|fixes/<slug>.md` 作为实现、验证、review 和子 agent 分工的对齐依据。
 - **`dev-design-context` skill**:新增一次性设计上下文采集 skill。它会先扫描项目 README、组件、品牌资产、CSS token 和设计资料,再只问代码里无法推断的 UX / 品牌问题,最后把 `## Design Context` 写入 `.design-context.md`。
 - **Baseline rationale 文档**:新增 `docs/why-dev-baseline.md`,逐条说明四条 baseline 关闭的真实 LLM 编码失败模式,并把「冲突不平均 / 失败可见 / checkpoint / deterministic logic / debug budget」列为可放进模板或 skill 的推论,避免继续膨胀 baseline。
 - **Team policy guide**:新增 `docs/team-policy.md`,承接原 `CLAUDE.md.template` / `AGENTS.md.template` 中较长的分支、PR、测试、错误处理、日志、feature flag、AI 协作护栏等治理说明。
@@ -20,6 +22,8 @@
 - **H5 正式站点**:新增 `site/` 静态产品落地页,包含 skill 卡片、Skill Runtime Preview、工作流、安装升级 tabs 和 FAQ;新增 GitHub Pages workflow,在 `master` push 后发布正式站点。
 
 ### Changed
+- **Always-on 模板同步 SDD**:`CLAUDE.md.template` 和 `AGENTS.md.template` 增加短版 source artifact 规则,要求存在 spec / plan / fix artifact 时,后续实现、验证、review 和多 agent 分工对照它们执行。
+- **H5 站点同步 SDD 文案**:首页、workflow、multi-agent 和 runtime preview 文案加入 SDD artifact 契约,保持 README / docs / landing page 同步。
 - **Skill 重命名**:入口推荐器统一命名为 `dev-auto`,目录迁移到 `skills/dev-auto/`,并同步 README、onboarding、landing page、Claude/Codex plugin manifest、历史 changelog 和仓库校验脚本。
 - **Always-on 模板瘦身**:`CLAUDE.md.template` 和 `AGENTS.md.template` 改为短版常驻规则,保留 baseline、硬规则、agent 工作方式、dev-skills 路由和少量 team-specific placeholder;详细团队治理说明移到 `docs/team-policy.md`。
 - **文档入口同步**:README 和 onboarding 增加规则分层说明,把 `docs/why-dev-baseline.md` 与 `docs/team-policy.md` 纳入新用户阅读路径。

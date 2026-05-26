@@ -6,7 +6,7 @@
 
 ## 60 秒了解这是什么
 
-dev-skills 是团队的工程规范载体。它有三层:
+dev-skills 是团队的工程规范载体。它用轻量 SDD 把需求、方案、实现、验证和 review 串成一条可追踪链路。它有三层:
 
 - **行为基线**(`references/dev-baseline.md` + `docs/why-dev-baseline.md`):所有 skill 共享的四条原则,以及每条原则关闭的失败模式。
 - **Always-on 模板**(`CLAUDE.md.template` / `AGENTS.md.template`):复制到消费项目根目录后,成为 agent 永远在背景读取的短规则。
@@ -139,10 +139,11 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 ## 必读文档(按顺序看,~25 分钟)
 
 1. [`README.md`](../README.md) —— 整体结构 5 分钟。
-2. [`references/dev-baseline.md`](../references/dev-baseline.md) —— 四条基线原则 5 分钟。
-3. [`docs/why-dev-baseline.md`](./why-dev-baseline.md) —— 每条原则背后的失败模式 5 分钟。
-4. [`CLAUDE.md.template`](../CLAUDE.md.template) 或 [`AGENTS.md.template`](../AGENTS.md.template) —— 短版 always-on 规则 5 分钟(注意:需复制到项目根并改名才生效)。
-5. 你日常会用的 skill 的 SKILL.md(选你感兴趣的一个先读) —— 5 分钟。
+2. [`docs/sdd-workflow.md`](./sdd-workflow.md) —— SDD 在 workflow 和 multi-agent 里的接法 5 分钟。
+3. [`references/dev-baseline.md`](../references/dev-baseline.md) —— 四条基线原则 5 分钟。
+4. [`docs/why-dev-baseline.md`](./why-dev-baseline.md) —— 每条原则背后的失败模式 5 分钟。
+5. [`CLAUDE.md.template`](../CLAUDE.md.template) 或 [`AGENTS.md.template`](../AGENTS.md.template) —— 短版 always-on 规则 5 分钟(注意:需复制到项目根并改名才生效)。
+6. 你日常会用的 skill 的 SKILL.md(选你感兴趣的一个先读) —— 5 分钟。
 
 后续按需查阅:
 - `docs/team-policy.md` —— 分支 / PR / 测试 / 错误处理 / 日志等详细团队治理参考。
@@ -161,11 +162,11 @@ skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 syste
 
 - 主 agent:负责用户沟通、拆分任务、最终整合、git 操作和完成声明。
 - explorer:查调用链、类似实现、设计系统和约定。
-- worker:只改明确分配的文件或模块。
-- verifier:独立跑验证命令,检查完成声明是否有证据。
-- reviewer:独立看 diff,不参与实现。
+- worker:只改明确分配的文件或模块,并对照 spec / plan 交付红绿证据。
+- verifier:独立跑验证命令,对照 SDD artifact 检查完成声明是否有证据。
+- reviewer:独立看 diff,对照 spec / ADR / fix artifact 做提交前判断,不参与实现。
 
-使用前先读 [`docs/multi-agent-policy.md`](./multi-agent-policy.md)。子 agent 的任务必须写清楚 objective、write scope、do-not-edit、verification expected 和 output required。
+使用前先读 [`docs/sdd-workflow.md`](./sdd-workflow.md) 和 [`docs/multi-agent-policy.md`](./multi-agent-policy.md)。子 agent 的任务必须写清楚 objective、source artifact、write scope、do-not-edit、verification expected 和 output required。
 
 ---
 

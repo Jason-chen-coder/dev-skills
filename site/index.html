@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>dev-skills - AI 开发工作流 Skill 库</title>
-  <meta name="description" content="10 个 AI 开发 skill,分清用户入口、流程门禁、一次性设置和显式旁路,加上短版 always-on 规则、multi-agent 分工协议和团队治理文档。">
+  <meta name="description" content="10 个 AI 开发 skill,用轻量 SDD 串起 spec、plan、实现、验证和 review,再配上短版 always-on 规则、multi-agent 分工协议和团队治理文档。">
   <link rel="preload" href="./assets/logo.png" as="image">
   <link rel="stylesheet" href="./styles.css?v=dev-design-context">
 </head>
@@ -39,7 +39,7 @@
       <div class="hero-copy">
         <p class="eyebrow">AI development workflow skills</p>
         <h1>从需求到提交,<br>每步可验证。</h1>
-        <p class="hero-text">dev-skills 为 Claude Code 与 Codex 提供 10 个工程流程 skill 和精简 always-on 团队规则,让设计上下文、需求、实现、验证、评审与收尾都有清晰边界和可复核结果。</p>
+        <p class="hero-text">dev-skills 为 Claude Code 与 Codex 提供 10 个工程流程 skill 和精简 always-on 团队规则,用轻量 SDD 让设计上下文、spec、plan、实现、验证、评审与收尾都有清晰边界和可复核结果。</p>
         <div class="hero-actions" aria-label="Primary actions">
           <a class="button primary" href="#install" aria-label="查看安装方式">Install</a>
           <a class="button secondary" href="#preview" aria-label="查看 skill 运行预览">Preview</a>
@@ -59,7 +59,7 @@
 
 可以。我会先确认这个登录页服务谁、出现在什么产品场景里,以及需要支持哪些登录方式。
 
-如果项目里还没有设计上下文,我会先补齐它;然后把页面范围收敛成一份 spec,再实现表单状态、校验、错误提示、移动端布局和可访问性。完成后我会用截图和验证命令交付结果。</code></pre>
+如果项目里还没有设计上下文,我会先补齐它;然后把页面范围收敛成一份 spec,复杂时再补 plan。实现、验证和 review 都会对照这些 artifact 交付证据。</code></pre>
         </div>
       </div>
     </section>
@@ -68,7 +68,7 @@
       <div class="section-heading">
         <p class="eyebrow">Skill library</p>
         <h2>按你现在要做的事，选择对应的 skill。</h2>
-        <p>日常只要回答“现在卡在哪一步”。dev-skills 会把需求、实现、修复、验证和提交收进同一条工程流程。</p>
+        <p>日常只要回答“现在卡在哪一步”。dev-skills 会把需求、方案、实现、修复、验证和提交收进同一条 SDD 工程流程。</p>
       </div>
       <div class="skill-guide" aria-label="dev-skills 使用入口">
         <article class="skill-guide-card skill-guide-card-primary">
@@ -152,7 +152,7 @@
         <span>Agent mode</span>
         <div>
           <h3>Workflow 模式下,主 agent 负责推进。</h3>
-          <p>普通 workflow 会由主 agent 根据当前阶段选择合适的 skill,按需求、实现、验证和评审顺序推进。它不会自动分派子 agent;需要并行探索、实现或独立验证时,再切到 Multi-agent。</p>
+          <p>普通 workflow 会由主 agent 根据当前阶段选择合适的 skill,按 spec、plan、实现、验证和评审顺序推进。它不会自动分派子 agent;需要并行探索、实现或独立验证时,再切到 Multi-agent。</p>
         </div>
       </aside>
 
@@ -161,14 +161,14 @@
           <span>Agent mode</span>
           <div>
             <h3>Multi-agent 模式下,主 agent 负责分派和整合。</h3>
-            <p>主 agent 先确认目标、边界和不可修改范围,再把探索、实现、验证或 review 分派给子 agent。子 agent 只处理范围明确、能交付证据的任务;最终判断、git 操作和用户沟通仍然回到主 agent。</p>
+            <p>主 agent 先确认目标、边界、source artifact 和不可修改范围,再把探索、实现、验证或 review 分派给子 agent。子 agent 只处理范围明确、能交付证据的任务;最终判断、git 操作和用户沟通仍然回到主 agent。</p>
           </div>
         </aside>
         <div class="agent-lanes" aria-label="multi-agent 分工方式">
           <article>
             <span>Main agent</span>
             <h3>主控</h3>
-            <p>确认目标、写清边界,整合所有子 agent 结果。</p>
+            <p>确认目标、选择 source artifact,整合所有子 agent 结果。</p>
           </article>
           <article>
             <span>Explorer</span>
@@ -178,12 +178,12 @@
           <article>
             <span>Worker</span>
             <h3>实现</h3>
-            <p>只改分配范围内的页面、模块或测试。</p>
+            <p>只改分配范围内的页面、模块或测试,并引用对应 AC 或 plan step。</p>
           </article>
           <article>
             <span>Verifier / Reviewer</span>
             <h3>独立把关</h3>
-            <p>独立检查命令证据、响应式、可访问性和 diff 风险。</p>
+            <p>独立对照 artifact 检查命令证据、响应式、可访问性和 diff 风险。</p>
           </article>
         </div>
       </section>
@@ -247,8 +247,8 @@
           <h3>Feature path</h3>
           <ol>
             <li><strong>dev-design-context optional</strong><span>UI 工作先沉淀设计上下文</span></li>
-            <li><strong>dev-spec</strong><span>模糊需求变成 spec</span></li>
-            <li><strong>dev-plan optional</strong><span>复杂 / 高风险改动先出实施方案</span></li>
+            <li><strong>dev-spec</strong><span>模糊需求变成 spec contract</span></li>
+            <li><strong>dev-plan optional</strong><span>复杂 / 高风险改动先出 plan / ADR</span></li>
             <li><strong>dev-tdd</strong><span>red -> green -> refactor</span></li>
             <li><strong>dev-verify</strong><span>完成前证据门禁</span></li>
             <li><strong>dev-code-review</strong><span>提交前 5 轴检查</span></li>
@@ -284,7 +284,7 @@
           <h3>Main agent lane</h3>
           <ol>
             <li><strong>Intake</strong><span>确认目标、风险和是否值得分派</span></li>
-            <li><strong>Scope</strong><span>写清 objective、write scope、do-not-edit</span></li>
+            <li><strong>Scope</strong><span>写清 source artifact、write scope、do-not-edit</span></li>
             <li><strong>Integrate</strong><span>合并子 agent 结果并处理冲突</span></li>
             <li><strong>Ship</strong><span>最终验证、commit、PR 或收尾</span></li>
           </ol>
@@ -295,7 +295,7 @@
             <li><strong>Explorer</strong><span>查调用链、类似实现和设计约定</span></li>
             <li><strong>Planner</strong><span>复杂任务先做方案取舍和风险检查</span></li>
             <li><strong>Worker</strong><span>只改明确分配的文件或模块</span></li>
-            <li><strong>Verifier</strong><span>独立跑命令,验证完成声明</span></li>
+            <li><strong>Verifier</strong><span>独立跑命令,对照 artifact 验证完成声明</span></li>
           </ol>
         </div>
         <div class="workflow-path">
@@ -304,7 +304,7 @@
             <li><strong>No overlap</strong><span>多个 worker 不改同一批文件</span></li>
             <li><strong>No hidden chain</strong><span>dev-auto 只推荐,不自动调起其他 skill</span></li>
             <li><strong>No risky git</strong><span>merge、push、discard 留给主 agent 和用户</span></li>
-            <li><strong>Evidence</strong><span>每个子 agent 都要输出证据和风险</span></li>
+            <li><strong>Evidence</strong><span>每个子 agent 都要输出证据、风险和 artifact drift</span></li>
           </ol>
         </div>
       </div>
@@ -352,6 +352,6 @@
   </footer>
 
   <script async src="https://unpkg.com/@antv/g6@5.1.1/dist/g6.min.js" onload="window.renderWorkflowGraph && window.renderWorkflowGraph()"></script>
-  <script src="./app.js?v=dev-design-context"></script>
+  <script src="./app.js?v=sdd-workflow"></script>
 </body>
 </html>

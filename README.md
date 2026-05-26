@@ -25,7 +25,7 @@
 
 ## 这是什么
 
-dev-skills 是一套给 Claude Code / Codex 用的开发工作流规则集。它让 AI 做开发时按固定步骤推进,而不是每次从零猜流程。
+dev-skills 是一套给 Claude Code / Codex 用的 SDD-style 开发工作流规则集。它让 AI 做开发时先对齐意图、范围、方案和验证证据,而不是每次从零猜流程。
 
 它主要解决四类问题:
 
@@ -75,6 +75,26 @@ dev-tdd -> dev-verify -> dev-code-review -> git commit
 ```
 
 可以跳过 spec 和 plan。只要会改行为,仍然建议先用测试锁住这次小改动。
+
+---
+
+## SDD 怎么接进来
+
+这里的 SDD 指 Spec-Driven Development。`dev-skills` 不把它做成重型状态机,而是把现有 skill 串成一条可追踪的契约链:
+
+```text
+Intent / Context
+  -> Spec: dev-spec
+  -> Plan / ADR: dev-plan
+  -> Tests / Fix evidence: dev-tdd 或 dev-fix
+  -> Verify: dev-verify
+  -> Review: dev-code-review
+  -> Ship: git commit / dev-finish
+```
+
+简单任务可以只做到 Spec-first;复杂、高风险或多 agent 任务建议做到 Spec-anchored,把 `.claude/artifacts/` 里的 spec / plan / fix 作为后续实现、验证、review 的对齐依据。
+
+完整说明见 [`docs/sdd-workflow.md`](./docs/sdd-workflow.md)。
 
 ---
 
@@ -225,10 +245,10 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 ## Multi-agent 怎么用
 
-如果你的 runtime 支持多 agent,`dev-skills` 可以作为分工协议使用:
+如果你的 runtime 支持多 agent,`dev-skills` 可以作为分工协议使用。SDD artifact 是 agent 之间的契约,不是聊天记录里的口头约定:
 
 - 主 agent:负责用户沟通、拆分任务、最终整合和 git 操作。
-- 子 agent:只做边界清晰的探索、实现、验证或 review。
+- 子 agent:只做边界清晰的探索、实现、验证或 review,并基于 spec / plan / fix artifact 输出证据。
 
 ```toml
 [features]
@@ -253,6 +273,7 @@ max_depth = 2
 ## 规则和文档
 
 - [`references/dev-baseline.md`](./references/dev-baseline.md):所有 skill 都会加载的基础规则。
+- [`docs/sdd-workflow.md`](./docs/sdd-workflow.md):说明 dev-skills 如何用轻量 SDD 连接 workflow 和 multi-agent 协作。
 - [`docs/why-dev-baseline.md`](./docs/why-dev-baseline.md):解释这些基础规则为什么存在。
 - [`CLAUDE.md.template`](./CLAUDE.md.template) / [`AGENTS.md.template`](./AGENTS.md.template):复制到项目根目录后,作为常驻团队规则。
 - [`docs/team-policy.md`](./docs/team-policy.md):更细的分支、PR、测试、错误处理和团队治理说明。

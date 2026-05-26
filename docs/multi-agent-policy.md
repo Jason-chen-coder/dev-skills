@@ -8,7 +8,7 @@ This document defines how `dev-skills` should work when the host agent supports 
 
 ## Purpose
 
-`dev-skills` already splits engineering work into clear phases:
+`dev-skills` already splits engineering work into clear SDD phases:
 
 ```text
 design context -> spec -> plan -> implement / fix -> verify -> review -> commit -> finish
@@ -18,7 +18,7 @@ Multi-agent support should make those phases easier to parallelize and cross-che
 
 The primary design goal is:
 
-> The main agent orchestrates. Sub-agents execute bounded, evidence-producing tasks.
+> The main agent orchestrates. SDD artifacts define the contract. Sub-agents execute bounded, evidence-producing tasks.
 
 ---
 
@@ -95,6 +95,7 @@ Every delegated task should include:
 
 ```text
 Objective:
+Source artifact:
 Write scope:
 Read scope:
 Do not edit:
@@ -110,6 +111,28 @@ For code-writing work, the sub-agent must be told:
 - list every changed file in the final answer
 - report commands run and their results
 - report residual risks
+
+---
+
+## SDD Contract Between Agents
+
+When `.claude/artifacts/` contains a matching spec, plan, or fix artifact, treat it as the coordination contract for delegated work.
+
+| Artifact | Delegation use |
+|---|---|
+| `.claude/artifacts/designs/<slug>.md` | Use for product intent, in scope, out of scope, assumptions, risks, and acceptance criteria. |
+| `.claude/artifacts/plans/<slug>.md` | Use for implementation ownership, ADR, chosen option, risks, and verification plan. |
+| `.claude/artifacts/fixes/<slug>.md` | Use for bug symptom, repro, confirmed root cause, regression test, and fix evidence. |
+
+Delegation rules:
+
+- The main agent selects the relevant artifact and slug. Sub-agents do not guess among multiple active artifacts.
+- Workers must cite which acceptance criteria, plan step, or root-cause path they implemented.
+- Verifiers must map commands or direct inspection back to the artifact checklist.
+- Reviewers should treat clear divergence from spec / ADR / fix evidence as a functional finding.
+- If a sub-agent discovers artifact drift, it should report the drift instead of silently expanding scope.
+
+Do not use SDD artifacts to override explicit user instructions or current code evidence. If artifact and code disagree, report the mismatch and let the main agent decide whether to update the artifact or change the implementation.
 
 ---
 
@@ -227,6 +250,9 @@ You are acting as the {role} for this dev-skills workflow.
 Objective:
 {one bounded task}
 
+Source artifact:
+{relevant .claude/artifacts path, or "none"}
+
 Write scope:
 {files/modules the agent may edit, or "read-only"}
 
@@ -240,7 +266,7 @@ Workflow:
 Use {skill-name} rules where applicable.
 
 Verification expected:
-{commands/checklist}
+{commands/checklist, mapped to source artifact when present}
 
 Output required:
 - Summary
@@ -257,6 +283,7 @@ This policy is integrated across these repository surfaces:
 
 | File | Integration |
 |---|---|
+| `docs/sdd-workflow.md` | SDD artifact and workflow contract |
 | `docs/multi-agent-policy.md` | canonical policy |
 | `skills/dev-plan/SKILL.md` | `## Multi-Agent Profile` |
 | `skills/dev-tdd/SKILL.md` | `## Multi-Agent Profile` |
@@ -280,6 +307,7 @@ This policy is integrated across these repository surfaces:
 
 The repository validator checks:
 
+- `docs/sdd-workflow.md` exists and is linked from README / onboarding.
 - `docs/multi-agent-policy.md` exists.
 - every agent-capable skill has `## Multi-Agent Profile`.
 - every main-agent-first skill has `## Multi-Agent Note`.

@@ -88,7 +88,7 @@ Evidence: <关键输出摘要,含 exit code / tests count / failure count>
 
 ## Step 4 — Requirement checklist
 
-对照用户请求、spec 或 plan,逐项检查:
+对照用户请求、spec、plan 或 fix artifact,逐项检查:
 
 ```
 Requirement checklist:
@@ -97,6 +97,16 @@ Requirement checklist:
 ```
 
 任何未验证项都不能包装成完成。
+
+### SDD artifact mapping
+
+如果存在匹配 artifact,优先按下面顺序映射验证项:
+
+1. `.claude/artifacts/fixes/<slug>.md` 的 `Verification` / `Regression test`。
+2. `.claude/artifacts/plans/<slug>.md` 的 `Verification steps` / ADR 风险。
+3. `.claude/artifacts/designs/<slug>.md` 的 `Acceptance criteria`。
+
+无法映射的完成声明要单独列为 `Unmapped claim`,并说明它来自用户当前请求、代码检查还是实现过程中的新增发现。
 
 ---
 

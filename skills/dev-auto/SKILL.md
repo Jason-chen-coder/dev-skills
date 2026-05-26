@@ -9,6 +9,8 @@ description: Use ONLY when the user explicitly wants end-to-end guided workflow 
 
 它服务的是「我有个需求,该怎么走完整流程」「UI 工作要不要先沉淀设计上下文」「我跑完 X 了,该跑什么」「X skill 给我返回 BLOCK / REJECT,我该回哪一步」这几类场景。
 
+在 SDD 视角下,`dev-auto` 只做阶段导航:读取 `.design-context.md` 和 `.claude/artifacts/{designs,plans,fixes}/` 的存在性 / status,推荐下一步。它不生成 spec,不更新 plan,不替用户选择 artifact slug,也不自动启动其他 skill。
+
 ---
 
 ## Trigger routing

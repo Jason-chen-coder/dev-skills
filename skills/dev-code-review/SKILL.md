@@ -128,6 +128,17 @@ When uncertain, prefer the lower severity. Don't inflate to look thorough.
 
 For every finding, cite `path:line` and tag severity using the rubric above.
 
+### SDD artifact check
+
+Before judging the functional axis, scan `.claude/artifacts/{designs,plans,fixes}/` when it exists:
+
+- If exactly one relevant artifact or one shared slug exists, use it as the review contract.
+- If both `designs/<slug>.md` and `plans/<slug>.md` exist, check the diff against both the spec acceptance criteria and the plan ADR.
+- If `fixes/<slug>.md` exists, check the diff against the recorded root cause, fix summary, regression test, and verification evidence.
+- If multiple unrelated slugs exist, do not guess; mention that artifact alignment could not be determined.
+
+Clear divergence from an active spec, ADR, or fix artifact is a functional finding. If the implementation is reasonable but the artifact is stale, report artifact drift instead of silently accepting the mismatch.
+
 ### 1. 规范 (Code style & conventions)
 
 **先识别本次 diff 涉及的语言**,再用该语言的官方/社区规范评审。**详细的逐语言检查清单见 `references/lang-conventions.md`** —— 只加载与本次 diff 实际涉及语言相关的小节,不要把整个文件读进来。
