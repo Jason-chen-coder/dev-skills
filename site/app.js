@@ -5,7 +5,7 @@ const translations = {
   zh: {
     "page.lang": "zh-CN",
     "page.title": "dev-skills - AI 开发工作流 Skill 库",
-    "page.description": "10 个 AI 开发 skill,用轻量 SDD 串起 spec、plan、实现、验证和 review,再配上短版 always-on 规则、multi-agent 分工协议和团队治理文档。",
+    "page.description": "11 个 AI 开发 skill,用轻量 SDD 串起设计上下文、需求拷问、spec、plan、实现、验证和 review,再配上短版 always-on 规则、multi-agent 分工协议和团队治理文档。",
     "brand.aria": "dev-skills 首页",
     "nav.aria": "主导航",
     "nav.skills": "Skills",
@@ -20,7 +20,7 @@ const translations = {
     "language.en": "EN",
     "hero.eyebrow": "AI development workflow skills",
     "hero.title": "从需求到提交,<br>每步可验证。",
-    "hero.text": "dev-skills 为 Claude Code 与 Codex 提供 10 个工程流程 skill 和精简 always-on 团队规则,用轻量 SDD 让设计上下文、spec、plan、实现、验证、评审与收尾都有清晰边界和可复核结果。",
+    "hero.text": "dev-skills 为 Claude Code 与 Codex 提供 11 个工程流程 skill 和精简 always-on 团队规则,用轻量 SDD 让设计上下文、需求拷问、spec、plan、实现、验证、评审与收尾都有清晰边界和可复核结果。",
     "hero.actions.label": "主要操作",
     "hero.install": "Install",
     "hero.preview": "Preview",
@@ -43,7 +43,7 @@ const translations = {
     "skills.guide.auto.text": "当你只知道目标,但不知道该先写需求、计划还是直接修复时,从这里开始。",
     "skills.guide.scope.label": "需求和方案",
     "skills.guide.scope.title": "先把要做什么说清",
-    "skills.guide.scope.text": "模糊需求先收敛成 spec;复杂或高风险改动再补 plan。UI 工作先沉淀设计上下文。",
+    "skills.guide.scope.text": "dev-grill-docs 先拷问术语、边界和验收条件,生成 spec artifact;稳定术语和决策再沉淀到 CONTEXT / ADR。复杂或高风险改动补 plan。",
     "skills.guide.build.label": "实现和修复",
     "skills.guide.build.title": "写代码前先锁住行为",
     "skills.guide.build.text": "新功能走 TDD;问题修复从复现和 root cause 开始,避免只修表面症状。",
@@ -63,7 +63,7 @@ const translations = {
     "workflow.agentLanes.intake.text": "理解目标、判断当前卡点,决定该走 spec、plan、实现、修复还是验证。",
     "workflow.agentLanes.scope.label": "Spec / Plan",
     "workflow.agentLanes.scope.title": "收敛",
-    "workflow.agentLanes.scope.text": "模糊需求先落 spec;复杂或高风险改动再补 plan / ADR。",
+    "workflow.agentLanes.scope.text": "dev-grill-docs 先拷问术语、边界和验收条件,生成 spec artifact;复杂或高风险改动再补 plan / ADR。",
     "workflow.agentLanes.build.label": "Build / Fix",
     "workflow.agentLanes.build.title": "执行",
     "workflow.agentLanes.build.text": "实现或修复时锁住行为,只按当前 artifact 和范围改代码。",
@@ -103,7 +103,7 @@ const translations = {
     "workflow.mode.agents": "Multi-agent",
     "workflow.feature.heading": "功能需求路径",
     "workflow.feature.0": "UI 工作先沉淀设计上下文",
-    "workflow.feature.1": "模糊需求变成 spec contract",
+    "workflow.feature.1": "拷问需求,生成 spec,按需沉淀 CONTEXT / ADR",
     "workflow.feature.2": "复杂 / 高风险改动先出 plan / ADR",
     "workflow.feature.3": "red -> green -> refactor",
     "workflow.feature.4": "完成前证据门禁",
@@ -125,6 +125,7 @@ const translations = {
     "workflow.hotfix.4": "READY 后提交",
     "workflow.hotfix.5": "需要分支收尾时执行",
     "workflow.strong.designContextOptional": "dev-design-context 可选",
+    "workflow.strong.grillDocs": "dev-grill-docs",
     "workflow.strong.planOptional": "dev-plan 可选",
     "workflow.strong.commitOptional": "dev-commit-writer 可选",
     "workflow.strong.finishOptional": "dev-finish 可选",
@@ -166,7 +167,7 @@ const translations = {
     "workflow.node.start.desc": "feature / hotfix / bug",
     "workflow.node.feature.phase": "Feature",
     "workflow.node.feature.title": "功能需求路径",
-    "workflow.node.feature.desc": "设计上下文 -> spec -> plan -> TDD",
+    "workflow.node.feature.desc": "design -> grill/spec -> plan -> TDD",
     "workflow.node.hotfix.phase": "Hotfix",
     "workflow.node.hotfix.title": "快速小改路径",
     "workflow.node.hotfix.desc": "dev-tdd",
@@ -218,8 +219,8 @@ const translations = {
     "install.copy.upgrade.aria": "复制升级命令",
     "install.claude.installNotes": "首次安装后,如需团队规则,复制 CLAUDE.md.template 到项目根 CLAUDE.md;详细政策参考 docs/team-policy.md。",
     "install.claude.upgradeNotes": "如果 /plugin update 未生效,先 /plugin uninstall dev-skills 再 /plugin install dev-skills。团队规则模板仍需人工对比同步。",
-    "install.codex.installNotes": "脚本会同步 10 个 dev-skills 到 CODEX_HOME skills。短版团队规则复制 AGENTS.md.template 到项目根 AGENTS.md。",
-    "install.codex.upgradeNotes": "脚本会先拉最新仓库,再重新同步 10 个 dev-skills。AGENTS.md 不会自动覆盖。",
+    "install.codex.installNotes": "脚本会同步 11 个 dev-skills 到 CODEX_HOME skills。短版团队规则复制 AGENTS.md.template 到项目根 AGENTS.md。",
+    "install.codex.upgradeNotes": "脚本会先拉最新仓库,再重新同步 11 个 dev-skills。AGENTS.md 不会自动覆盖。",
     "install.npx.installNotes": "按需要安装到当前项目或全局。团队规则模板仍需按项目手动复制。",
     "install.npx.upgradeNotes": "优先使用 npx skills update;如果版本不支持 update,使用 add --force 重新安装。团队规则模板仍需人工同步。",
     "faq.eyebrow": "FAQ",
@@ -238,7 +239,7 @@ const translations = {
   en: {
     "page.lang": "en",
     "page.title": "dev-skills - AI development workflow skills",
-    "page.description": "Ten AI development workflow skills that use lightweight SDD to connect specs, plans, implementation, verification, and review, plus concise always-on rules, multi-agent policy, and team governance docs.",
+    "page.description": "Eleven AI development workflow skills that use lightweight SDD to connect design context, requirement grilling, specs, plans, implementation, verification, and review, plus concise always-on rules, multi-agent policy, and team governance docs.",
     "brand.aria": "dev-skills home",
     "nav.aria": "Primary navigation",
     "nav.skills": "Skills",
@@ -253,7 +254,7 @@ const translations = {
     "language.en": "EN",
     "hero.eyebrow": "AI development workflow skills",
     "hero.title": "From request to commit, <br>every step verified.",
-    "hero.text": "dev-skills gives Claude Code and Codex ten engineering workflow skills plus concise always-on team rules, using lightweight SDD so design context, specs, plans, implementation, verification, review, and closure each have clear boundaries and checkable evidence.",
+    "hero.text": "dev-skills gives Claude Code and Codex eleven engineering workflow skills plus concise always-on team rules, using lightweight SDD so design context, requirement grilling, specs, plans, implementation, verification, review, and closure each have clear boundaries and checkable evidence.",
     "hero.actions.label": "Primary actions",
     "hero.install": "Install",
     "hero.preview": "Preview",
@@ -276,7 +277,7 @@ const translations = {
     "skills.guide.auto.text": "Start here when you know the goal but not whether to write a spec, plan, or fix first.",
     "skills.guide.scope.label": "Requirements and plans",
     "skills.guide.scope.title": "Clarify what to build",
-    "skills.guide.scope.text": "Turn fuzzy requests into specs, add a plan for complex or risky work, and capture design context before UI work.",
+    "skills.guide.scope.text": "dev-grill-docs grills terms, boundaries, and acceptance criteria, then writes the spec artifact; durable language and decisions can go into CONTEXT / ADR. Add a plan for complex or risky work.",
     "skills.guide.build.label": "Build and fix",
     "skills.guide.build.title": "Lock behavior before coding",
     "skills.guide.build.text": "Use TDD for new work; debug from reproduction and root cause instead of patching symptoms.",
@@ -296,7 +297,7 @@ const translations = {
     "workflow.agentLanes.intake.text": "Understands the goal, finds the current blockage, and chooses spec, plan, build, fix, or verify.",
     "workflow.agentLanes.scope.label": "Spec / Plan",
     "workflow.agentLanes.scope.title": "Scope",
-    "workflow.agentLanes.scope.text": "Turns fuzzy requests into specs; adds a plan / ADR for complex or risky changes.",
+    "workflow.agentLanes.scope.text": "dev-grill-docs grills terms, boundaries, and acceptance criteria, writes the spec artifact, and adds a plan / ADR for risky changes.",
     "workflow.agentLanes.build.label": "Build / Fix",
     "workflow.agentLanes.build.title": "Execute",
     "workflow.agentLanes.build.text": "Locks behavior and edits only what the current artifact and scope allow.",
@@ -336,7 +337,7 @@ const translations = {
     "workflow.mode.agents": "Multi-agent",
     "workflow.feature.heading": "Feature path",
     "workflow.feature.0": "Capture design context first for UI work",
-    "workflow.feature.1": "Turn a fuzzy request into a spec contract",
+    "workflow.feature.1": "Grill requirements, write the spec, and optionally preserve CONTEXT / ADR",
     "workflow.feature.2": "Create a plan / ADR for complex or risky changes",
     "workflow.feature.3": "red -> green -> refactor",
     "workflow.feature.4": "Evidence gate before completion",
@@ -358,6 +359,7 @@ const translations = {
     "workflow.hotfix.4": "Commit once READY",
     "workflow.hotfix.5": "Run closure when branch cleanup is needed",
     "workflow.strong.designContextOptional": "dev-design-context optional",
+    "workflow.strong.grillDocs": "dev-grill-docs",
     "workflow.strong.planOptional": "dev-plan optional",
     "workflow.strong.commitOptional": "dev-commit-writer optional",
     "workflow.strong.finishOptional": "dev-finish optional",
@@ -399,7 +401,7 @@ const translations = {
     "workflow.node.start.desc": "feature / hotfix / bug",
     "workflow.node.feature.phase": "Feature",
     "workflow.node.feature.title": "Feature path",
-    "workflow.node.feature.desc": "design -> spec -> plan -> TDD",
+    "workflow.node.feature.desc": "design -> grill/spec -> plan -> TDD",
     "workflow.node.hotfix.phase": "Hotfix",
     "workflow.node.hotfix.title": "Simple hotfix",
     "workflow.node.hotfix.desc": "dev-tdd",
@@ -451,8 +453,8 @@ const translations = {
     "install.copy.upgrade.aria": "Copy upgrade command",
     "install.claude.installNotes": "After first install, copy CLAUDE.md.template to CLAUDE.md at your project root if you need always-on team rules; use docs/team-policy.md for the detailed policy.",
     "install.claude.upgradeNotes": "If /plugin update does not take effect, run /plugin uninstall dev-skills and then /plugin install dev-skills. Team-rule templates still need manual comparison.",
-    "install.codex.installNotes": "The script syncs the ten dev-skills into CODEX_HOME skills. Copy AGENTS.md.template to AGENTS.md at your project root for always-on rules.",
-    "install.codex.upgradeNotes": "The script pulls the latest repo, then resyncs the ten dev-skills. AGENTS.md is not overwritten automatically.",
+    "install.codex.installNotes": "The script syncs the eleven dev-skills into CODEX_HOME skills. Copy AGENTS.md.template to AGENTS.md at your project root for always-on rules.",
+    "install.codex.upgradeNotes": "The script pulls the latest repo, then resyncs the eleven dev-skills. AGENTS.md is not overwritten automatically.",
     "install.npx.installNotes": "Install into the current project or globally as needed. Team-rule templates still need to be copied per project.",
     "install.npx.upgradeNotes": "Prefer npx skills update. If your version does not support update, reinstall with add --force. Team-rule templates still need manual sync.",
     "faq.eyebrow": "FAQ",
@@ -562,6 +564,7 @@ const localizedTargets = [
   { selector: ".workflow-grid-skills .workflow-path:nth-child(1) h3", key: "workflow.feature.heading" },
   { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(1) strong", key: "workflow.strong.designContextOptional" },
   { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(1) span", key: "workflow.feature.0" },
+  { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(2) strong", key: "workflow.strong.grillDocs" },
   { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(2) span", key: "workflow.feature.1" },
   { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(3) strong", key: "workflow.strong.planOptional" },
   { selector: ".workflow-grid-skills .workflow-path:nth-child(1) li:nth-child(3) span", key: "workflow.feature.2" },
@@ -645,17 +648,22 @@ const skillPreviews = {
     "dev-auto": {
       title: "Dev Auto",
       input: "$ codex\n> 用 dev-auto 帮我串起来,下一步该做什么?",
-      output: "━━━ Dev Auto ━━━\n路径   : feature\n复杂度 : moderate\n下一步\n  $ dev-spec --default user-export\n为什么:先把模糊需求拆成可验证 spec。"
+      output: "━━━ Dev Auto ━━━\n路径   : feature\n复杂度 : moderate\n下一步\n  $ dev-grill-docs user-export\n为什么:先拷问模糊需求,再生成可验证 spec。"
     },
     "dev-design-context": {
       title: "Dev Design Context",
       input: "$ codex\n> 用 dev-design-context 先沉淀这个项目的设计上下文",
       output: "Explore\n  README / 组件 / CSS tokens / 品牌资产\nAsk\n  只问代码里看不出来的 UX 问题\nWrite\n  .design-context.md -> Design Context\nResult: 未来 UI 工作有统一设计原则"
     },
+    "dev-grill-docs": {
+      title: "Dev Grill Docs",
+      input: "$ codex\n> 帮我设计登陆页面",
+      output: "Intake\n  UI request + fuzzy scope\n  .design-context.md: check first\nWave 1 | Focus: Goal\nWhy\n  登陆页面可能只是前端 UI,也可能接入真实认证流程。\nRecommended\n  先限定为登录页 UI + 基础状态,认证后端不进本轮。\nQuestion\n  这次是只设计/实现前端 UI,还是要接入真实登录认证流程?\nWrite\n  .claude/artifacts/designs/login-page.md"
+    },
     "dev-spec": {
-      title: "Dev Spec",
+      title: "Dev Spec Alias",
       input: "$ codex\n> 用 dev-spec 帮我设计用户导出功能",
-      output: "执行 dev-spec 前,我需要确认:\n1. 导出谁的数据?\n2. CSV 还是 JSON?\n3. 同步还是异步?\n回答后生成:\n.claude/artifacts/designs/user-export.md"
+      output: "Compatibility alias\n  dev-spec -> dev-grill-docs --spec-only\nWave 1 | Focus: Goal\nQuestion\n  用户导出指当前用户自助导出,还是管理员后台代导?\nWrite\n  .claude/artifacts/designs/user-export.md\nSkip\n  CONTEXT.md / ADR"
     },
     "dev-plan": {
       title: "Dev Plan",
@@ -697,17 +705,22 @@ const skillPreviews = {
     "dev-auto": {
       title: "Dev Auto",
       input: "$ codex\n> Use dev-auto to connect the workflow. What should I do next?",
-      output: "━━━ Dev Auto ━━━\nPath       : feature\nComplexity : moderate\nNext\n  $ dev-spec --default user-export\nWhy: turn a fuzzy request into a verifiable spec first."
+      output: "━━━ Dev Auto ━━━\nPath       : feature\nComplexity : moderate\nNext\n  $ dev-grill-docs user-export\nWhy: grill the fuzzy request, then create a verifiable spec."
     },
     "dev-design-context": {
       title: "Dev Design Context",
       input: "$ codex\n> Use dev-design-context to capture this project's design context",
       output: "Explore\n  README / components / CSS tokens / brand assets\nAsk\n  Only UX questions the code cannot answer\nWrite\n  .design-context.md -> Design Context\nResult: future UI work follows shared design principles"
     },
+    "dev-grill-docs": {
+      title: "Dev Grill Docs",
+      input: "$ codex\n> Use dev-grill-docs to design a login page",
+      output: "Intake\n  UI request + fuzzy scope\n  .design-context.md: check first\nWave 1 | Focus: Goal\nWhy\n  A login page may be UI-only or wired to real authentication.\nRecommended\n  Start with login page UI + basic states; keep auth backend out of this round.\nQuestion\n  Is this frontend UI only, or should it connect to the real login flow?\nWrite\n  .claude/artifacts/designs/login-page.md"
+    },
     "dev-spec": {
-      title: "Dev Spec",
+      title: "Dev Spec Alias",
       input: "$ codex\n> Use dev-spec to design a user export feature",
-      output: "Before running dev-spec, I need to confirm:\n1. Whose data is exported?\n2. CSV or JSON?\n3. Sync or async?\nThen generate:\n.claude/artifacts/designs/user-export.md"
+      output: "Compatibility alias\n  dev-spec -> dev-grill-docs --spec-only\nWave 1 | Focus: Goal\nQuestion\n  Is this a self-service export or an admin-assisted export?\nWrite\n  .claude/artifacts/designs/user-export.md\nSkip\n  CONTEXT.md / ADR"
     },
     "dev-plan": {
       title: "Dev Plan",

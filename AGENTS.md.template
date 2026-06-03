@@ -66,7 +66,9 @@
 
 - 不知道下一步时跑 `dev-auto`;它只指路,不调起其他 skill。
 - UI / landing page / 产品界面类工作,首次进入项目前可跑 `dev-design-context`,把设计上下文沉淀到 `.design-context.md`。
-- 复杂新功能先走 `dev-spec` → 可选 `dev-plan --deliberate`。
+- 新功能 / 改功能先走 `dev-grill-docs`,生成 `.claude/artifacts/designs/<slug>.md`;稳定领域词汇可沉淀到 `CONTEXT.md`,必要时写 `docs/adr/`。
+- `dev-spec` 仅作兼容入口,等价于 `dev-grill-docs --spec-only`。
+- 复杂新功能在 `dev-grill-docs` 后可接 `dev-plan --deliberate`。
 - feature / refactor / direct hotfix 写生产代码前默认走 `dev-tdd`。
 - bug 报告走 `dev-fix`;它自带 failing regression test 和 red→green→red,不要再追加一轮 `dev-tdd`。
 - 声称完成 / fixed / ready 前必须跑 `dev-verify` 或给出等价 fresh verification evidence。

@@ -5,7 +5,7 @@
 本文件分五部分:
 
 - **Cases 1-6**:`dev-code-review` 的 P0 / P1 / P2 判定校准。
-- **Cases 7-8**:`dev-spec` 的 ambiguity 维度评分校准。
+- **Cases 7-8**:`dev-grill-docs` / `dev-spec` 兼容入口的 ambiguity 维度评分校准。
 - **Cases 9-10**:`dev-plan` 的 Critic verdict(APPROVED / REVISE / REJECT)校准。
 - **Cases 11-12**:`dev-fix` 的 escalation 决策(BELOW vs continue)+ Defense-in-depth 边界判断。
 - **Cases 13-14**:`dev-auto` 的 path/complexity 分类 + `--recover` 决策路径。
@@ -183,7 +183,7 @@ Commit
 
 ---
 
-## Case 7 — dev-spec ambiguity 评分(完整需求 → 应低分)
+## Case 7 — dev-grill-docs ambiguity 评分(完整需求 → 应低分)
 
 **用户原始请求**
 
@@ -210,7 +210,7 @@ Commit
 
 ---
 
-## Case 8 — dev-spec ambiguity 评分(模糊需求 → 应高分,Goal 最弱)
+## Case 8 — dev-grill-docs ambiguity 评分(模糊需求 → 应高分,Goal 最弱)
 
 **用户原始请求**
 
@@ -381,7 +381,7 @@ Commit
 - **Complexity:moderate**(2-3 个模块:前端上传组件 / 后端 API / S3 wrapper;不涉及鉴权/支付/迁移/PII 这些 complex 信号)
 - **Slug 推断**:`user-avatar-upload`(propose 让用户确认)
 
-**推荐链**:`dev-spec --default user-avatar-upload → 写代码 → dev-code-review`
+**推荐链**:`dev-grill-docs user-avatar-upload → 写代码 → dev-code-review`
 
 **关键判断**:**moderate feature 不强制 dev-plan**(plan 可选,但 moderate 一般不需要 Critic 共识)。
 
@@ -446,7 +446,7 @@ Commit
 
 1. **独立答题**(各 skill 分开计时):
    - dev-code-review 6 个 case:30 分钟,默写 verdict + axis check + findings
-   - dev-spec 2 个 case:15 分钟,默写 dimension 打分 + 下一目标
+   - dev-grill-docs 2 个 case:15 分钟,默写 dimension 打分 + 下一目标
    - dev-plan 2 个 case:15 分钟,默写 Critic verdict + 拒收/通过依据
    - dev-fix 2 个 case:15 分钟,默写 escalation 决策 + defense 边界判断
    - dev-auto 2 个 case:15 分钟,默写 path/complexity 分类 + recover 路径

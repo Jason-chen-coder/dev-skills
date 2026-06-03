@@ -17,6 +17,7 @@ EXPECTED_SKILLS=(
   dev-commit-writer
   dev-finish
   dev-design-context
+  dev-grill-docs
 )
 
 usage() {

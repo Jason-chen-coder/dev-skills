@@ -17,12 +17,13 @@ It is a workflow contract, not a promise that code can be regenerated entirely f
 `dev-skills` already separates the development path into stable phases:
 
 ```text
-design context -> spec -> plan -> implement / fix -> verify -> review -> commit -> finish
+design context -> grill/spec -> plan -> implement / fix -> verify -> review -> commit -> finish
 ```
 
 SDD gives those phases a clearer responsibility:
 
-- `dev-spec` captures human intent before implementation.
+- `dev-grill-docs` captures human intent before implementation and may preserve stable domain language in `CONTEXT.md` / ADR.
+- `dev-spec` remains a compatibility alias for `dev-grill-docs --spec-only`.
 - `dev-plan` turns aligned intent into a concrete implementation decision.
 - `dev-tdd` and `dev-fix` turn requirements or bugs into executable proof.
 - `dev-verify` checks completion claims against commands and requirements.
@@ -40,7 +41,7 @@ The practical goal is to stop AI coding from becoming "generate first, explain l
 Use this for small or medium feature work.
 
 ```text
-dev-spec -> dev-tdd -> dev-verify -> dev-code-review
+dev-grill-docs -> dev-tdd -> dev-verify -> dev-code-review
 ```
 
 The spec can be short. It must still name the goal, in scope, out of scope, assumptions, and acceptance criteria.
@@ -50,7 +51,7 @@ The spec can be short. It must still name the goal, in scope, out of scope, assu
 Use this for complex, risky, or multi-agent work.
 
 ```text
-dev-spec -> dev-plan -> dev-tdd -> dev-verify -> dev-code-review
+dev-grill-docs -> dev-plan -> dev-tdd -> dev-verify -> dev-code-review
 ```
 
 The spec and plan live under `.claude/artifacts/` and act as long-lived references for implementation, verification, review, and commit messages.
@@ -68,7 +69,8 @@ Spec-as-source treats implementation as mostly derived from specs. That requires
 | Artifact | Owner | Purpose |
 |---|---|---|
 | `.design-context.md` | `dev-design-context` | Project-level UI and product design context. |
-| `.claude/artifacts/designs/<slug>.md` | `dev-spec` | Intent contract: goal, scope, assumptions, risks, acceptance criteria. |
+| `.claude/artifacts/designs/<slug>.md` | `dev-grill-docs` (`dev-spec` compatibility alias) | Intent contract: goal, scope, assumptions, risks, acceptance criteria. |
+| `CONTEXT.md` / `docs/adr/<nnnn>-<slug>.md` | `dev-grill-docs` | Durable domain language and cross-feature decisions, only when warranted. |
 | `.claude/artifacts/plans/<slug>.md` | `dev-plan` | Implementation contract: options, ADR, steps, risks, verification plan. |
 | `.claude/artifacts/fixes/<slug>.md` | `dev-fix` | Bug contract: symptom, repro, hypotheses, root cause, fix, regression evidence. |
 | Chat evidence | `dev-tdd`, `dev-verify`, `dev-code-review` | Red/green evidence, verification commands, review verdict, commit message. |
@@ -81,7 +83,7 @@ Artifact files are optional for tiny hotfixes, but once they exist they become t
 
 ```text
 dev-design-context (optional)
-  -> dev-spec
+  -> dev-grill-docs
   -> dev-plan (optional, required for complex / high-risk work)
   -> dev-tdd
   -> dev-verify
@@ -92,7 +94,7 @@ dev-design-context (optional)
 
 Rules:
 
-- `dev-spec` must not leave scope implicit.
+- `dev-grill-docs` must not leave scope implicit.
 - `dev-plan` must consume the spec when one exists and preserve out-of-scope boundaries.
 - `dev-tdd` should choose the smallest behavior from the spec acceptance criteria or the plan.
 - `dev-verify` must check requirements against fresh command output or direct inspection.

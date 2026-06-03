@@ -82,7 +82,7 @@
 1. **issue 必填**:为什么要改、改了之后所有 skill 的行为变化预期、是否需要同步改 SKILL.md。
 2. **PR 描述必含**:before / after 对比、影响哪些 skill、是否需要 calibration session 重做。
 3. **更新 rationale**:同步检查 `docs/why-dev-baseline.md`,确保每条 baseline 都有对应 failure mode 说明。
-4. **同步副本**:改根目录 `/references/dev-baseline.md` 后,**必须**同步到十处 skill 副本:
+4. **同步副本**:改根目录 `/references/dev-baseline.md` 后,**必须**同步到所有 skill 副本:
    - `skills/dev-spec/references/dev-baseline.md`
    - `skills/dev-plan/references/dev-baseline.md`
    - `skills/dev-tdd/references/dev-baseline.md`
@@ -93,6 +93,7 @@
    - `skills/dev-finish/references/dev-baseline.md`
    - `skills/dev-auto/references/dev-baseline.md`
    - `skills/dev-design-context/references/dev-baseline.md`
+   - `skills/dev-grill-docs/references/dev-baseline.md`
 5. **CHANGELOG 必填**:在 `CHANGELOG.md` 加 entry。
 6. **通知**:merge 后在团队群通知,并附 PR 链接。
 

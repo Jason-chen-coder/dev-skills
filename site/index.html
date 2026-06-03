@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>dev-skills - AI 开发工作流 Skill 库</title>
-  <meta name="description" content="10 个 AI 开发 skill,用轻量 SDD 串起 spec、plan、实现、验证和 review,再配上短版 always-on 规则、multi-agent 分工协议和团队治理文档。">
+  <meta name="description" content="11 个 AI 开发 skill,用轻量 SDD 串起设计上下文、需求拷问、spec、plan、实现、验证和 review,再配上短版 always-on 规则、multi-agent 分工协议和团队治理文档。">
   <link rel="preload" href="./assets/logo.png" as="image">
   <link rel="stylesheet" href="./styles.css?v=sdd-mobile-polish">
 </head>
@@ -39,7 +39,7 @@
       <div class="hero-copy">
         <p class="eyebrow">AI development workflow skills</p>
         <h1>从需求到提交,<br>每步可验证。</h1>
-        <p class="hero-text">dev-skills 为 Claude Code 与 Codex 提供 10 个工程流程 skill 和精简 always-on 团队规则,用轻量 SDD 让设计上下文、spec、plan、实现、验证、评审与收尾都有清晰边界和可复核结果。</p>
+        <p class="hero-text">dev-skills 为 Claude Code 与 Codex 提供 11 个工程流程 skill 和精简 always-on 团队规则,用轻量 SDD 让设计上下文、需求拷问、spec、plan、实现、验证、评审与收尾都有清晰边界和可复核结果。</p>
         <div class="hero-actions" aria-label="Primary actions">
           <a class="button primary" href="#install" aria-label="查看安装方式">Install</a>
           <a class="button secondary" href="#preview" aria-label="查看 skill 运行预览">Preview</a>
@@ -85,9 +85,10 @@
         <article class="skill-guide-card">
           <span>需求和方案</span>
           <h3>先把要做什么说清</h3>
-          <p>模糊需求先收敛成 spec;复杂或高风险改动再补 plan。UI 工作先沉淀设计上下文。</p>
+          <p>先用 dev-grill-docs 拷问术语、边界和验收条件,生成 spec artifact;复杂或高风险改动再补 plan。</p>
           <ul aria-label="相关 skills">
-            <li>dev-spec</li>
+            <li>dev-grill-docs</li>
+            <li>dev-spec alias</li>
             <li>dev-plan</li>
             <li>dev-design-context</li>
           </ul>
@@ -230,6 +231,7 @@
       <div class="skill-tabs" role="tablist" aria-label="Skill runtime previews" data-preview-tabs="skills">
         <button class="skill-tab is-active" type="button" data-preview-mode="skills" data-skill="dev-auto" role="tab" aria-selected="true">dev-auto</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-design-context" role="tab" aria-selected="false">dev-design-context</button>
+        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-grill-docs" role="tab" aria-selected="false">dev-grill-docs</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-spec" role="tab" aria-selected="false">dev-spec</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-plan" role="tab" aria-selected="false">dev-plan</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-tdd" role="tab" aria-selected="false">dev-tdd</button>
@@ -262,7 +264,7 @@
 路径   : feature
 复杂度 : moderate
 下一步
-  $ dev-spec --default user-export
+  $ dev-grill-docs user-export
 为什么:先把模糊需求拆成可验证 spec。</code><span class="cursor output-cursor" aria-hidden="true"></span></pre>
         </div>
       </div>
@@ -279,7 +281,7 @@
           <h3>Feature path</h3>
           <ol>
             <li><strong>dev-design-context optional</strong><span>UI 工作先沉淀设计上下文</span></li>
-            <li><strong>dev-spec</strong><span>模糊需求变成 spec contract</span></li>
+            <li><strong>dev-grill-docs</strong><span>拷问需求,生成 spec,按需沉淀 CONTEXT / ADR</span></li>
             <li><strong>dev-plan optional</strong><span>复杂 / 高风险改动先出 plan / ADR</span></li>
             <li><strong>dev-tdd</strong><span>red -> green -> refactor</span></li>
             <li><strong>dev-verify</strong><span>完成前证据门禁</span></li>

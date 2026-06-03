@@ -154,7 +154,8 @@ Do not use SDD artifacts to override explicit user instructions or current code 
 | Skill | Reason |
 |---|---|
 | `dev-auto` | router only; it should not become an orchestrator |
-| `dev-spec` | usually requires user clarification and scope negotiation |
+| `dev-grill-docs` | usually requires user clarification, scope negotiation, and durable-doc judgment |
+| `dev-spec` | compatibility alias for `dev-grill-docs --spec-only`; keep user clarification in the main agent |
 | `dev-commit-writer` | a narrow single-step tool, not worth delegation |
 | `dev-finish` | branch finishing, PR, merge, keep, and discard choices should remain under main-agent control |
 
@@ -203,7 +204,7 @@ Each skill should customize the recommended role and boundaries. For example, `d
 ```text
 main agent
   -> optional dev-design-context
-  -> dev-spec
+  -> dev-grill-docs
   -> optional planner sub-agent for dev-plan critique
   -> one or more worker sub-agents for disjoint dev-tdd implementation slices
   -> verifier sub-agent using dev-verify
@@ -292,6 +293,7 @@ This policy is integrated across these repository surfaces:
 | `skills/dev-code-review/SKILL.md` | `## Multi-Agent Profile` |
 | `skills/dev-design-context/SKILL.md` | `## Multi-Agent Profile` |
 | `skills/dev-auto/SKILL.md` | `## Multi-Agent Note` |
+| `skills/dev-grill-docs/SKILL.md` | `## Multi-Agent Note` |
 | `skills/dev-spec/SKILL.md` | `## Multi-Agent Note` |
 | `skills/dev-commit-writer/SKILL.md` | `## Multi-Agent Note` |
 | `skills/dev-finish/SKILL.md` | `## Multi-Agent Note` |
@@ -345,6 +347,7 @@ Done. `## Multi-Agent Profile` exists in:
 Done. `## Multi-Agent Note` exists in:
 
 - `dev-auto`
+- `dev-grill-docs`
 - `dev-spec`
 - `dev-commit-writer`
 - `dev-finish`

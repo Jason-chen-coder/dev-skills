@@ -15,6 +15,7 @@ EXPECTED_SKILLS=(
   dev-commit-writer
   dev-finish
   dev-design-context
+  dev-grill-docs
 )
 
 AGENT_CAPABLE_SKILLS=(
@@ -31,10 +32,12 @@ MAIN_AGENT_FIRST_SKILLS=(
   dev-spec
   dev-commit-writer
   dev-finish
+  dev-grill-docs
 )
 
 SDD_AWARE_SKILLS=(
   dev-auto
+  dev-grill-docs
   dev-spec
   dev-plan
   dev-tdd
@@ -141,13 +144,25 @@ assert old_workflow not in serialized
 PY
 
 echo "Checking docs mention the expanded skill set..."
-grep -q '10 个 skill' README.md || fail "README.md should advertise 10 skills"
-grep -q 'skills-10' README.md || fail "README badge should advertise skills-10"
+grep -q '11 个 skill' README.md || fail "README.md should advertise 11 skills"
+grep -q 'skills-11' README.md || fail "README badge should advertise skills-11"
 grep -q 'dev-auto' README.md || fail "README.md missing dev-auto"
 grep -q 'dev-design-context' README.md || fail "README.md missing dev-design-context"
+grep -q 'dev-grill-docs' README.md || fail "README.md missing dev-grill-docs"
 grep -q 'dev-design-context' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing dev-design-context"
 grep -q 'dev-design-context' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing dev-design-context"
 grep -q 'dev-design-context' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing dev-design-context"
+grep -q 'dev-grill-docs' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing dev-grill-docs"
+grep -q 'dev-grill-docs' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing dev-grill-docs"
+grep -q 'dev-grill-docs' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing dev-grill-docs"
+grep -q 'dev-grill-docs' site/index.html || fail "site/index.html missing dev-grill-docs"
+grep -q 'dev-grill-docs' index.html || fail "index.html missing dev-grill-docs"
+grep -q 'dev-grill-docs' site/app.js || fail "site/app.js missing dev-grill-docs"
+grep -q 'Compatibility alias for dev-grill-docs spec-only mode' skills/dev-spec/SKILL.md || fail "dev-spec should be a compatibility alias for dev-grill-docs"
+grep -q 'dev-grill-docs --spec-only' README.md || fail "README.md should describe dev-spec as dev-grill-docs --spec-only"
+grep -q 'dev-grill-docs --spec-only' docs/sdd-workflow.md || fail "docs/sdd-workflow.md should describe dev-spec as dev-grill-docs --spec-only"
+grep -q -- '-> dev-grill-docs' docs/multi-agent-policy.md || fail "docs/multi-agent-policy.md feature path should route through dev-grill-docs"
+grep -q 'dev-grill-docs user-export' site/app.js || fail "site/app.js runtime preview should recommend dev-grill-docs"
 grep -q 'dev-design-context' site/index.html || fail "site/index.html missing dev-design-context"
 grep -q 'dev-design-context' index.html || fail "index.html missing dev-design-context"
 grep -q 'dev-design-context' site/app.js || fail "site/app.js missing dev-design-context"

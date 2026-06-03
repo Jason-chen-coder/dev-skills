@@ -21,8 +21,8 @@
 
 ### 设计前置
 
-- 复杂改动(跨 ≥ 3 模块 / 鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)先过 `dev-spec` 和 `dev-plan --deliberate`。
-- 常规单模块改动建议先过 `dev-spec`,plan 可省略。
+- 复杂改动(跨 ≥ 3 模块 / 鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)先过 `dev-grill-docs` 和 `dev-plan --deliberate`。
+- 常规单模块改动建议先过 `dev-grill-docs`,plan 可省略。旧提示里的 `dev-spec` 等价于 `dev-grill-docs --spec-only`。
 - 一句话改动 / hotfix 可以跳过 spec 和 plan,但行为改动仍建议走 `dev-tdd`,commit 前过 `dev-verify` + `dev-code-review`。
 
 ### 编码 / 完成门禁
@@ -62,7 +62,7 @@ git worktree add -b codex/<short-slug> ../<repo>-<short-slug>
 
 消费项目根目录下:
 
-- `.claude/artifacts/designs/<slug>.md` — `dev-spec`
+- `.claude/artifacts/designs/<slug>.md` — `dev-grill-docs` / `dev-spec` 兼容入口
 - `.claude/artifacts/plans/<slug>.md` — `dev-plan`
 - `.claude/artifacts/fixes/<slug>.md` — `dev-fix`
 - `dev-design-context` 默认写 `.design-context.md`
