@@ -6,7 +6,7 @@
   <title>dev-skills - AI 开发工作流 Skill 库</title>
   <meta name="description" content="11 个 AI 开发 skill,用轻量 SDD 串起设计上下文、需求拷问、spec、plan、实现、验证和 review,再配上短版 always-on 规则、multi-agent 分工协议和团队治理文档。">
   <link rel="preload" href="./site/assets/logo.png" as="image">
-  <link rel="stylesheet" href="./site/styles.css?v=sdd-mobile-polish">
+  <link rel="stylesheet" href="./site/styles.css?v=article-layout">
 </head>
 <body>
   <header class="site-header">
@@ -16,6 +16,7 @@
     </a>
     <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
       <a href="#skills">Skills</a>
+      <a href="#articles">Articles</a>
       <a href="#install">Install</a>
       <a href="#preview">Preview</a>
       <a href="#workflow">Workflow</a>
@@ -113,6 +114,75 @@
             <li>dev-finish</li>
           </ul>
         </article>
+      </div>
+    </section>
+
+    <section id="articles" class="section articles-section">
+      <div class="section-heading">
+        <p class="eyebrow">Articles</p>
+        <h2>用文章解释 dev-skills 背后的工程判断。</h2>
+      </div>
+
+      <div class="article-showcase" aria-label="dev-skills CSDN 专栏文章">
+        <a class="article-card article-card-featured" href="https://blog.csdn.net/weixin_39085822/article/details/161932215" target="_blank" rel="noopener">
+          <span class="article-cover">
+            <img src="./article-assets/sdd-ai-constraints/cover.png" alt="AI 写代码越快，越要先给它装上刹车" loading="lazy" decoding="async">
+          </span>
+          <span class="article-kicker">Latest · CSDN 专栏</span>
+          <h3>AI 写代码越快，越要先给它装上刹车</h3>
+          <span class="article-meta">
+            <time datetime="2026-06-12">2026-06-12</time>
+            <span>Spec-driven constraints</span>
+          </span>
+        </a>
+
+        <div class="article-list">
+          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161881057" target="_blank" rel="noopener">
+            <span class="article-cover">
+              <img src="./article-assets/dev-code-review-before-commit/00-infographic-no-direct-commit.png" alt="为什么 AI 写完代码后，不能直接 commit" loading="lazy" decoding="async">
+            </span>
+            <span class="article-kicker">Commit review</span>
+            <h3>为什么 AI 写完代码后，不能直接 commit</h3>
+            <span class="article-meta"><time datetime="2026-06-11">2026-06-11</time></span>
+          </a>
+          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161851302" target="_blank" rel="noopener">
+            <span class="article-cover">
+              <img src="./article-assets/dev-fix-root-cause/cover.png" alt="别被已修复骗了：AI 修 bug 最该追问这一句" loading="lazy" decoding="async">
+            </span>
+            <span class="article-kicker">Root cause</span>
+            <h3>别被“已修复”骗了：AI 修 bug 最该追问这一句</h3>
+            <span class="article-meta"><time datetime="2026-06-10">2026-06-10</time></span>
+          </a>
+          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161822966" target="_blank" rel="noopener">
+            <span class="article-cover">
+              <img src="./article-assets/ai-demand-to-commit/cover.png" alt="从需求到 commit：一套更稳的 AI 编程工作流" loading="lazy" decoding="async">
+            </span>
+            <span class="article-kicker">Workflow</span>
+            <h3>从需求到 commit：一套更稳的 AI 编程工作流</h3>
+            <span class="article-meta"><time datetime="2026-06-09">2026-06-09</time></span>
+          </a>
+          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161792237" target="_blank" rel="noopener">
+            <span class="article-cover">
+              <img src="./article-assets/ai-11-gates/delivery-gates-contrast.png" alt="AI 越会写代码，越不能让它直接写到 commit" loading="lazy" decoding="async">
+            </span>
+            <span class="article-kicker">Evidence chain</span>
+            <h3>AI 越会写代码，越不能让它直接写到 commit</h3>
+            <span class="article-meta"><time datetime="2026-06-08">2026-06-08</time></span>
+          </a>
+          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161752082" target="_blank" rel="noopener">
+            <span class="article-cover">
+              <img src="./article-assets/ai-danger-moment/cover.png" alt="AI 编程最危险的瞬间：它还没听懂，就已经开始写了" loading="lazy" decoding="async">
+            </span>
+            <span class="article-kicker">Requirement intake</span>
+            <h3>AI 编程最危险的瞬间：它还没听懂，就已经开始写了</h3>
+            <span class="article-meta"><time datetime="2026-06-06">2026-06-06</time></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="articles-footer">
+        <span>CSDN 专栏 · 6 篇</span>
+        <a class="button secondary" href="https://blog.csdn.net/weixin_39085822/category_13177255.html?spm=1001.2014.3001.5482" target="_blank" rel="noopener" aria-label="打开 dev-skills CSDN 专栏">查看 CSDN 专栏</a>
       </div>
     </section>
 
@@ -386,6 +456,6 @@
   </footer>
 
   <script async src="https://unpkg.com/@antv/g6@5.1.1/dist/g6.min.js" onload="window.renderWorkflowGraph && window.renderWorkflowGraph()"></script>
-  <script src="./site/app.js?v=sdd-mobile-polish"></script>
+  <script src="./site/app.js?v=article-title-i18n"></script>
 </body>
 </html>

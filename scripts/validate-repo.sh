@@ -181,6 +181,35 @@ grep -q 'data-install-action="upgrade"' site/index.html || fail "site/index.html
 grep -q 'data-install-action="upgrade"' index.html || fail "index.html missing upgrade install action"
 grep -q 'install.action.upgrade' site/app.js || fail "site/app.js missing upgrade action translation"
 grep -q 'upgradeCommand' site/app.js || fail "site/app.js missing upgrade commands"
+grep -q 'id="articles"' site/index.html || fail "site/index.html missing CSDN articles section"
+grep -q 'id="articles"' index.html || fail "index.html missing CSDN articles section"
+grep -q 'href="#articles"' site/index.html || fail "site/index.html missing articles nav link"
+grep -q 'href="#articles"' index.html || fail "index.html missing articles nav link"
+grep -q 'category_13177255' site/index.html || fail "site/index.html missing CSDN column link"
+grep -q 'category_13177255' index.html || fail "index.html missing CSDN column link"
+grep -q 'articles.footer.link' site/app.js || fail "site/app.js missing articles translations"
+for article_key in latest commit fix workflow evidence intake; do
+  grep -q "articles.$article_key.title" site/app.js || fail "site/app.js missing articles.$article_key.title translation"
+done
+grep -q 'article-showcase' site/styles.css || fail "site/styles.css missing article showcase styles"
+grep -q 'article-cover' site/styles.css || fail "site/styles.css missing article cover styles"
+grep -q 'article-cover' site/index.html || fail "site/index.html missing article covers"
+grep -q 'article-cover' index.html || fail "index.html missing article covers"
+awk '/<section id="articles"/{in_articles=1} /<section id="install"/{in_articles=0} in_articles && /<p>/{exit 1}' site/index.html || fail "site/index.html articles section should use cover images instead of description paragraphs"
+awk '/<section id="articles"/{in_articles=1} /<section id="install"/{in_articles=0} in_articles && /<p>/{exit 1}' index.html || fail "index.html articles section should use cover images instead of description paragraphs"
+for article_id in 161932215 161881057 161851302 161822966 161792237 161752082; do
+  grep -q "article/details/$article_id" site/index.html || fail "site/index.html missing CSDN article $article_id"
+  grep -q "article/details/$article_id" index.html || fail "index.html missing CSDN article $article_id"
+done
+for cover_path in \
+  article-assets/sdd-ai-constraints/cover.png \
+  article-assets/dev-code-review-before-commit/00-infographic-no-direct-commit.png \
+  article-assets/dev-fix-root-cause/cover.png \
+  article-assets/ai-demand-to-commit/cover.png \
+  article-assets/ai-11-gates/delivery-gates-contrast.png \
+  article-assets/ai-danger-moment/cover.png; do
+  [[ -f "$cover_path" ]] || fail "missing article cover $cover_path"
+done
 grep -q '/plugin update dev-skills' site/app.js || fail "site/app.js missing Claude upgrade command"
 grep -q 'bash scripts/install-codex-skills.sh' site/app.js || fail "site/app.js missing simple Codex install command"
 grep -q 'bash scripts/install-codex-skills.sh --upgrade' site/app.js || fail "site/app.js missing simple Codex upgrade command"
