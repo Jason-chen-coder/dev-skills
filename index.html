@@ -86,10 +86,10 @@
         <article class="skill-guide-card">
           <span>需求和方案</span>
           <h3>先把要做什么说清</h3>
-          <p>先用 dev-grill-docs 拷问术语、边界和验收条件,生成 spec artifact;复杂或高风险改动再补 plan。</p>
+          <p>优先用 dev-grill-docs 对齐需求、边界和验收条件,生成 spec artifact;dev-spec 只作为 spec-only 兼容入口,复杂或高风险改动再补 plan。</p>
           <ul aria-label="相关 skills">
             <li>dev-grill-docs</li>
-            <li>dev-spec alias</li>
+            <li>dev-spec spec-only alias</li>
             <li>dev-plan</li>
             <li>dev-design-context</li>
           </ul>
@@ -294,22 +294,17 @@
       <section id="preview" class="runtime-section">
       <div class="section-heading">
         <p class="eyebrow">Runtime preview</p>
-        <h2>像真实 Codex CLI 一样看 skill 怎么跑。</h2>
-        <p>切换 tab 查看用户输入和代表性输出。左侧输入会播放打字机效果;开启减少动效时直接显示完整文本。</p>
+        <h2>看关键节点在 Codex CLI 里怎么跑。</h2>
+        <p>只保留高频 workflow 节点。切换 tab 查看代表性输入和输出;开启减少动效时直接显示完整文本。</p>
       </div>
 
       <div class="skill-tabs" role="tablist" aria-label="Skill runtime previews" data-preview-tabs="skills">
         <button class="skill-tab is-active" type="button" data-preview-mode="skills" data-skill="dev-auto" role="tab" aria-selected="true">dev-auto</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-design-context" role="tab" aria-selected="false">dev-design-context</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-grill-docs" role="tab" aria-selected="false">dev-grill-docs</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-spec" role="tab" aria-selected="false">dev-spec</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-plan" role="tab" aria-selected="false">dev-plan</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-tdd" role="tab" aria-selected="false">dev-tdd</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-fix" role="tab" aria-selected="false">dev-fix</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-verify" role="tab" aria-selected="false">dev-verify</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-code-review" role="tab" aria-selected="false">dev-code-review</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-commit-writer" role="tab" aria-selected="false">dev-commit-writer</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-finish" role="tab" aria-selected="false">dev-finish</button>
       </div>
       <div class="skill-tabs" role="tablist" aria-label="Agent runtime previews" data-preview-tabs="agents" hidden>
         <button class="skill-tab" type="button" data-preview-mode="agents" data-skill="orchestrator" role="tab" aria-selected="false">Orchestrator</button>

@@ -108,8 +108,8 @@ const translations = {
     "agent.check.title": "独立把关",
     "agent.check.text": "独立对照 artifact 检查命令证据、响应式、可访问性和 diff 风险。",
     "preview.eyebrow": "Runtime preview",
-    "preview.title": "像真实 Codex CLI 一样看 skill 怎么跑。",
-    "preview.text": "切换 tab 查看用户输入和代表性输出。左侧输入会播放打字机效果;开启减少动效时直接显示完整文本。",
+    "preview.title": "看关键节点在 Codex CLI 里怎么跑。",
+    "preview.text": "只保留高频 workflow 节点。切换 tab 查看代表性输入和输出;开启减少动效时直接显示完整文本。",
     "preview.mode.aria": "Runtime preview 模式",
     "preview.mode.skills": "Skill workflow",
     "preview.mode.agents": "Multi-agent",
@@ -362,8 +362,8 @@ const translations = {
     "agent.check.title": "Check",
     "agent.check.text": "Checks command evidence, responsive behavior, accessibility, and diff risk against the artifact.",
     "preview.eyebrow": "Runtime preview",
-    "preview.title": "See how each skill runs in a Codex CLI-like flow.",
-    "preview.text": "Switch tabs to view representative user input and output. The left side uses a typewriter effect; reduced motion shows the full text immediately.",
+    "preview.title": "See the key workflow checkpoints in a Codex CLI-like flow.",
+    "preview.text": "The preview keeps only the high-frequency workflow nodes. Switch tabs to view representative input and output; reduced motion shows the full text immediately.",
     "preview.mode.aria": "Runtime preview mode",
     "preview.mode.skills": "Skill workflow",
     "preview.mode.agents": "Multi-agent",
@@ -716,30 +716,15 @@ const skillPreviews = {
       input: "$ codex\n> 用 dev-auto 帮我串起来,下一步该做什么?",
       output: "━━━ Dev Auto ━━━\n路径   : feature\n复杂度 : moderate\n下一步\n  $ dev-grill-docs user-export\n为什么:先拷问模糊需求,再生成可验证 spec。"
     },
-    "dev-design-context": {
-      title: "Dev Design Context",
-      input: "$ codex\n> 用 dev-design-context 先沉淀这个项目的设计上下文",
-      output: "Explore\n  README / 组件 / CSS tokens / 品牌资产\nAsk\n  只问代码里看不出来的 UX 问题\nWrite\n  .design-context.md -> Design Context\nResult: 未来 UI 工作有统一设计原则"
-    },
     "dev-grill-docs": {
       title: "Dev Grill Docs",
       input: "$ codex\n> 帮我设计登陆页面",
       output: "Intake\n  UI request + fuzzy scope\n  .design-context.md: check first\nWave 1 | Focus: Goal\nWhy\n  登陆页面可能只是前端 UI,也可能接入真实认证流程。\nRecommended\n  先限定为登录页 UI + 基础状态,认证后端不进本轮。\nQuestion\n  这次是只设计/实现前端 UI,还是要接入真实登录认证流程?\nWrite\n  .claude/artifacts/designs/login-page.md"
     },
-    "dev-spec": {
-      title: "Dev Spec Alias",
-      input: "$ codex\n> 用 dev-spec 帮我设计用户导出功能",
-      output: "Compatibility alias\n  dev-spec -> dev-grill-docs --spec-only\nWave 1 | Focus: Goal\nQuestion\n  用户导出指当前用户自助导出,还是管理员后台代导?\nWrite\n  .claude/artifacts/designs/user-export.md\nSkip\n  CONTEXT.md / ADR"
-    },
     "dev-plan": {
       title: "Dev Plan",
       input: "$ codex\n> 用 dev-plan 基于 user-export spec 出实施方案",
       output: "Status: APPROVED\nOption A: 复用现有 worker\nDecision: 选 A\nRisks: 队列隔离 / S3 权限\nVerification: API + worker + notification tests"
-    },
-    "dev-tdd": {
-      title: "Dev TDD",
-      input: "$ codex\n> 用 dev-tdd 实现用户导出接口",
-      output: "RED\n  写失败测试: export creates a job\nGREEN\n  最小实现: enqueue export worker\nREFACTOR\n  保持行为不变,整理命名\nVerify: targeted test green"
     },
     "dev-fix": {
       title: "Dev Fix",
@@ -755,16 +740,6 @@ const skillPreviews = {
       title: "Dev Code Review",
       input: "$ codex\n> 用 dev-code-review 看下这次修改,准备 commit",
       output: "━━━ Dev Code Review ━━━\nVerdict   : READY\nAxis Check\n  规范   ✓\n  功能   ✓\n  闭环   ✓\nCommit\n  docs: update install flow"
-    },
-    "dev-commit-writer": {
-      title: "Dev Commit Writer",
-      input: "$ codex\n> 我自审过了,只要 commit message",
-      output: "docs: update Codex install instructions\n\nClarify manual skill sync and AGENTS.md template setup for Codex users."
-    },
-    "dev-finish": {
-      title: "Dev Finish",
-      input: "$ codex\n> 用 dev-finish 收尾这个分支",
-      output: "Branch state: clean\nRemote: origin/master checked\nAction: merge / push / keep branch\nResult: work closed with verification evidence"
     }
   },
   en: {
@@ -773,30 +748,15 @@ const skillPreviews = {
       input: "$ codex\n> Use dev-auto to connect the workflow. What should I do next?",
       output: "━━━ Dev Auto ━━━\nPath       : feature\nComplexity : moderate\nNext\n  $ dev-grill-docs user-export\nWhy: grill the fuzzy request, then create a verifiable spec."
     },
-    "dev-design-context": {
-      title: "Dev Design Context",
-      input: "$ codex\n> Use dev-design-context to capture this project's design context",
-      output: "Explore\n  README / components / CSS tokens / brand assets\nAsk\n  Only UX questions the code cannot answer\nWrite\n  .design-context.md -> Design Context\nResult: future UI work follows shared design principles"
-    },
     "dev-grill-docs": {
       title: "Dev Grill Docs",
       input: "$ codex\n> Use dev-grill-docs to design a login page",
       output: "Intake\n  UI request + fuzzy scope\n  .design-context.md: check first\nWave 1 | Focus: Goal\nWhy\n  A login page may be UI-only or wired to real authentication.\nRecommended\n  Start with login page UI + basic states; keep auth backend out of this round.\nQuestion\n  Is this frontend UI only, or should it connect to the real login flow?\nWrite\n  .claude/artifacts/designs/login-page.md"
     },
-    "dev-spec": {
-      title: "Dev Spec Alias",
-      input: "$ codex\n> Use dev-spec to design a user export feature",
-      output: "Compatibility alias\n  dev-spec -> dev-grill-docs --spec-only\nWave 1 | Focus: Goal\nQuestion\n  Is this a self-service export or an admin-assisted export?\nWrite\n  .claude/artifacts/designs/user-export.md\nSkip\n  CONTEXT.md / ADR"
-    },
     "dev-plan": {
       title: "Dev Plan",
       input: "$ codex\n> Use dev-plan to create an implementation plan from the user-export spec",
       output: "Status: APPROVED\nOption A: reuse the existing worker\nDecision: choose A\nRisks: queue isolation / S3 permissions\nVerification: API + worker + notification tests"
-    },
-    "dev-tdd": {
-      title: "Dev TDD",
-      input: "$ codex\n> Use dev-tdd to implement the user export API",
-      output: "RED\n  Write failing test: export creates a job\nGREEN\n  Minimal implementation: enqueue export worker\nREFACTOR\n  Preserve behavior, clean names\nVerify: targeted test green"
     },
     "dev-fix": {
       title: "Dev Fix",
@@ -812,16 +772,6 @@ const skillPreviews = {
       title: "Dev Code Review",
       input: "$ codex\n> Use dev-code-review to inspect this change before commit",
       output: "━━━ Dev Code Review ━━━\nVerdict   : READY\nAxis Check\n  Conventions ✓\n  Behavior    ✓\n  Closure     ✓\nCommit\n  docs: update install flow"
-    },
-    "dev-commit-writer": {
-      title: "Dev Commit Writer",
-      input: "$ codex\n> I already reviewed it. Just write the commit message.",
-      output: "docs: update Codex install instructions\n\nClarify manual skill sync and AGENTS.md template setup for Codex users."
-    },
-    "dev-finish": {
-      title: "Dev Finish",
-      input: "$ codex\n> Use dev-finish to close this branch",
-      output: "Branch state: clean\nRemote: origin/master checked\nAction: merge / push / keep branch\nResult: work closed with verification evidence"
     }
   }
 };
