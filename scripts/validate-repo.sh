@@ -16,6 +16,7 @@ EXPECTED_SKILLS=(
   dev-finish
   dev-design-context
   dev-grill-docs
+  dev-image-to-code
 )
 
 AGENT_CAPABLE_SKILLS=(
@@ -144,20 +145,29 @@ assert old_workflow not in serialized
 PY
 
 echo "Checking docs mention the expanded skill set..."
-grep -q '11 个 skill' README.md || fail "README.md should advertise 11 skills"
-grep -q 'skills-11' README.md || fail "README badge should advertise skills-11"
+grep -q '12 个 skill' README.md || fail "README.md should advertise 12 skills"
+grep -q 'skills-12' README.md || fail "README badge should advertise skills-12"
 grep -q 'dev-auto' README.md || fail "README.md missing dev-auto"
 grep -q 'dev-design-context' README.md || fail "README.md missing dev-design-context"
 grep -q 'dev-grill-docs' README.md || fail "README.md missing dev-grill-docs"
+grep -q 'dev-image-to-code' README.md || fail "README.md missing dev-image-to-code"
+grep -q 'dev-image-to-code' CHANGELOG.md || fail "CHANGELOG.md missing dev-image-to-code"
+grep -q 'dev-image-to-code' docs/onboarding.md || fail "docs/onboarding.md missing dev-image-to-code"
 grep -q 'dev-design-context' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing dev-design-context"
 grep -q 'dev-design-context' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing dev-design-context"
 grep -q 'dev-design-context' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing dev-design-context"
 grep -q 'dev-grill-docs' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing dev-grill-docs"
 grep -q 'dev-grill-docs' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing dev-grill-docs"
 grep -q 'dev-grill-docs' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing dev-grill-docs"
+grep -q 'dev-image-to-code' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing dev-image-to-code"
+grep -q 'dev-image-to-code' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing dev-image-to-code"
+grep -q 'dev-image-to-code' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing dev-image-to-code"
 grep -q 'dev-grill-docs' site/index.html || fail "site/index.html missing dev-grill-docs"
 grep -q 'dev-grill-docs' index.html || fail "index.html missing dev-grill-docs"
 grep -q 'dev-grill-docs' site/app.js || fail "site/app.js missing dev-grill-docs"
+grep -q 'dev-image-to-code' site/index.html || fail "site/index.html missing dev-image-to-code"
+grep -q 'dev-image-to-code' index.html || fail "index.html missing dev-image-to-code"
+grep -q 'dev-image-to-code' site/app.js || fail "site/app.js missing dev-image-to-code"
 grep -q 'Compatibility alias for dev-grill-docs spec-only mode' skills/dev-spec/SKILL.md || fail "dev-spec should be a compatibility alias for dev-grill-docs"
 grep -q 'dev-grill-docs --spec-only' README.md || fail "README.md should describe dev-spec as dev-grill-docs --spec-only"
 grep -q 'dev-grill-docs --spec-only' docs/sdd-workflow.md || fail "docs/sdd-workflow.md should describe dev-spec as dev-grill-docs --spec-only"

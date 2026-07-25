@@ -370,6 +370,8 @@ h3 {
 
 .hero-terminal,
 .terminal-panel {
+  max-width: 100%;
+  min-width: 0;
   overflow: hidden;
   border: 1px solid #2e332f;
   border-radius: 8px;
@@ -435,6 +437,13 @@ pre {
 .hero-terminal code {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.terminal-panel code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .section-heading {
@@ -1377,6 +1386,13 @@ details p {
   .hero-actions {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .hero-terminal pre,
+  .terminal-panel pre {
+    overflow-x: hidden;
+    padding: 22px;
+    font-size: 14px;
   }
 
   .mode-switch {

@@ -12,6 +12,7 @@
 ## [Unreleased]
 
 ### Added
+- **`dev-image-to-code` skill**:新增 UI 图 / 截图生成代码 skill。要求用户提供 UI 图和设计尺寸;若缺尺寸先询问,用户没有再用图片像素兜底。图片分析阶段按 `SOURCE / PARTIAL / GUESS` 分级,明确控件必须保留 input、tab、select、button 等语义和可见交互,实现后用截图、交互 smoke 和视觉对比验证。
 - **`dev-grill-docs` skill**:新增术语 / 边界 / 决策拷问 skill,吸收 grill-with-docs 模式。它先读现有代码和文档,一次只问一个关键问题,把稳定领域词汇写入 `CONTEXT.md`,必要时用 `docs/adr/` 记录 durable decision。
 - **SDD workflow guide**:新增 `docs/sdd-workflow.md`,把现有 dev-skills 流程定义为轻量 Spec-Driven Development:Spec-first / Spec-anchored 为主,明确 artifact contract、feature path、bug path、multi-agent contract 和 drift control。
 - **SDD artifact contract**:README、onboarding、team policy、multi-agent policy 和关键 skill 增加 SDD handoff 规则,把 `.claude/artifacts/designs|plans|fixes/<slug>.md` 作为实现、验证、review 和子 agent 分工的对齐依据。
@@ -28,7 +29,7 @@
 - **Skill 重命名**:入口推荐器统一命名为 `dev-auto`,目录迁移到 `skills/dev-auto/`,并同步 README、onboarding、landing page、Claude/Codex plugin manifest、历史 changelog 和仓库校验脚本。
 - **Always-on 模板瘦身**:`CLAUDE.md.template` 和 `AGENTS.md.template` 改为短版常驻规则,保留 baseline、硬规则、agent 工作方式、dev-skills 路由和少量 team-specific placeholder;详细团队治理说明移到 `docs/team-policy.md`。
 - **文档入口同步**:README 和 onboarding 增加规则分层说明,把 `docs/why-dev-baseline.md` 与 `docs/team-policy.md` 纳入新用户阅读路径。
-- **Skill inventory 同步到 11 个**:README、onboarding、landing page、Claude/Codex plugin manifest、team templates 和仓库校验脚本同步加入 `dev-grill-docs`。
+- **Skill inventory 同步到 12 个**:README、onboarding、landing page、Claude/Codex plugin manifest 和仓库校验脚本同步加入 `dev-grill-docs` 与 `dev-image-to-code`。
 
 ### Fixed
 - **GitHub Pages 根路径 404**:当前仓库 Pages 发布源是 `master` 根目录,新增根目录 `index.html` 和 `.nojekyll`,让 `https://jason-chen-coder.github.io/dev-skills/` 直接加载 H5 正式站点。

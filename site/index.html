@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>dev-skills - AI 开发工作流 Skill 库</title>
-  <meta name="description" content="11 个 AI 开发 skill,用轻量 SDD 串起设计上下文、需求拷问、spec、plan、实现、验证和 review,再配上短版 always-on 规则、multi-agent 分工协议和团队治理文档。">
+  <meta name="description" content="12 个 AI 开发 skill,用轻量 SDD 覆盖需求、方案、实现、修 bug、看图写页面、验证、review 和收尾。">
   <link rel="preload" href="./assets/logo.png" as="image">
-  <link rel="stylesheet" href="./styles.css?v=article-layout">
+  <link rel="stylesheet" href="./styles.css?v=dev-image-lite">
 </head>
 <body>
   <header class="site-header">
@@ -40,7 +40,7 @@
       <div class="hero-copy">
         <p class="eyebrow">AI development workflow skills</p>
         <h1>从需求到提交,<br>每步可验证。</h1>
-        <p class="hero-text">dev-skills 为 Claude Code 与 Codex 提供 11 个工程流程 skill 和精简 always-on 团队规则,用轻量 SDD 让设计上下文、需求拷问、spec、plan、实现、验证、评审与收尾都有清晰边界和可复核结果。</p>
+        <p class="hero-text">12 个 skill,用轻量 SDD 让每步可验证。</p>
         <div class="hero-actions" aria-label="Primary actions">
           <a class="button primary" href="#install" aria-label="查看安装方式">Install</a>
           <a class="button secondary" href="#preview" aria-label="查看 skill 运行预览">Preview</a>
@@ -56,14 +56,14 @@
             <small data-hero-terminal-label>Workflow</small>
           </div>
           <pre><code>$ codex
-&gt; 做一个登录页,别直接开写,先帮我收敛一下
+&gt; dev-image-to-code 复刻 UI 图
 
-收到。我先把需求落成 spec:
-- 目标:谁在什么产品场景里登录
-- 范围:登录方式、错误态、移动端、无障碍
-- 不做:注册、找回密码、SSO,除非你确认
+收到:
+- 设计尺寸:1518x950
+- tab / select / button 用真实控件
+- 不确定的隐藏行为先问
 
-如果复杂度升高,我会再补 plan / ADR。实现、验证和 review 都会回到这份 artifact 对齐。</code></pre>
+接着实现,截图验证,再做交互 smoke。</code></pre>
         </div>
       </div>
     </section>
@@ -71,22 +71,22 @@
     <section id="skills" class="section">
       <div class="section-heading">
         <p class="eyebrow">Skill library</p>
-        <h2>按你现在要做的事，选择对应的 skill。</h2>
-        <p>日常只要回答“现在卡在哪一步”。dev-skills 会把需求、方案、实现、修复、验证和提交收进同一条 SDD 工程流程。</p>
+        <h2>选一个入口就够了。</h2>
+        <p>按当前卡点选择 skill;验证、review 和提交收尾会回到同一条证据链。</p>
       </div>
       <div class="skill-guide" aria-label="dev-skills 使用入口">
         <article class="skill-guide-card skill-guide-card-primary">
-          <span>不确定下一步</span>
-          <h3>让 agent 先判断路径</h3>
-          <p>当你只知道目标,但不知道该先写需求、计划还是直接修复时,从这里开始。</p>
+          <span>不确定</span>
+          <h3>先问 dev-auto</h3>
+          <p>目标清楚但路径不清楚时,让它给下一步。</p>
           <ul aria-label="相关 skills">
             <li>dev-auto</li>
           </ul>
         </article>
         <article class="skill-guide-card">
-          <span>需求和方案</span>
-          <h3>先把要做什么说清</h3>
-          <p>优先用 dev-grill-docs 对齐需求、边界和验收条件,生成 spec artifact;dev-spec 只作为 spec-only 兼容入口,复杂或高风险改动再补 plan。</p>
+          <span>需求</span>
+          <h3>先收敛</h3>
+          <p>模糊需求走 dev-grill-docs;复杂或高风险改动再补 plan。</p>
           <ul aria-label="相关 skills">
             <li>dev-grill-docs</li>
             <li>dev-spec spec-only alias</li>
@@ -95,18 +95,19 @@
           </ul>
         </article>
         <article class="skill-guide-card">
-          <span>实现和修复</span>
-          <h3>写代码前先锁住行为</h3>
-          <p>新功能走 TDD;问题修复从复现和 root cause 开始,避免只修表面症状。</p>
+          <span>实现</span>
+          <h3>写、复刻、修</h3>
+          <p>新功能走 TDD;UI 图走 dev-image-to-code;bug 走 dev-fix。</p>
           <ul aria-label="相关 skills">
             <li>dev-tdd</li>
+            <li>dev-image-to-code</li>
             <li>dev-fix</li>
           </ul>
         </article>
         <article class="skill-guide-card">
-          <span>完成和提交</span>
-          <h3>先验证,再 review</h3>
-          <p>完成声明必须有证据;提交前检查 diff。只需要 message 时再单独使用 commit writer。</p>
+          <span>提交</span>
+          <h3>先验再提</h3>
+          <p>完成前验证;提交前 review;只要 message 再用 commit writer。</p>
           <ul aria-label="相关 skills">
             <li>dev-verify</li>
             <li>dev-code-review</li>
@@ -301,6 +302,7 @@
       <div class="skill-tabs" role="tablist" aria-label="Skill runtime previews" data-preview-tabs="skills">
         <button class="skill-tab is-active" type="button" data-preview-mode="skills" data-skill="dev-auto" role="tab" aria-selected="true">dev-auto</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-grill-docs" role="tab" aria-selected="false">dev-grill-docs</button>
+        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-image-to-code" role="tab" aria-selected="false">dev-image-to-code</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-plan" role="tab" aria-selected="false">dev-plan</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-fix" role="tab" aria-selected="false">dev-fix</button>
         <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-verify" role="tab" aria-selected="false">dev-verify</button>
@@ -451,6 +453,6 @@
   </footer>
 
   <script async src="https://unpkg.com/@antv/g6@5.1.1/dist/g6.min.js" onload="window.renderWorkflowGraph && window.renderWorkflowGraph()"></script>
-  <script src="./app.js?v=article-title-i18n"></script>
+  <script src="./app.js?v=dev-image-lite"></script>
 </body>
 </html>

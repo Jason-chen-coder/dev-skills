@@ -1,7 +1,7 @@
 <div align="center">
   <img src="images/logo.png" alt="dev-skills logo" width="340" height="340" />
   <p>
-    11 个 skill,把 AI 写代码和做界面这件事拆成更稳的步骤。<br/>
+    12 个 skill,把 AI 写代码和做界面这件事拆成更稳的步骤。<br/>
     <b>沉淀设计上下文 → 拷问并写清需求 → 定方案 → 写代码 / 修 bug → 验证 → review → commit → 收尾</b>
   </p>
 </div>
@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/version-0.8.0-blue" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
   <img src="https://img.shields.io/badge/CI-passing-brightgreen" alt="ci" />
-  <img src="https://img.shields.io/badge/skills-11-orange" alt="skills" />
+  <img src="https://img.shields.io/badge/skills-12-orange" alt="skills" />
 </p>
 
 <p align="center">
@@ -27,11 +27,12 @@
 
 dev-skills 是一套给 Claude Code / Codex 用的 SDD-style 开发工作流规则集。它让 AI 做开发时先对齐意图、范围、方案和验证证据,而不是每次从零猜流程。
 
-它主要解决四类问题:
+它主要解决五类问题:
 
 - 需求还没说清楚,AI 就开始写代码。
 - 写完只说“已完成”,但没有测试和证据。
 - 修 bug 只改了表面现象,没有找到 root cause。
+- 看 UI 图生成代码时只画静态壳,漏掉 input、tab、select、button 这些真实控件和交互。
 - commit 前没人检查,容易把无关改动、坏测试、临时代码一起提交。
 
 第一次用只记住一句话:
@@ -46,6 +47,7 @@ dev-skills 是一套给 Claude Code / Codex 用的 SDD-style 开发工作流规�
 - 新功能 / 改功能:先说 `用 dev-grill-docs 帮我梳理这个需求`。
 - 老提示里的 `dev-spec` 仍可用,现在等价于 `dev-grill-docs --spec-only`。
 - UI / landing page / 产品界面:先说 `用 dev-design-context 沉淀设计上下文`。
+- UI 图 / 截图生成代码:说 `用 dev-image-to-code 根据这张图和 1518x950 生成 web 页面`。
 - 修 bug / 排查问题:先说 `用 dev-fix 排查这个 bug`。
 - 准备 commit:先说 `用 dev-code-review 看下这次修改`。
 
@@ -68,6 +70,14 @@ dev-fix -> dev-verify -> dev-code-review -> git commit -> dev-finish
 ```
 
 先复现,再找 root cause。`dev-fix` 已经包含 regression test,不要再额外接一轮 `dev-tdd`。
+
+### UI 图生成代码
+
+```text
+dev-image-to-code -> dev-verify -> dev-code-review -> git commit -> dev-finish
+```
+
+先给 UI 图和设计尺寸。看得出的 input、tab、select、button 要做成真实控件;看不准的文案、状态、隐藏面板或业务行为先停下来问。
 
 ### 小 hotfix
 
@@ -101,7 +111,7 @@ Intent / Context
 
 ## Skill 怎么选
 
-按你当前的问题选一组就够了,不用把 11 个 skill 全背下来。
+按你当前的问题选一组就够了,不用把 12 个 skill 全背下来。
 
 ### 不知道下一步
 
@@ -113,6 +123,10 @@ Intent / Context
 - [`dev-grill-docs`](./skills/dev-grill-docs/):主需求入口;拷问术语、边界和决策,生成 `.claude/artifacts/designs/<feature>.md`,并按需把稳定词汇写入 `CONTEXT.md` / ADR。
 - [`dev-spec`](./skills/dev-spec/):兼容入口;等价于 `dev-grill-docs --spec-only`,保留给旧提示和旧文档。
 - [`dev-plan`](./skills/dev-plan/):复杂或高风险功能先出实施方案。
+
+### UI 图生成代码
+
+- [`dev-image-to-code`](./skills/dev-image-to-code/):根据 UI 截图/设计图和设计尺寸生成可运行代码;保留清晰控件的语义和可见交互,有疑惑就先问。
 
 ### 实现和修复
 
@@ -227,6 +241,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 用 dev-grill-docs 帮我梳理这个需求: ...
 用 dev-spec --spec-only 生成旧流程 spec: ...   # 兼容入口,优先用 dev-grill-docs
 用 dev-plan 基于这个 spec 出实施方案
+用 dev-image-to-code 根据这张 UI 图和 1518x950 生成 web 页面
 用 dev-fix 排查这个 bug: ...
 用 dev-code-review 看下这次修改,准备 commit
 我自审过了,只要 dev-commit-writer 给 commit message
@@ -281,10 +296,13 @@ max_depth = 2
 
 ```mermaid
 flowchart TD
-  Start["用户请求"] --> Design{"UI / 产品界面?"}
+  Start["用户请求"] --> FromImage{"UI 图生成代码?"}
+  FromImage -->|是| ImageCode["dev-image-to-code<br/>图片 + 设计尺寸<br/>语义控件 + 视觉验证"]
+  FromImage -->|否| Design{"UI / 产品界面?"}
   Design -->|是| Teach["dev-design-context<br/>一次性沉淀设计上下文"]
   Design -->|否| Auto["dev-auto<br/>可选:不知道下一步时先问它"]
   Teach --> Auto
+  ImageCode --> Verify
   Auto --> Kind{"这是什么类型的工作?"}
 
   Kind -->|新功能 / 增强| GrillDocs["dev-grill-docs<br/>拷问需求并生成 spec<br/>按需沉淀 CONTEXT / ADR"]
@@ -332,6 +350,7 @@ flowchart TD
 | `dev-grill-docs` | `.claude/artifacts/designs/<feature>.md` + 可选 `CONTEXT.md` / `docs/adr/<nnnn>-<slug>.md` |
 | `dev-spec` | 兼容入口,同 `.claude/artifacts/designs/<feature>.md` |
 | `dev-plan` | `.claude/artifacts/plans/<feature>.md` |
+| `dev-image-to-code` | `UI_RECON/<screen>/` 或 `RECON/dev-image-to-code/<screen>/`,含截图、组件映射和视觉验证报告 |
 | `dev-fix` | `.claude/artifacts/fixes/<slug>.md` |
 | `dev-auto` / `dev-tdd` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish` | 不生成 artifact,只输出到 chat |
 
