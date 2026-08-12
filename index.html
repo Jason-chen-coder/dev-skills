@@ -1,458 +1,1678 @@
 <!doctype html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>dev-skills - AI 开发工作流 Skill 库</title>
-  <meta name="description" content="12 个 AI 开发 skill,用轻量 SDD 覆盖需求、方案、实现、修 bug、看图写页面、验证、review 和收尾。">
-  <link rel="preload" href="./site/assets/logo.png" as="image">
-  <link rel="stylesheet" href="./site/styles.css?v=dev-image-lite">
+  <meta name="description" content="dev-skills 收录 13 个 skills，供 Claude Code 和 Codex 处理需求、实现、修复、API 文档查询和提交前检查。">
+  <meta property="og:title" content="dev-skills - Claude Code 与 Codex 开发工作流">
+  <meta property="og:description" content="dev-skills 收录 13 个 skills，供 Claude Code 和 Codex 处理需求、实现、修复、API 文档查询和提交前检查。">
+  <title>dev-skills - Claude Code 与 Codex 开发工作流</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --page: #f4f6f9;
+      --surface: #ffffff;
+      --surface-blue: #e9efff;
+      --text: #101828;
+      --muted: #596579;
+      --line: #d9e0ea;
+      --accent: #2457e6;
+      --accent-hover: #1947c9;
+      --focus: #91adff;
+      --code: #141b2b;
+      --shadow: 0 30px 90px rgba(34, 57, 99, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--page);
+    }
+
+    body {
+      margin: 0;
+      overflow-x: clip;
+      background: var(--page);
+      color: var(--text);
+      font-family: "Avenir Next", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.5;
+    }
+
+    body.nav-open {
+      overflow: hidden;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    code,
+    pre {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    .shell {
+      width: min(1240px, calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      width: min(1240px, calc(100% - 48px));
+      min-height: 72px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 760;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+    }
+
+    .brand picture {
+      display: flex;
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .site-nav a {
+      white-space: nowrap;
+      text-decoration: none;
+      transition: color 140ms ease;
+    }
+
+    .site-nav a:hover,
+    .site-nav a:focus-visible {
+      color: var(--text);
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      margin-left: auto;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .nav-install {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      margin-left: 24px;
+      padding: 0 18px;
+      border-radius: 4px;
+      background: var(--text);
+      color: var(--surface);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: transform 140ms ease, background-color 140ms ease;
+    }
+
+    .nav-install:hover,
+    .nav-install:focus-visible {
+      background: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(380px, 0.95fr);
+      align-items: center;
+      gap: 72px;
+      width: min(1240px, calc(100% - 48px));
+      min-height: calc(100dvh - 180px);
+      margin: 0 auto;
+      padding: 40px 0 64px;
+    }
+
+    .hero-copy {
+      max-width: 650px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 0;
+      font-size: 84px;
+      font-weight: 760;
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .hero-statement {
+      max-width: 13ch;
+      margin: 30px 0 0;
+      color: var(--text);
+      font-size: 32px;
+      font-weight: 680;
+      line-height: 1.26;
+    }
+
+    .hero-summary {
+      max-width: 30ch;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .hero-actions,
+    .closing-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-top: 36px;
+    }
+
+    .button-primary,
+    .button-dark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 24px;
+      border-radius: 4px;
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 760;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: transform 140ms ease, background-color 140ms ease;
+    }
+
+    .button-dark {
+      background: var(--text);
+    }
+
+    .button-primary:hover,
+    .button-primary:focus-visible,
+    .button-dark:hover,
+    .button-dark:focus-visible {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      font-weight: 700;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .text-link span {
+      transition: transform 140ms ease;
+    }
+
+    .text-link:hover span,
+    .text-link:focus-visible span {
+      transform: translate(2px, -2px);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-width: 0;
+      margin: 0;
+      isolation: isolate;
+    }
+
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: -28px;
+      right: 0;
+      width: 54%;
+      height: calc(100% + 56px);
+      background: var(--accent);
+    }
+
+    .hero-visual img {
+      display: block;
+      width: 100%;
+      height: min(560px, calc(100dvh - 300px));
+      border-radius: 4px;
+      object-fit: cover;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-visual picture,
+    .article-link picture {
+      display: block;
+    }
+
+    .section {
+      scroll-margin-top: 80px;
+      padding: 112px 0;
+    }
+
+    .section + .section {
+      border-top: 1px solid var(--line);
+    }
+
+    .hero + .section {
+      padding-top: 64px;
+    }
+
+    .section-heading {
+      max-width: 760px;
+      margin-bottom: 56px;
+    }
+
+    .section-heading h2,
+    .closing-cta h2 {
+      margin-bottom: 20px;
+      font-size: 48px;
+      font-weight: 730;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .section-heading p,
+    .closing-cta p {
+      max-width: 58ch;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .why-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+      gap: 96px;
+      align-items: start;
+    }
+
+    .why-layout .section-heading {
+      margin-bottom: 0;
+    }
+
+    .risk-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 40px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .risk-list li {
+      min-height: 130px;
+      padding: 22px 0 28px;
+      border-top: 1px solid var(--line);
+    }
+
+    .risk-list strong {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .risk-list span {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .workflow-rail {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 3px solid var(--text);
+    }
+
+    .workflow-rail li {
+      min-width: 0;
+      padding: 28px 26px 12px 0;
+    }
+
+    .workflow-rail li + li {
+      padding-left: 26px;
+      border-left: 1px solid var(--line);
+    }
+
+    .workflow-rail h3 {
+      margin-bottom: 12px;
+      font-size: 23px;
+      line-height: 1.2;
+    }
+
+    .workflow-rail code {
+      display: block;
+      margin-bottom: 16px;
+      overflow-wrap: anywhere;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .workflow-rail p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .workflow-note {
+      max-width: 760px;
+      margin: 46px 0 0 auto;
+      padding-left: 24px;
+      border-left: 3px solid var(--accent);
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .skill-directory {
+      margin: 0;
+      border-top: 3px solid var(--text);
+    }
+
+    .skill-row {
+      display: grid;
+      grid-template-columns: minmax(150px, 0.62fr) minmax(280px, 1.25fr) minmax(260px, 1.13fr);
+      gap: 36px;
+      padding: 27px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .skill-row dt {
+      font-size: 18px;
+      font-weight: 720;
+    }
+
+    .skill-row dd {
+      min-width: 0;
+      margin: 0;
+    }
+
+    .skill-names {
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .skill-names code {
+      color: inherit;
+    }
+
+    .skill-description {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .swagger-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+      gap: 64px;
+      align-items: center;
+    }
+
+    .swagger-terminal {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid #2e3445;
+      border-radius: 8px;
+      background: var(--code);
+      box-shadow: var(--shadow);
+    }
+
+    .swagger-terminal-bar {
+      display: flex;
+      align-items: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border-bottom: 1px solid #2e3445;
+      color: #aebbd1;
+      font-size: 12px;
+    }
+
+    .swagger-terminal-bar strong {
+      color: #eef3fb;
+      font-weight: 700;
+    }
+
+    .swagger-terminal-bar span {
+      margin-left: auto;
+    }
+
+    .swagger-terminal-body {
+      min-height: 520px;
+      margin: 0;
+      padding: 28px;
+      overflow: auto;
+      color: #dbe4f5;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .swagger-terminal-user,
+    .swagger-terminal-output {
+      display: block;
+    }
+
+    .swagger-terminal-user {
+      color: #ffffff;
+    }
+
+    .swagger-terminal-output {
+      color: #c8d4e8;
+    }
+
+    .swagger-terminal.is-typing [data-swagger-output]::after {
+      content: "";
+      display: inline-block;
+      width: 0.58ch;
+      height: 1em;
+      margin-left: 0.22ch;
+      background: currentColor;
+      vertical-align: -0.14em;
+      animation: swagger-cursor-blink 760ms steps(1, end) infinite;
+    }
+
+    @keyframes swagger-cursor-blink {
+      50% { opacity: 0; }
+    }
+
+    .swagger-copy h2 {
+      margin-bottom: 20px;
+      font-size: 46px;
+      line-height: 1.08;
+    }
+
+    .swagger-copy > p {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .swagger-rules {
+      margin: 24px 0 0;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .swagger-footnote {
+      margin-top: 22px;
+      font-size: 13px !important;
+    }
+
+    .install-section {
+      background: var(--surface-blue);
+    }
+
+    .install-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+      gap: 80px;
+      align-items: start;
+    }
+
+    .install-layout .section-heading {
+      margin-bottom: 0;
+    }
+
+    .install-tool {
+      min-width: 0;
+      border-radius: 4px;
+      background: var(--code);
+      color: #f4f7ff;
+      overflow: hidden;
+    }
+
+    .install-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .install-tab {
+      min-height: 42px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #aeb9d0;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .install-tab[aria-selected="true"] {
+      background: #ffffff;
+      color: var(--code);
+    }
+
+    .code-wrap {
+      position: relative;
+      min-height: 226px;
+      padding: 30px;
+    }
+
+    .code-wrap pre {
+      margin: 0;
+      padding-right: 72px;
+      overflow-x: auto;
+      color: #eef3ff;
+      font-size: 14px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 4px;
+      background: transparent;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .copy-button:hover,
+    .copy-button:focus-visible {
+      background: #ffffff;
+      color: var(--code);
+    }
+
+    .copy-status {
+      min-height: 24px;
+      margin: 0;
+      padding: 0 30px 20px;
+      color: #b8c7ea;
+      font-size: 13px;
+    }
+
+    .install-note {
+      max-width: 62ch;
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .article-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+      gap: 64px;
+      align-items: start;
+    }
+
+    .article-link {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .article-featured {
+      display: block;
+    }
+
+    .article-featured img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    .article-featured h3 {
+      max-width: 18ch;
+      margin: 24px 0 12px;
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    .article-link time,
+    .article-more {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .article-featured:hover h3,
+    .article-featured:focus-visible h3,
+    .article-compact:hover h3,
+    .article-compact:focus-visible h3 {
+      color: var(--accent);
+    }
+
+    .article-list {
+      border-top: 3px solid var(--text);
+    }
+
+    .article-compact {
+      display: grid;
+      grid-template-columns: 122px minmax(0, 1fr);
+      gap: 20px;
+      align-items: center;
+      padding: 19px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .article-compact img {
+      display: block;
+      width: 122px;
+      height: 82px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    .article-compact h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      line-height: 1.38;
+    }
+
+    .articles-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .articles-footer p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .article-more {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .closing-cta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 60px;
+      align-items: end;
+      width: min(1240px, calc(100% - 48px));
+      margin-inline: auto;
+      padding: 92px 0;
+      border-top: 3px solid var(--text);
+    }
+
+    .closing-cta h2 {
+      max-width: 14ch;
+      margin-bottom: 16px;
+    }
+
+    .closing-actions {
+      margin-top: 0;
+    }
+
+    .site-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 104px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      text-decoration: none;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 980px) {
+      .site-header,
+      .hero,
+      .shell,
+      .closing-cta {
+        width: min(100% - 40px, 860px);
+      }
+
+      .menu-toggle {
+        display: inline-grid;
+        place-items: center;
+      }
+
+      .site-nav {
+        position: absolute;
+        top: 64px;
+        right: 0;
+        left: 0;
+        display: none;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0;
+        margin: 0;
+        padding: 12px 20px 20px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--surface);
+        box-shadow: 0 20px 60px rgba(34, 57, 99, 0.14);
+      }
+
+      .site-nav[data-open="true"] {
+        display: flex;
+      }
+
+      .site-nav a {
+        min-height: 48px;
+        padding: 13px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .site-nav a:last-child {
+        border-bottom: 0;
+      }
+
+      .nav-install {
+        margin-left: 12px;
+      }
+
+      h1 {
+        font-size: 64px;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.8fr);
+        gap: 42px;
+      }
+
+      .hero-statement {
+        margin-top: 24px;
+        font-size: 27px;
+      }
+
+      .hero-visual img {
+        height: min(460px, calc(100dvh - 260px));
+      }
+
+      .section-heading h2,
+      .closing-cta h2 {
+        font-size: 42px;
+      }
+
+      .why-layout,
+      .install-layout {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .workflow-rail {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .workflow-rail li:nth-child(4) {
+        border-left: 0;
+      }
+
+      .workflow-rail li:nth-child(n + 4) {
+        margin-top: 26px;
+        border-top: 1px solid var(--line);
+      }
+
+      .skill-row {
+        grid-template-columns: minmax(150px, 0.6fr) minmax(0, 1.4fr);
+        gap: 18px 34px;
+      }
+
+      .skill-description {
+        grid-column: 2;
+      }
+
+      .swagger-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .swagger-terminal-body {
+        min-height: 440px;
+      }
+
+      .article-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .closing-cta {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .site-header,
+      .hero,
+      .shell,
+      .closing-cta {
+        width: min(100% - 32px, 620px);
+      }
+
+      .site-header {
+        min-height: 64px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        min-height: auto;
+        padding: 34px 0 40px;
+      }
+
+      .hero-copy {
+        max-width: none;
+      }
+
+      h1 {
+        font-size: 52px;
+        line-height: 1.02;
+      }
+
+      .hero-statement {
+        font-size: 24px;
+      }
+
+      .hero-summary {
+        margin-top: 24px;
+        font-size: 18px;
+      }
+
+      .hero-actions {
+        margin-top: 30px;
+      }
+
+      .hero-visual::before {
+        top: -18px;
+        height: calc(100% + 36px);
+      }
+
+      .hero-visual img {
+        height: 240px;
+        object-position: 50% 66%;
+      }
+
+      .section {
+        padding: 80px 0;
+      }
+
+      .section-heading {
+        margin-bottom: 42px;
+      }
+
+      .section-heading h2,
+      .closing-cta h2,
+      .swagger-copy h2 {
+        font-size: 36px;
+      }
+
+      .risk-list {
+        grid-template-columns: 1fr;
+      }
+
+      .risk-list li {
+        min-height: auto;
+      }
+
+      .workflow-rail {
+        grid-template-columns: 1fr;
+        border-top-width: 3px;
+      }
+
+      .workflow-rail li,
+      .workflow-rail li + li {
+        margin: 0;
+        padding: 26px 0;
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        border-left: 0;
+      }
+
+      .workflow-note {
+        margin-top: 36px;
+      }
+
+      .skill-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .skill-description {
+        grid-column: auto;
+      }
+
+      .swagger-layout {
+        gap: 42px;
+      }
+
+      .swagger-terminal-body {
+        min-height: 0;
+        padding: 22px;
+      }
+
+      .install-layout {
+        gap: 38px;
+      }
+
+      .install-tabs {
+        overflow-x: auto;
+      }
+
+      .code-wrap {
+        min-height: 250px;
+        padding: 72px 20px 24px;
+      }
+
+      .code-wrap pre {
+        padding-right: 0;
+      }
+
+      .copy-button {
+        top: 18px;
+        right: 18px;
+      }
+
+      .copy-status {
+        padding-inline: 20px;
+      }
+
+      .article-layout {
+        gap: 48px;
+      }
+
+      .article-featured h3 {
+        font-size: 28px;
+      }
+
+      .articles-footer,
+      .site-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .articles-footer {
+        justify-content: flex-start;
+      }
+
+      .closing-cta {
+        padding: 72px 0;
+      }
+
+      .site-footer {
+        justify-content: center;
+        padding: 28px 0;
+      }
+    }
+
+    @media (max-width: 390px) {
+      h1 {
+        font-size: 46px;
+      }
+
+      .nav-install {
+        min-height: 38px;
+        padding-inline: 14px;
+      }
+
+      .hero-actions,
+      .closing-actions {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .button-primary,
+      .button-dark {
+        width: 100%;
+      }
+
+      .text-link {
+        justify-content: center;
+        min-height: 44px;
+      }
+
+      .section-heading h2,
+      .closing-cta h2,
+      .swagger-copy h2 {
+        font-size: 33px;
+      }
+
+      .install-tabs {
+        gap: 2px;
+        padding: 6px;
+        overflow-x: visible;
+      }
+
+      .install-tab {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-inline: 4px;
+        font-size: 12px;
+      }
+
+      .article-compact {
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 14px;
+      }
+
+      .article-compact img {
+        width: 92px;
+        height: 72px;
+      }
+
+      .article-compact h3 {
+        font-size: 15px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+<style id="hero-terminal-styles">
+    .hero-preview { min-width: 0; width: 100%; align-self: center; }
+    .hero-terminal-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(440px, 100%); margin: 0 0 8px auto; padding: 4px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+    .hero-terminal-tab { min-width: 0; min-height: 40px; padding: 0 10px; overflow: hidden; border: 0; border-radius: 4px; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; transition: background-color 140ms ease, color 140ms ease, transform 140ms ease; }
+    .hero-terminal-tab:hover, .hero-terminal-tab:focus-visible { color: var(--text); transform: translateY(-1px); }
+    .hero-terminal-tab.is-active { background: var(--accent); color: #ffffff; }
+    .hero-terminal { min-width: 0; overflow: hidden; border: 1px solid #2e3445; border-radius: 4px; background: var(--code); box-shadow: var(--shadow); }
+    .hero-terminal-bar { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid #2e3445; color: #9ba7bd; font-size: 13px; }
+    .hero-terminal-bar > span { width: 10px; height: 10px; border-radius: 50%; background: #d95e48; }
+    .hero-terminal-bar > span:nth-child(2) { background: #d9a441; }
+    .hero-terminal-bar > span:nth-child(3) { background: #4d9f67; }
+    .hero-terminal-bar strong { margin-left: 4px; color: #dbe4f5; font-weight: 700; }
+    .hero-terminal-bar small { margin-left: auto; color: #b9c7e2; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .hero-terminal pre { min-height: 250px; margin: 0; padding: 28px; overflow: auto; color: #e8edf7; font-size: 14px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .hero-terminal.is-typing [data-hero-terminal-content]::after { content: ""; display: inline-block; width: .58ch; height: 1em; margin-left: .22ch; background: currentColor; vertical-align: -.14em; animation: hero-cursor-blink 760ms steps(1, end) infinite; }
+    @keyframes hero-cursor-blink { 50% { opacity: 0; } }
+
+    .motion-ready .hero-copy > *,
+    .motion-ready .hero-preview { opacity: 0; transform: translateY(18px); transition: opacity 460ms ease, transform 460ms ease; }
+    .motion-ready .hero.is-revealed .hero-copy > *,
+    .motion-ready .hero.is-revealed .hero-preview { opacity: 1; transform: translateY(0); }
+    .motion-ready .hero.is-revealed .hero-copy > :nth-child(2) { transition-delay: 70ms; }
+    .motion-ready .hero.is-revealed .hero-copy > :nth-child(3) { transition-delay: 120ms; }
+    .motion-ready .hero.is-revealed .hero-copy > :nth-child(4) { transition-delay: 170ms; }
+    .motion-ready .hero.is-revealed .hero-preview { transition-delay: 120ms; }
+
+    .motion-ready [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity 500ms ease, transform 500ms ease; }
+    .motion-ready [data-reveal].is-revealed { opacity: 1; transform: translateY(0); }
+    @media (max-width: 768px) { .hero-terminal-tabs { margin-left: 0; } .hero-terminal pre { min-height: 210px; padding: 22px; } }
+    @media (max-width: 390px) { .hero-terminal-tab { padding-inline: 4px; font-size: 11.5px; } .hero-terminal pre { min-height: 190px; padding: 18px; font-size: 12px; } }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-terminal-tab { transition: none; }
+      .hero-terminal.is-typing [data-hero-terminal-content]::after { display: none; animation: none; }
+      .swagger-terminal.is-typing [data-swagger-output]::after { display: none; animation: none; }
+      .motion-ready .hero-copy > *,
+      .motion-ready .hero-preview,
+      .motion-ready [data-reveal] { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="dev-skills home">
-      <img src="./site/assets/logo.png" alt="" width="34" height="34">
+    <a class="brand" href="#top">
+      <picture><source srcset="./site/assets/landing/logo-small.webp" type="image/webp"><img src="./site/assets/landing/logo-small.webp" alt=""></picture>
       <span>dev-skills</span>
     </a>
-    <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+    <nav class="site-nav" id="primary-navigation" data-open="false" aria-label="页面导航">
+      <a href="#why">返工点</a>
+      <a href="#workflow">流程</a>
       <a href="#skills">Skills</a>
-      <a href="#articles">Articles</a>
-      <a href="#install">Install</a>
-      <a href="#preview">Preview</a>
-      <a href="#workflow">Workflow</a>
+      <a href="#swagger">Swagger</a>
+      <a href="#articles">文章</a>
       <a href="https://github.com/Jason-chen-coder/dev-skills">GitHub</a>
     </nav>
-    <div class="header-actions">
-      <div class="language-switch" data-language-switch role="group" aria-label="Language">
-        <button class="is-active" type="button" data-language-option="zh" aria-pressed="true">中文</button>
-        <button type="button" data-language-option="en" aria-pressed="false">EN</button>
-      </div>
-      <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-haspopup="true" aria-label="打开导航菜单">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="展开导航" title="导航">☰</button>
+    <a class="nav-install intent-button" href="#install">安装</a>
   </header>
 
   <main id="top">
-    <section class="hero section">
+    <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="eyebrow">AI development workflow skills</p>
-        <h1>从需求到提交,<br>每步可验证。</h1>
-        <p class="hero-text">12 个 skill,用轻量 SDD 让每步可验证。</p>
-        <div class="hero-actions" aria-label="Primary actions">
-          <a class="button primary" href="#install" aria-label="查看安装方式">Install</a>
-          <a class="button secondary" href="#preview" aria-label="查看 skill 运行预览">Preview</a>
-          <a class="button ghost" href="https://github.com/Jason-chen-coder/dev-skills" aria-label="打开 GitHub 仓库">GitHub</a>
+        <h1 id="hero-title">dev-skills</h1>
+        <p class="hero-statement">需求、bug、验证，找 skill。</p>
+        <p class="hero-summary">给 Claude Code 和 Codex 用，也能查 Swagger、还原 UI、检查 commit。</p>
+        <div class="hero-actions">
+          <a class="button-primary intent-button" href="#install">安装</a>
+          <a class="text-link intent-button" href="https://github.com/Jason-chen-coder/dev-skills">查看 GitHub</a>
         </div>
       </div>
 
-      <div class="hero-preview" aria-label="dev-skills workflow preview">
-        <div class="hero-terminal">
-          <div class="terminal-bar">
-            <span></span><span></span><span></span>
+      <div class="hero-preview" aria-label="三组 dev-skills 命令示例">
+        <div class="hero-terminal-tabs" role="tablist" aria-label="选择命令示例" aria-orientation="horizontal">
+          <button class="hero-terminal-tab is-active" id="hero-terminal-tab-workflow" type="button" data-hero-terminal-mode="workflow" role="tab" aria-selected="true" aria-controls="hero-terminal-panel" tabindex="0">Workflow</button>
+          <button class="hero-terminal-tab" id="hero-terminal-tab-api-docs" type="button" data-hero-terminal-mode="api-docs" role="tab" aria-selected="false" aria-controls="hero-terminal-panel" tabindex="-1">API docs</button>
+          <button class="hero-terminal-tab" id="hero-terminal-tab-agents" type="button" data-hero-terminal-mode="agents" role="tab" aria-selected="false" aria-controls="hero-terminal-panel" tabindex="-1">Multi-agent</button>
+        </div>
+        <div class="hero-terminal" id="hero-terminal-panel" role="tabpanel" aria-labelledby="hero-terminal-tab-workflow" aria-live="polite" tabindex="0">
+          <div class="hero-terminal-bar">
+            <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
             <strong>codex cli</strong>
             <small data-hero-terminal-label>Workflow</small>
           </div>
-          <pre><code>$ codex
-&gt; dev-image-to-code 复刻 UI 图
-
-收到:
-- 设计尺寸:1518x950
-- tab / select / button 用真实控件
-- 不确定的隐藏行为先问
-
-接着实现,截图验证,再做交互 smoke。</code></pre>
+          <pre><code data-hero-terminal-content>$ codex
+&gt; 用 dev-auto 看登录页下一步
+当前  需求边界未确认
+建议  dev-grill-docs
+之后  dev-tdd -&gt; dev-verify</code></pre>
         </div>
       </div>
     </section>
 
-    <section id="skills" class="section">
-      <div class="section-heading">
-        <p class="eyebrow">Skill library</p>
-        <h2>选一个入口就够了。</h2>
-        <p>按当前卡点选择 skill;验证、review 和提交收尾会回到同一条证据链。</p>
-      </div>
-      <div class="skill-guide" aria-label="dev-skills 使用入口">
-        <article class="skill-guide-card skill-guide-card-primary">
-          <span>不确定</span>
-          <h3>先问 dev-auto</h3>
-          <p>目标清楚但路径不清楚时,让它给下一步。</p>
-          <ul aria-label="相关 skills">
-            <li>dev-auto</li>
-          </ul>
-        </article>
-        <article class="skill-guide-card">
-          <span>需求</span>
-          <h3>先收敛</h3>
-          <p>模糊需求走 dev-grill-docs;复杂或高风险改动再补 plan。</p>
-          <ul aria-label="相关 skills">
-            <li>dev-grill-docs</li>
-            <li>dev-spec spec-only alias</li>
-            <li>dev-plan</li>
-            <li>dev-design-context</li>
-          </ul>
-        </article>
-        <article class="skill-guide-card">
-          <span>实现</span>
-          <h3>写、复刻、修</h3>
-          <p>新功能走 TDD;UI 图走 dev-image-to-code;bug 走 dev-fix。</p>
-          <ul aria-label="相关 skills">
-            <li>dev-tdd</li>
-            <li>dev-image-to-code</li>
-            <li>dev-fix</li>
-          </ul>
-        </article>
-        <article class="skill-guide-card">
-          <span>提交</span>
-          <h3>先验再提</h3>
-          <p>完成前验证;提交前 review;只要 message 再用 commit writer。</p>
-          <ul aria-label="相关 skills">
-            <li>dev-verify</li>
-            <li>dev-code-review</li>
-            <li>dev-commit-writer</li>
-            <li>dev-finish</li>
-          </ul>
-        </article>
+    <section class="section shell" id="why" aria-labelledby="why-title" data-reveal>
+      <div class="why-layout">
+        <div class="section-heading">
+          <h2 id="why-title">返工通常从这六个地方开始。</h2>
+          <p>先查清是哪一处出了问题，再决定用哪个 skill。</p>
+        </div>
+        <ul class="risk-list">
+          <li><strong>需求没写清</strong><span>需求里没有边界和验收条件，代码已经改了一半。</span></li>
+          <li><strong>结果没有命令可复查</strong><span>回复里只写“已完成”，没有测试命令、输出或失败项。</span></li>
+          <li><strong>只消掉报错</strong><span>异常不再出现，但数据路径和 root cause 仍没查清。</span></li>
+          <li><strong>UI 只对上截图</strong><span>input、tab、select 和 button 还没有真实状态与交互。</span></li>
+          <li><strong>接口列表缺类型</strong><span>只摘 endpoint，schema、DTO 和复用 type 没跟上。</span></li>
+          <li><strong>diff 混进别的改动</strong><span>commit 前才发现临时文件、无关格式化或未验证代码。</span></li>
+        </ul>
       </div>
     </section>
 
-    <section id="articles" class="section articles-section">
+    <section class="section shell" id="workflow" aria-labelledby="workflow-title" data-reveal>
       <div class="section-heading">
-        <p class="eyebrow">Articles</p>
-        <h2>用文章解释 dev-skills 背后的工程判断。</h2>
+        <h2 id="workflow-title">通常怎么做：先把需求说清，再写代码。</h2>
+        <p>复杂改动先补 plan。实现或修复完成后，运行验证命令，再看 diff 是否能提交。</p>
       </div>
+      <ol class="workflow-rail">
+        <li>
+          <h3>需求</h3>
+          <code>dev-grill-docs<br>dev-design-context</code>
+          <p>确认术语、边界和验收条件；做 UI 时先补设计上下文。</p>
+        </li>
+        <li>
+          <h3>方案</h3>
+          <code>dev-plan</code>
+          <p>改动复杂或风险高时，再写文件范围、取舍和验证命令。</p>
+        </li>
+        <li>
+          <h3>实现 / 修复</h3>
+          <code>dev-tdd<br>dev-fix</code>
+          <p>新功能先写失败测试；bug 先复现，再追 root cause。</p>
+        </li>
+        <li>
+          <h3>验证</h3>
+          <code>dev-verify</code>
+          <p>运行本次改动需要的命令，原样记录通过项和失败项。</p>
+        </li>
+        <li>
+          <h3>Review / 收尾</h3>
+          <code>dev-code-review<br>dev-finish</code>
+          <p>看完整 diff，确认没有夹带，再决定 commit、PR 或合并。</p>
+        </li>
+      </ol>
+      <p class="workflow-note">拿不准下一步时，用 <code>dev-auto</code> 判断当前阶段。其他 skill 仍由你明确调用。</p>
+    </section>
 
-      <div class="article-showcase" aria-label="dev-skills CSDN 专栏文章">
-        <a class="article-card article-card-featured" href="https://blog.csdn.net/weixin_39085822/article/details/161932215" target="_blank" rel="noopener">
-          <span class="article-cover">
-            <img src="./article-assets/sdd-ai-constraints/cover.png" alt="AI 写代码越快，越要先给它装上刹车" loading="lazy" decoding="async">
-          </span>
-          <span class="article-kicker">Latest · CSDN 专栏</span>
-          <h3>AI 写代码越快，越要先给它装上刹车</h3>
-          <span class="article-meta">
-            <time datetime="2026-06-12">2026-06-12</time>
-            <span>Spec-driven constraints</span>
-          </span>
-        </a>
+    <section class="section shell" id="skills" aria-labelledby="skills-title" data-reveal>
+      <div class="section-heading">
+        <h2 id="skills-title">卡在哪一步，就用哪一个 skill。</h2>
+        <p>下面按工作状态分成五组，先找当前问题。</p>
+      </div>
+      <dl class="skill-directory">
+        <div class="skill-row">
+          <dt>不知道下一步</dt>
+          <dd class="skill-names"><code data-skill="dev-auto">dev-auto</code></dd>
+          <dd class="skill-description">根据当前任务和已有产物，给出下一步 skill。</dd>
+        </div>
+        <div class="skill-row">
+          <dt>需求与方案</dt>
+          <dd class="skill-names"><code data-skill="dev-design-context">dev-design-context</code>, <code data-skill="dev-grill-docs">dev-grill-docs</code>, <code data-skill="dev-spec">dev-spec</code>, <code data-skill="dev-plan">dev-plan</code></dd>
+          <dd class="skill-description">UI 先补设计上下文；模糊需求先写 spec，复杂改动再补 plan。</dd>
+        </div>
+        <div class="skill-row">
+          <dt>API 契约</dt>
+          <dd class="skill-names"><code data-skill="swagger-doc-skill">swagger-doc-skill</code></dd>
+          <dd class="skill-description">从在线文档读取 module、endpoint、请求响应和可复用 type/schema。</dd>
+        </div>
+        <div class="skill-row">
+          <dt>实现与修复</dt>
+          <dd class="skill-names"><code data-skill="dev-image-to-code">dev-image-to-code</code>, <code data-skill="dev-tdd">dev-tdd</code>, <code data-skill="dev-fix">dev-fix</code></dd>
+          <dd class="skill-description">按截图还原 UI，用失败测试锁新功能，或沿数据路径修 bug。</dd>
+        </div>
+        <div class="skill-row">
+          <dt>验证与提交</dt>
+          <dd class="skill-names"><code data-skill="dev-verify">dev-verify</code>, <code data-skill="dev-code-review">dev-code-review</code>, <code data-skill="dev-commit-writer">dev-commit-writer</code>, <code data-skill="dev-finish">dev-finish</code></dd>
+          <dd class="skill-description">运行验证、检查 diff、写 commit message，并处理 PR 或分支收尾。</dd>
+        </div>
+      </dl>
+    </section>
 
-        <div class="article-list">
-          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161881057" target="_blank" rel="noopener">
-            <span class="article-cover">
-              <img src="./article-assets/dev-code-review-before-commit/00-infographic-no-direct-commit.png" alt="为什么 AI 写完代码后，不能直接 commit" loading="lazy" decoding="async">
-            </span>
-            <span class="article-kicker">Commit review</span>
-            <h3>为什么 AI 写完代码后，不能直接 commit</h3>
-            <span class="article-meta"><time datetime="2026-06-11">2026-06-11</time></span>
-          </a>
-          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161851302" target="_blank" rel="noopener">
-            <span class="article-cover">
-              <img src="./article-assets/dev-fix-root-cause/cover.png" alt="别被已修复骗了：AI 修 bug 最该追问这一句" loading="lazy" decoding="async">
-            </span>
-            <span class="article-kicker">Root cause</span>
-            <h3>别被“已修复”骗了：AI 修 bug 最该追问这一句</h3>
-            <span class="article-meta"><time datetime="2026-06-10">2026-06-10</time></span>
-          </a>
-          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161822966" target="_blank" rel="noopener">
-            <span class="article-cover">
-              <img src="./article-assets/ai-demand-to-commit/cover.png" alt="从需求到 commit：一套更稳的 AI 编程工作流" loading="lazy" decoding="async">
-            </span>
-            <span class="article-kicker">Workflow</span>
-            <h3>从需求到 commit：一套更稳的 AI 编程工作流</h3>
-            <span class="article-meta"><time datetime="2026-06-09">2026-06-09</time></span>
-          </a>
-          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161792237" target="_blank" rel="noopener">
-            <span class="article-cover">
-              <img src="./article-assets/ai-11-gates/delivery-gates-contrast.png" alt="AI 越会写代码，越不能让它直接写到 commit" loading="lazy" decoding="async">
-            </span>
-            <span class="article-kicker">Evidence chain</span>
-            <h3>AI 越会写代码，越不能让它直接写到 commit</h3>
-            <span class="article-meta"><time datetime="2026-06-08">2026-06-08</time></span>
-          </a>
-          <a class="article-card" href="https://blog.csdn.net/weixin_39085822/article/details/161752082" target="_blank" rel="noopener">
-            <span class="article-cover">
-              <img src="./article-assets/ai-danger-moment/cover.png" alt="AI 编程最危险的瞬间：它还没听懂，就已经开始写了" loading="lazy" decoding="async">
-            </span>
-            <span class="article-kicker">Requirement intake</span>
-            <h3>AI 编程最危险的瞬间：它还没听懂，就已经开始写了</h3>
-            <span class="article-meta"><time datetime="2026-06-06">2026-06-06</time></span>
-          </a>
+    <section class="section shell" id="swagger" aria-labelledby="swagger-title" data-reveal>
+      <div class="swagger-layout">
+        <div class="swagger-terminal" data-swagger-terminal aria-label="Petstore 文档查询示例">
+          <div class="swagger-terminal-bar"><strong>swagger-doc-skill</strong><span>Petstore</span></div>
+          <pre class="swagger-terminal-body"><code><span class="swagger-terminal-user">user
+&gt; Source: https://petstore3.swagger.io/api/v3/openapi.json
+&gt; 查这个 Petstore 文档，列出全部 endpoint 和可复用 type/schema。</span>
+
+assistant
+<span class="swagger-terminal-output" data-swagger-output>Source  https://petstore3.swagger.io/api/v3/openapi.json
+Modules  3
+Endpoints  19
+Types  6
+
+Endpoint sample
+GET /pet/{petId}
+200 -> Pet
+
+Type sample
+Pet
+id: integer(int64)
+name: string
+status: available | pending | sold
+
+Summary  3 Modules / 19 Endpoints / 6 Types</span></code></pre>
+        </div>
+        <div class="swagger-copy">
+          <h2 id="swagger-title">先查全 endpoint 和 type，再写调用代码。</h2>
+          <p>把 Swagger UI、OpenAPI、Knife4j、FastAPI docs 或 Redoc 的地址贴进来。结果包含 module、endpoint、请求响应和可复用 type/schema，需要时可导出 Markdown 或 JSON。</p>
+          <ul class="swagger-rules">
+            <li>当前 chat 只复用这个已确认的 source。</li>
+            <li>如果给了多个 source，先问清楚用哪一个。</li>
+            <li>只有明确传入 --config 时才读配置。</li>
+            <li>token、cookie 和 Authorization 不写进输出。</li>
+          </ul>
+          <p class="swagger-footnote">Petstore 官方示例可能更新，实际数量以查询结果为准。</p>
         </div>
       </div>
-
-      <div class="articles-footer">
-        <span>CSDN 专栏 · 6 篇</span>
-        <a class="button secondary" href="https://blog.csdn.net/weixin_39085822/category_13177255.html?spm=1001.2014.3001.5482" target="_blank" rel="noopener" aria-label="打开 dev-skills CSDN 专栏">查看 CSDN 专栏</a>
-      </div>
     </section>
 
-    <section id="install" class="section install-section">
-      <div class="section-heading">
-        <p class="eyebrow">Install and upgrade</p>
-        <h2>Claude Code 和 Codex 分开安装。</h2>
-        <p>选择你的入口,复制对应命令。升级 skill 不会自动覆盖项目里的短版团队规则模板;详细政策可参考或复制 `docs/team-policy.md`。</p>
-      </div>
+    <section class="section install-section" id="install" aria-labelledby="install-title" data-reveal>
+      <div class="shell install-layout">
+        <div class="section-heading">
+          <h2 id="install-title">选客户端，复制安装命令。</h2>
+          <p>Claude Code、Codex 和 npx skills 的安装入口不同。选中客户端后，代码块会显示对应命令。</p>
+          <p class="install-note">升级 skill 后，请手动对比项目里的 <code>CLAUDE.md</code> 和 <code>AGENTS.md</code>；安装脚本会保留这两个文件。</p>
+        </div>
 
-      <div class="install-tabs" role="tablist" aria-label="Install options">
-        <button class="install-tab is-active" type="button" data-install="claude" role="tab" aria-selected="true">Claude Code</button>
-        <button class="install-tab" type="button" data-install="codex" role="tab" aria-selected="false">Codex</button>
-        <button class="install-tab" type="button" data-install="npx" role="tab" aria-selected="false">npx skills</button>
-      </div>
-
-      <div class="install-action-switch" role="tablist" aria-label="安装或升级">
-        <button class="mode-button install-action is-active" type="button" data-install-action="install" role="tab" aria-selected="true">Install</button>
-        <button class="mode-button install-action" type="button" data-install-action="upgrade" role="tab" aria-selected="false">Upgrade</button>
-      </div>
-
-      <div class="install-panel" id="install-panel">
-        <div class="command-card">
-          <div class="command-header">
-            <h3 id="install-title">Claude Code · Install</h3>
-            <button class="copy-button" type="button" data-copy-target="#install-command" aria-label="复制安装命令">Copy</button>
+        <div class="install-tool">
+          <div class="install-tabs" role="tablist" aria-label="选择安装客户端">
+            <button class="install-tab" id="install-tab-claude" type="button" role="tab" aria-selected="true" aria-controls="install-code" tabindex="0" data-install-mode="claude">Claude Code</button>
+            <button class="install-tab" id="install-tab-codex" type="button" role="tab" aria-selected="false" aria-controls="install-code" tabindex="-1" data-install-mode="codex">Codex</button>
+            <button class="install-tab" id="install-tab-npx" type="button" role="tab" aria-selected="false" aria-controls="install-code" tabindex="-1" data-install-mode="npx">npx skills</button>
           </div>
-          <pre><code id="install-command">/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills
+          <div class="code-wrap" id="install-code" role="tabpanel" aria-labelledby="install-tab-claude" tabindex="0">
+            <pre><code id="install-command">/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills
 /plugin install dev-skills</code></pre>
-        </div>
-        <div class="install-notes" id="install-notes">
-          <p>首次安装后,如需团队规则,复制 `CLAUDE.md.template` 到项目根 `CLAUDE.md`;详细政策参考 `docs/team-policy.md`。</p>
+            <button class="copy-button" id="copy-install" type="button">复制</button>
+          </div>
+          <p class="copy-status" id="copy-status" aria-live="polite"></p>
         </div>
       </div>
     </section>
 
-    <section id="workflow" class="section experience-section">
-      <div class="experience-tabs-section">
-        <div class="mode-switch experience-mode-switch" role="tablist" aria-label="Workflow display mode">
-          <button class="mode-button is-active" type="button" data-experience-mode="skills" role="tab" aria-selected="true" aria-controls="preview">Workflow</button>
-          <button class="mode-button" type="button" data-experience-mode="agents" role="tab" aria-selected="false" aria-controls="agent-mode">Multi-agent</button>
-        </div>
-      </div>
-
-      <section class="workflow-agent-section" data-experience-only="skills">
-        <aside class="workflow-agent-note" aria-label="Workflow 模式下的 agent 说明">
-          <span>Agent mode</span>
-          <div>
-            <h3>Workflow 模式下,主 agent 负责推进。</h3>
-            <p>普通 workflow 会由主 agent 根据当前阶段选择合适的 skill,按 spec、plan、实现、验证和评审顺序推进。它不会自动分派子 agent;需要并行探索、实现或独立验证时,再切到 Multi-agent。</p>
-          </div>
-        </aside>
-        <div class="workflow-agent-lanes" aria-label="Workflow 模式下的阶段推进方式">
-          <article>
-            <span>Main agent</span>
-            <h3>定阶段</h3>
-            <p>理解目标、判断当前卡点,决定该走 spec、plan、实现、修复还是验证。</p>
-          </article>
-          <article>
-            <span>Spec / Plan</span>
-            <h3>收敛</h3>
-            <p>模糊需求先落 spec;复杂或高风险改动再补 plan / ADR。</p>
-          </article>
-          <article>
-            <span>Build / Fix</span>
-            <h3>执行</h3>
-            <p>实现或修复时锁住行为,只按当前 artifact 和范围改代码。</p>
-          </article>
-          <article>
-            <span>Verify / Review</span>
-            <h3>把关</h3>
-            <p>完成前跑验证,提交前检查 diff、风险和夹带改动。</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="agent-mode" class="agent-mode-section" data-experience-only="agents" hidden>
-        <aside class="agent-mode-note" aria-label="Multi-agent 模式下的 agent 说明">
-          <span>Agent mode</span>
-          <div>
-            <h3>Multi-agent 模式下,主 agent 负责分派和整合。</h3>
-            <p>主 agent 先确认目标、边界、source artifact 和不可修改范围,再把探索、实现、验证或 review 分派给子 agent。子 agent 只处理范围明确、能交付证据的任务;最终判断、git 操作和用户沟通仍然回到主 agent。</p>
-          </div>
-        </aside>
-        <div class="agent-lanes" aria-label="multi-agent 分工方式">
-          <article>
-            <span>Main agent</span>
-            <h3>主控</h3>
-            <p>确认目标、选择 source artifact,整合所有子 agent 结果。</p>
-          </article>
-          <article>
-            <span>Explorer</span>
-            <h3>探索</h3>
-            <p>只读查调用链、相似实现、设计系统和已有约定。</p>
-          </article>
-          <article>
-            <span>Worker</span>
-            <h3>实现</h3>
-            <p>只改分配范围内的页面、模块或测试,并引用对应 AC 或 plan step。</p>
-          </article>
-          <article>
-            <span>Verifier / Reviewer</span>
-            <h3>独立把关</h3>
-            <p>独立对照 artifact 检查命令证据、响应式、可访问性和 diff 风险。</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="preview" class="runtime-section">
+    <section class="section shell" id="articles" aria-labelledby="articles-title" data-reveal>
       <div class="section-heading">
-        <p class="eyebrow">Runtime preview</p>
-        <h2>看关键节点在 Codex CLI 里怎么跑。</h2>
-        <p>只保留高频 workflow 节点。切换 tab 查看代表性输入和输出;开启减少动效时直接显示完整文本。</p>
+        <h2 id="articles-title">文章里有需求、bug、验证和 commit。</h2>
+        <p>文章保留完整例子，遇到具体问题时再看对应一篇。</p>
       </div>
-
-      <div class="skill-tabs" role="tablist" aria-label="Skill runtime previews" data-preview-tabs="skills">
-        <button class="skill-tab is-active" type="button" data-preview-mode="skills" data-skill="dev-auto" role="tab" aria-selected="true">dev-auto</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-grill-docs" role="tab" aria-selected="false">dev-grill-docs</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-image-to-code" role="tab" aria-selected="false">dev-image-to-code</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-plan" role="tab" aria-selected="false">dev-plan</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-fix" role="tab" aria-selected="false">dev-fix</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-verify" role="tab" aria-selected="false">dev-verify</button>
-        <button class="skill-tab" type="button" data-preview-mode="skills" data-skill="dev-code-review" role="tab" aria-selected="false">dev-code-review</button>
-      </div>
-      <div class="skill-tabs" role="tablist" aria-label="Agent runtime previews" data-preview-tabs="agents" hidden>
-        <button class="skill-tab" type="button" data-preview-mode="agents" data-skill="orchestrator" role="tab" aria-selected="false">Orchestrator</button>
-        <button class="skill-tab" type="button" data-preview-mode="agents" data-skill="explorer" role="tab" aria-selected="false">Explorer</button>
-        <button class="skill-tab" type="button" data-preview-mode="agents" data-skill="worker" role="tab" aria-selected="false">Worker</button>
-        <button class="skill-tab" type="button" data-preview-mode="agents" data-skill="verifier" role="tab" aria-selected="false">Verifier</button>
-        <button class="skill-tab" type="button" data-preview-mode="agents" data-skill="reviewer" role="tab" aria-selected="false">Reviewer</button>
-      </div>
-
-      <div class="runtime-grid">
-        <div class="terminal-panel" aria-label="Codex CLI input preview">
-          <div class="terminal-bar">
-            <span></span><span></span><span></span>
-            <strong>codex cli</strong>
-          </div>
-          <pre><code id="preview-input">$ codex
-&gt; 用 dev-auto 帮我串起来,下一步该做什么?</code><span class="cursor" aria-hidden="true"></span></pre>
+      <div class="article-layout">
+        <a class="article-link article-featured" href="https://blog.csdn.net/weixin_39085822/article/details/161932215" target="_blank" rel="noopener">
+          <picture><source srcset="./site/assets/landing/article-sdd.webp" type="image/webp"><img src="./site/assets/landing/article-sdd.webp" alt="AI 写代码越快，越要先给它装上刹车" loading="lazy" decoding="async"></picture>
+          <h3>AI 写代码越快，越要先给它装上刹车</h3>
+          <time datetime="2026-06-12">2026-06-12</time>
+        </a>
+        <div class="article-list">
+          <a class="article-link article-compact" href="https://blog.csdn.net/weixin_39085822/article/details/161881057" target="_blank" rel="noopener">
+            <picture><source srcset="./site/assets/landing/article-review.webp" type="image/webp"><img src="./site/assets/landing/article-review.webp" alt="为什么 AI 写完代码后，不能直接 commit" loading="lazy" decoding="async"></picture>
+            <div><h3>为什么 AI 写完代码后，不能直接 commit</h3><time datetime="2026-06-11">2026-06-11</time></div>
+          </a>
+          <a class="article-link article-compact" href="https://blog.csdn.net/weixin_39085822/article/details/161851302" target="_blank" rel="noopener">
+            <picture><source srcset="./site/assets/landing/article-fix.webp" type="image/webp"><img src="./site/assets/landing/article-fix.webp" alt="别被已修复骗了：AI 修 bug 最该追问这一句" loading="lazy" decoding="async"></picture>
+            <div><h3>别被“已修复”骗了：AI 修 bug 最该追问这一句</h3><time datetime="2026-06-10">2026-06-10</time></div>
+          </a>
+          <a class="article-link article-compact" href="https://blog.csdn.net/weixin_39085822/article/details/161822966" target="_blank" rel="noopener">
+            <picture><source srcset="./site/assets/landing/article-workflow.webp" type="image/webp"><img src="./site/assets/landing/article-workflow.webp" alt="从需求到 commit：一套更稳的 AI 编程工作流" loading="lazy" decoding="async"></picture>
+            <div><h3>从需求到 commit：一套更稳的 AI 编程工作流</h3><time datetime="2026-06-09">2026-06-09</time></div>
+          </a>
+          <a class="article-link article-compact" href="https://blog.csdn.net/weixin_39085822/article/details/161792237" target="_blank" rel="noopener">
+            <picture><source srcset="./site/assets/landing/article-gates.webp" type="image/webp"><img src="./site/assets/landing/article-gates.webp" alt="AI 越会写代码，越不能让它直接写到 commit" loading="lazy" decoding="async"></picture>
+            <div><h3>AI 越会写代码，越不能让它直接写到 commit</h3><time datetime="2026-06-08">2026-06-08</time></div>
+          </a>
+          <a class="article-link article-compact" href="https://blog.csdn.net/weixin_39085822/article/details/161752082" target="_blank" rel="noopener">
+            <picture><source srcset="./site/assets/landing/article-intake.webp" type="image/webp"><img src="./site/assets/landing/article-intake.webp" alt="AI 编程最危险的瞬间：它还没听懂，就已经开始写了" loading="lazy" decoding="async"></picture>
+            <div><h3>AI 编程最危险的瞬间：它还没听懂，就已经开始写了</h3><time datetime="2026-06-06">2026-06-06</time></div>
+          </a>
         </div>
-        <div class="output-panel">
-          <div class="output-title" id="preview-title">Dev Auto</div>
-          <pre><code id="preview-output">━━━ Dev Auto ━━━
-路径   : feature
-复杂度 : moderate
-下一步
-  $ dev-grill-docs user-export
-为什么:先把模糊需求拆成可验证 spec。</code><span class="cursor output-cursor" aria-hidden="true"></span></pre>
-        </div>
+      </div>
+      <div class="articles-footer">
+        <p>CSDN 专栏：6 篇</p>
+        <a class="article-more" href="https://blog.csdn.net/weixin_39085822/category_13177255.html?spm=1001.2014.3001.5482" target="_blank" rel="noopener">查看 CSDN 专栏</a>
       </div>
     </section>
 
-      <section class="workflow-section">
-      <div class="section-heading">
-        <p class="eyebrow">Workflow</p>
-        <h2>纵向流程图,三条分支最后汇合到验证、评审和提交。</h2>
+    <section class="closing-cta" aria-labelledby="closing-title" data-reveal>
+      <div>
+        <h2 id="closing-title">从当前卡住的地方开始。</h2>
+        <p>选一个 skill，处理完这一步，再看下一步。</p>
       </div>
-
-      <div class="workflow-grid workflow-grid-skills" data-workflow-grid="skills">
-        <div class="workflow-path">
-          <h3>Feature path</h3>
-          <ol>
-            <li><strong>dev-design-context optional</strong><span>UI 工作先沉淀设计上下文</span></li>
-            <li><strong>dev-grill-docs</strong><span>拷问需求,生成 spec,按需沉淀 CONTEXT / ADR</span></li>
-            <li><strong>dev-plan optional</strong><span>复杂 / 高风险改动先出 plan / ADR</span></li>
-            <li><strong>dev-tdd</strong><span>red -> green -> refactor</span></li>
-            <li><strong>dev-verify</strong><span>完成前证据门禁</span></li>
-            <li><strong>dev-code-review</strong><span>提交前 5 轴检查</span></li>
-            <li><strong>dev-commit-writer optional</strong><span>需要时生成 commit message</span></li>
-            <li><strong>git commit</strong><span>READY 后提交</span></li>
-            <li><strong>dev-finish</strong><span>分支 / PR / 收尾决策</span></li>
-          </ol>
-        </div>
-        <div class="workflow-path">
-          <h3>Bug path</h3>
-          <ol>
-            <li><strong>dev-fix</strong><span>复现、假设、定位 root cause</span></li>
-            <li><strong>dev-verify</strong><span>完成前证据门禁</span></li>
-            <li><strong>dev-code-review</strong><span>确认无回归和夹带改动</span></li>
-            <li><strong>dev-commit-writer optional</strong><span>需要时生成 commit message</span></li>
-            <li><strong>git commit</strong><span>记录修复上下文</span></li>
-            <li><strong>dev-finish</strong><span>分支 / PR / 收尾决策</span></li>
-          </ol>
-        </div>
-        <div class="workflow-path">
-          <h3>Simple hotfix</h3>
-          <ol>
-            <li><strong>dev-tdd</strong><span>直接用测试锁住小改动</span></li>
-            <li><strong>dev-verify</strong><span>完成前证据门禁</span></li>
-            <li><strong>dev-code-review</strong><span>提交前检查风险</span></li>
-            <li><strong>git commit</strong><span>READY 后提交</span></li>
-            <li><strong>dev-finish optional</strong><span>需要分支收尾时执行</span></li>
-          </ol>
-        </div>
-      </div>
-      <div class="workflow-grid workflow-grid-agents" data-workflow-grid="agents" hidden>
-        <div class="workflow-path">
-          <h3>Main agent lane</h3>
-          <ol>
-            <li><strong>Intake</strong><span>确认目标、风险和是否值得分派</span></li>
-            <li><strong>Scope</strong><span>写清 source artifact、write scope、do-not-edit</span></li>
-            <li><strong>Integrate</strong><span>合并子 agent 结果并处理冲突</span></li>
-            <li><strong>Ship</strong><span>最终验证、commit、PR 或收尾</span></li>
-          </ol>
-        </div>
-        <div class="workflow-path">
-          <h3>Parallel lanes</h3>
-          <ol>
-            <li><strong>Explorer</strong><span>查调用链、类似实现和设计约定</span></li>
-            <li><strong>Planner</strong><span>复杂任务先做方案取舍和风险检查</span></li>
-            <li><strong>Worker</strong><span>只改明确分配的文件或模块</span></li>
-            <li><strong>Verifier</strong><span>独立跑命令,对照 artifact 验证完成声明</span></li>
-          </ol>
-        </div>
-        <div class="workflow-path">
-          <h3>Guardrails</h3>
-          <ol>
-            <li><strong>No overlap</strong><span>多个 worker 不改同一批文件</span></li>
-            <li><strong>No hidden chain</strong><span>dev-auto 只推荐,不自动调起其他 skill</span></li>
-            <li><strong>No risky git</strong><span>merge、push、discard 留给主 agent 和用户</span></li>
-            <li><strong>Evidence</strong><span>每个子 agent 都要输出证据、风险和 artifact drift</span></li>
-          </ol>
-        </div>
-      </div>
-      <div class="workflow-diagram workflow-g6-diagram" aria-label="dev-skills 简化工作流图,展示 feature、hotfix 和 bug 三条分支如何汇合到验证、评审、提交和收尾">
-        <div id="workflow-graph" class="workflow-graph" role="img" aria-label="Feature、Simple hotfix 和 Bug 三条工作流分支最终汇合到验证、评审、提交和收尾">
-          <p class="workflow-graph-fallback">Feature、Simple hotfix 和 Bug 三条路径最终都会汇合到 dev-verify、dev-code-review、git commit 和 dev-finish。</p>
-        </div>
-      </div>
-      </section>
-    </section>
-
-    <section id="faq" class="section faq-section">
-      <div class="section-heading">
-        <p class="eyebrow">FAQ</p>
-        <h2>常见问题。</h2>
-      </div>
-      <div class="faq-list">
-        <details open>
-          <summary>Claude Code 和 Codex 为什么安装方式不一样?</summary>
-          <p>Claude Code 使用 `.claude-plugin/` manifest;Codex 当前兼容方式是复制 `skills/*` 到 `$CODEX_HOME/skills`。</p>
-        </details>
-        <details>
-          <summary>升级会覆盖我的 `CLAUDE.md` 或 `AGENTS.md` 吗?</summary>
-          <p>不会。skill 升级只更新 skill 文件,短版团队规则模板需要人工对比后同步;详细 policy 文档也建议按团队实际情况复制或改写。</p>
-        </details>
-        <details>
-          <summary>`docs/why-dev-baseline.md` 和 `docs/team-policy.md` 分别解决什么?</summary>
-          <p>前者解释四条 baseline 背后的失败模式,防止规则变口号;后者放详细团队治理,避免把 always-on 模板写得过长。</p>
-        </details>
-        <details>
-          <summary>什么时候用 `dev-auto`?</summary>
-          <p>当你不知道下一步跑哪个 skill,或者需要从失败状态恢复时使用。它只建议,不调起其他 skill。</p>
-        </details>
-        <details>
-          <summary>准备 commit 时为什么默认走 `dev-code-review`?</summary>
-          <p>团队策略是 commit 前先 review。`dev-commit-writer` 只用于用户明确表示跳过 review 且只要 message 的场景。</p>
-        </details>
+      <div class="closing-actions">
+        <a class="button-dark intent-button" href="#install">安装</a>
+        <a class="text-link intent-button" href="https://github.com/Jason-chen-coder/dev-skills">查看 GitHub</a>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <span>dev-skills</span>
-    <a href="https://github.com/Jason-chen-coder/dev-skills">github.com/Jason-chen-coder/dev-skills</a>
+  <footer class="site-footer shell">
+    <span>dev-skills / MIT License</span>
+    <div class="footer-links">
+      <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/README.md">README</a>
+      <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/docs/onboarding.md">Onboarding</a>
+      <a href="https://github.com/Jason-chen-coder/dev-skills/issues">Issues</a>
+    </div>
   </footer>
 
-  <script async src="https://unpkg.com/@antv/g6@5.1.1/dist/g6.min.js" onload="window.renderWorkflowGraph && window.renderWorkflowGraph()"></script>
-  <script src="./site/app.js?v=dev-image-lite"></script>
-</body>
-</html>
+  <script>
+    const menuToggle = document.querySelector("#menu-toggle");
+    const primaryNavigation = document.querySelector("#primary-navigation");
+
+    function setMenuOpen(open) {
+      primaryNavigation.dataset.open = String(open);
+      menuToggle.setAttribute("aria-expanded", String(open));
+      menuToggle.setAttribute("aria-label", open ? "收起导航" : "展开导航");
+      document.body.classList.toggle("nav-open", open);
+    }
+
+    menuToggle.addEventListener("click", () => {
+      setMenuOpen(menuToggle.getAttribute("aria-expanded") !== "true");
+    });
+
+    primaryNavigation.addEventListener("click", (event) => {
+      if (event.target.closest("a")) setMenuOpen(false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      switch (event.key) {
+        case "Escape":
+          if (menuToggle.getAttribute("aria-expanded") === "true") {
+            setMenuOpen(false);
+            menuToggle.focus();
+          }
+          break;
+        default:
+          break;
+      }
+    });
+
+    const installCommands = {
+      claude: "/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills\n/plugin install dev-skills",
+      codex: "git clone https://github.com/Jason-chen-coder/dev-skills.git\ncd dev-skills\nbash scripts/install-codex-skills.sh",
+      npx: "npx skills add Jason-chen-coder/dev-skills\nnpx skills add Jason-chen-coder/dev-skills --global"
+    };
+
+    const installTabs = [...document.querySelectorAll(".install-tab")];
+    const installPanel = document.querySelector("#install-code");
+    const installCommand = document.querySelector("#install-command");
+    const copyButton = document.querySelector("#copy-install");
+    const copyStatus = document.querySelector("#copy-status");
+
+    function setInstallMode(tab, moveFocus = false) {
+      installTabs.forEach((item) => {
+        const active = item === tab;
+        item.setAttribute("aria-selected", String(active));
+        item.tabIndex = active ? 0 : -1;
+      });
+      installCommand.textContent = installCommands[tab.dataset.installMode];
+      installPanel.setAttribute("aria-labelledby", tab.id);
+      copyStatus.textContent = "";
+      copyButton.textContent = "复制";
+      if (moveFocus) tab.focus();
+    }
+
+    installTabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => setInstallMode(tab));
+      tab.addEventListener("keydown", (event) => {
+        let nextIndex = index;
+        switch (event.key) {
+          case "ArrowLeft":
+            nextIndex = (index - 1 + installTabs.length) % installTabs.length;
+            break;
+          case "ArrowRight":
+            nextIndex = (index + 1) % installTabs.length;
+            break;
+          case "Home":
+            nextIndex = 0;
+            break;
+          case "End":
+            nextIndex = installTabs.length - 1;
+            break;
+          default:
+            return;
+        }
+        event.preventDefault();
+        setInstallMode(installTabs[nextIndex], true);
+      });
+    });
+
+    copyButton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(installCommand.textContent);
+        copyButton.textContent = "已复制";
+        copyStatus.textContent = "已复制安装命令。";
+      } catch {
+        copyButton.textContent = "无法复制";
+        copyStatus.textContent = "浏览器没有授予剪贴板权限，请手动复制命令。";
+      }
+    });
+
+    const desktopNavigation = window.matchMedia("(min-width: 981px)");
+    desktopNavigation.addEventListener("change", (event) => {
+      if (event.matches) setMenuOpen(false);
+    });
+  </script>
+
+
+<script id="hero-terminal-script">
+    (() => {
+      const samples = {
+        workflow: { label: "Workflow", text: "$ codex\n> 用 dev-auto 看登录页下一步\n当前  需求边界未确认\n建议  dev-grill-docs\n之后  dev-tdd -> dev-verify" },
+        "api-docs": { label: "API docs", text: "$ codex\n> 查 Petstore 的接口和类型\nResult  3 modules / 19 endpoints / 6 types\nExport  Markdown 或 JSON" },
+        agents: { label: "Multi-agent", text: "$ codex\n> 登录页拆给多 agent，先定各自范围\nExplorer  只读查约定\nWorker  按 scope 实现\nVerifier  独立验证\nMain  汇总结果" }
+      };
+      const tabs = [...document.querySelectorAll("[data-hero-terminal-mode]")];
+      const panel = document.querySelector("#hero-terminal-panel");
+      const content = panel?.querySelector("[data-hero-terminal-content]");
+      const label = panel?.querySelector("[data-hero-terminal-label]");
+      if (!panel || !content || !label || tabs.length === 0) return;
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let heroTypingRunId = 0;
+      const swaggerTerminal = document.querySelector("[data-swagger-terminal]");
+      const swaggerOutput = swaggerTerminal?.querySelector("[data-swagger-output]");
+      const swaggerReply = swaggerOutput?.textContent || "";
+      let swaggerTerminalPlayed = false;
+
+      async function typeSwaggerOutput() {
+        if (!swaggerTerminal || !swaggerOutput || swaggerTerminalPlayed) return;
+        swaggerTerminalPlayed = true;
+        if (reducedMotion.matches) {
+          swaggerOutput.textContent = swaggerReply;
+          return;
+        }
+
+        swaggerOutput.textContent = "";
+        swaggerTerminal.classList.add("is-typing");
+        for (const character of swaggerReply) {
+          swaggerOutput.textContent += character;
+          await new Promise((resolve) => window.setTimeout(resolve, 7));
+        }
+        swaggerOutput.textContent = swaggerReply;
+        swaggerTerminal.classList.remove("is-typing");
+      }
+
+      function playSwaggerTerminal() {
+        void typeSwaggerOutput();
+      }
+
+      async function typeHeroText(sample) {
+        const runId = ++heroTypingRunId;
+        if (reducedMotion.matches) {
+          content.textContent = sample.text;
+          panel.classList.remove("is-typing");
+          return;
+        }
+
+        content.textContent = "";
+        panel.classList.add("is-typing");
+        for (const character of sample.text) {
+          if (runId !== heroTypingRunId) return;
+          content.textContent += character;
+          await new Promise((resolve) => window.setTimeout(resolve, 12));
+        }
+
+        if (runId !== heroTypingRunId) return;
+        content.textContent = sample.text;
+        panel.classList.remove("is-typing");
+      }
+
+      function setHeroMode(mode, moveFocus = false) {
+        const activeTab = tabs.find((tab) => tab.dataset.heroTerminalMode === mode) || tabs[0];
+        const sample = samples[activeTab.dataset.heroTerminalMode];
+        tabs.forEach((tab) => {
+          const active = tab === activeTab;
+          tab.classList.toggle("is-active", active);
+          tab.setAttribute("aria-selected", String(active));
+          tab.tabIndex = active ? 0 : -1;
+        });
+        panel.setAttribute("aria-labelledby", activeTab.id);
+        label.textContent = sample.label;
+        void typeHeroText(sample);
+        if (moveFocus) activeTab.focus();
+      }
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => setHeroMode(tab.dataset.heroTerminalMode));
+        tab.addEventListener("keydown", (event) => {
+          let targetIndex = index;
+          switch (event.key) {
+            case "ArrowLeft": targetIndex = (index - 1 + tabs.length) % tabs.length; break;
+            case "ArrowRight": targetIndex = (index + 1) % tabs.length; break;
+            case "Home": targetIndex = 0; break;
+            case "End": targetIndex = tabs.length - 1; break;
+            default: return;
+          }
+          event.preventDefault();
+          setHeroMode(tabs[targetIndex].dataset.heroTerminalMode, true);
+        });
+      });
+
+      function setupPageMotion() {
+        const hero = document.querySelector(".hero");
+        const revealTargets = [...document.querySelectorAll("[data-reveal]")];
+        if (reducedMotion.matches) {
+          playSwaggerTerminal();
+          return;
+        }
+        if (!("IntersectionObserver" in window)) return;
+
+        document.documentElement.classList.add("motion-ready");
+        window.requestAnimationFrame(() => hero?.classList.add("is-revealed"));
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (!entry.isIntersecting) return;
+            observer.unobserve(entry.target);
+            window.setTimeout(() => {
+              entry.target.classList.add("is-revealed");
+              if (entry.target.id === "swagger") playSwaggerTerminal();
+            }, index * 65);
+          });
+        }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
+
+        revealTargets.forEach((target) => observer.observe(target));
+      }
+
+      setupPageMotion();
+      setHeroMode("workflow");
+    })();
+  </script>
+</body></html>

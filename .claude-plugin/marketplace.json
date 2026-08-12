@@ -4,13 +4,13 @@
   "owner": {
     "name": "Jason-chen-coder"
   },
-  "description": "团队 git 工作流 skill 套件:dev-auto(入口推荐器)→ dev-grill-docs(需求拷问 + spec + 可选 CONTEXT/ADR)→ dev-plan(实施方案 + Critic 共识)→ dev-tdd(红绿重构)→ dev-verify(完成前证据门禁)→ dev-code-review(5 轴评审)/ dev-commit-writer(commit message)→ dev-finish(分支收尾);dev-spec 保留为 spec-only 兼容入口;bug 路径走 dev-fix;UI/产品设计前用 dev-design-context,看图写页面用 dev-image-to-code。",
+  "description": "团队开发 skill 套件:dev-auto(入口推荐器)→ dev-grill-docs(需求拷问 + spec + 可选 CONTEXT/ADR)→ dev-plan(实施方案 + Critic 共识)→ dev-tdd(红绿重构)→ dev-verify(完成前证据门禁)→ dev-code-review(5 轴评审)/ dev-commit-writer(commit message)→ dev-finish(分支收尾);dev-spec 保留为 spec-only 兼容入口;bug 路径走 dev-fix;UI/产品设计前用 dev-design-context,看图写页面用 dev-image-to-code;Swagger/OpenAPI/Knife4j 查询和完整 Markdown/JSON 导出用 swagger-doc-skill。",
   "version": "0.8.0",
   "plugins": [
     {
       "name": "dev-skills",
       "source": "./",
-      "description": "覆盖 git 工作流 + bug 修复 + 执行闭环 + 设计上下文 + 需求拷问 + 看图写页面的 12 个 skill(dev-auto / dev-grill-docs / dev-spec(alias) / dev-plan / dev-tdd / dev-fix / dev-image-to-code / dev-verify / dev-code-review / dev-commit-writer / dev-finish / dev-design-context),共享 Karpathy 行为基线。",
+      "description": "覆盖 git 工作流 + bug 修复 + 执行闭环 + 设计上下文 + 需求拷问 + 看图写页面 + Swagger/OpenAPI 查询导出的 13 个 skill(dev-auto / dev-grill-docs / dev-spec(alias) / dev-plan / dev-tdd / dev-fix / dev-image-to-code / swagger-doc-skill / dev-verify / dev-code-review / dev-commit-writer / dev-finish / dev-design-context),共享 Karpathy 行为基线。",
       "version": "0.8.0",
       "author": "Jason-chen-coder",
       "homepage": "https://github.com/Jason-chen-coder/dev-skills",
@@ -35,7 +35,11 @@
         "design-context",
         "image-to-code",
         "context",
-        "adr"
+        "adr",
+        "swagger",
+        "openapi",
+        "api-docs",
+        "knife4j"
       ],
       "tags": [
         "review",
@@ -55,7 +59,11 @@
         "design",
         "image-to-code",
         "domain-language",
-        "adr"
+        "adr",
+        "swagger",
+        "openapi",
+        "api-docs",
+        "knife4j"
       ],
       "skills": "./skills"
     }

@@ -18,6 +18,8 @@ EXPECTED_SKILLS=(
   dev-finish
   dev-design-context
   dev-grill-docs
+  dev-image-to-code
+  swagger-doc-skill
 )
 
 usage() {

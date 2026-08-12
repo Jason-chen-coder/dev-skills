@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "dev-skills",
   "version": "0.8.0",
-  "description": "团队 git 工作流 + bug 修复 + 执行闭环 + 设计上下文 + 看图写页面 skill 套件:dev-auto / dev-grill-docs / dev-spec(alias) / dev-plan / dev-tdd / dev-fix / dev-image-to-code / dev-verify / dev-code-review / dev-commit-writer / dev-finish / dev-design-context。共享 Karpathy 行为基线 + RALPLAN-DR 共识机制 + hypothesis-driven 调试 + TDD + 完成前验证 + 分支收尾 + 一次性设计上下文沉淀 + 需求拷问、spec 生成和可选 CONTEXT / ADR 沉淀。dev-auto 是松耦合入口推荐器,不调起其他 skill,只指路。",
+  "description": "团队 git 工作流 + bug 修复 + 执行闭环 + 设计上下文 + 看图写页面 + Swagger/OpenAPI 查询导出 skill 套件:dev-auto / dev-grill-docs / dev-spec(alias) / dev-plan / dev-tdd / dev-fix / dev-image-to-code / swagger-doc-skill / dev-verify / dev-code-review / dev-commit-writer / dev-finish / dev-design-context。支持模块、endpoint、完整 schema/model/DTO 和 Markdown/JSON API 文档导出;共享 Karpathy 行为基线 + RALPLAN-DR 共识机制 + hypothesis-driven 调试 + TDD + 完成前验证。dev-auto 是松耦合入口推荐器,不调起其他 skill,只指路。",
   "author": "Jason-chen-coder",
   "homepage": "https://github.com/Jason-chen-coder/dev-skills",
   "license": "MIT",

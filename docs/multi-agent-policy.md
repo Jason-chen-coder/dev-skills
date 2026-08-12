@@ -148,6 +148,7 @@ Do not use SDD artifacts to override explicit user instructions or current code 
 | `dev-verify` | verifier | strong fit for independent completion evidence |
 | `dev-code-review` | reviewer | strong fit for independent pre-commit review |
 | `dev-design-context` | design explorer | useful for discovering UI conventions before main-agent synthesis |
+| `swagger-doc-skill` | explorer | strong fit for read-only module, endpoint, schema, or integration lookup against one confirmed Swagger/OpenAPI source |
 
 ### Main-agent first
 
@@ -292,6 +293,7 @@ This policy is integrated across these repository surfaces:
 | `skills/dev-verify/SKILL.md` | `## Multi-Agent Profile` |
 | `skills/dev-code-review/SKILL.md` | `## Multi-Agent Profile` |
 | `skills/dev-design-context/SKILL.md` | `## Multi-Agent Profile` |
+| `skills/swagger-doc-skill/SKILL.md` | `## Multi-Agent Profile` |
 | `skills/dev-auto/SKILL.md` | `## Multi-Agent Note` |
 | `skills/dev-grill-docs/SKILL.md` | `## Multi-Agent Note` |
 | `skills/dev-spec/SKILL.md` | `## Multi-Agent Note` |
@@ -343,6 +345,7 @@ Done. `## Multi-Agent Profile` exists in:
 - `dev-verify`
 - `dev-code-review`
 - `dev-design-context`
+- `swagger-doc-skill`
 
 Done. `## Multi-Agent Note` exists in:
 

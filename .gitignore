@@ -21,3 +21,9 @@
 # Node (in case skills repo ever gains tooling)
 node_modules/
 *.log
+
+# Swagger skill local credentials, cache, and default exports
+/swagger.config.json
+/swagger-spec-cache.json
+/swagger-api.md
+/swagger-api.json

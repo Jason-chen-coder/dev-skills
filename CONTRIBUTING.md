@@ -24,7 +24,7 @@
 
 ### 类型 A:原子工作步骤 skill(默认)
 
-绝大多数 skill 属于这类(dev-design-context / dev-spec / dev-plan / dev-tdd / dev-fix / dev-verify / dev-code-review / dev-commit-writer / dev-finish 都是)。在 issue 里回答以下 7 个问题。**任何一项答不上来就不该做这个 skill。**
+绝大多数 skill 属于这类(dev-design-context / dev-spec / dev-plan / dev-tdd / dev-fix / dev-verify / dev-code-review / dev-commit-writer / dev-finish / swagger-doc-skill 都是)。在 issue 里回答以下 7 个问题。**任何一项答不上来就不该做这个 skill。**
 
 1. **触发时机一句话** —— 用户说什么 / 处于什么状态时应该用这个 skill?
 2. **和现有 skill 的边界** —— 会不会和 `dev-code-review` / `dev-commit-writer` / `dev-spec` 抢触发?
@@ -94,6 +94,8 @@
    - `skills/dev-auto/references/dev-baseline.md`
    - `skills/dev-design-context/references/dev-baseline.md`
    - `skills/dev-grill-docs/references/dev-baseline.md`
+   - `skills/dev-image-to-code/references/dev-baseline.md`
+   - `skills/swagger-doc-skill/references/dev-baseline.md`
 5. **CHANGELOG 必填**:在 `CHANGELOG.md` 加 entry。
 6. **通知**:merge 后在团队群通知,并附 PR 链接。
 

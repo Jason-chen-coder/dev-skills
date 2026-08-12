@@ -6,11 +6,11 @@
 
 ## 60 秒了解这是什么
 
-dev-skills 是团队的工程规范载体。它用轻量 SDD 把需求、方案、实现、验证和 review 串成一条可追踪链路。它有三层:
+dev-skills 是团队的工程规范载体。它用轻量 SDD 把需求、方案、实现、验证和 review 串成一条可追踪链路,并提供独立的 Swagger/OpenAPI 文档查询入口。它有三层:
 
 - **行为基线**(`references/dev-baseline.md` + `docs/why-dev-baseline.md`):所有 skill 共享的四条原则,以及每条原则关闭的失败模式。
 - **Always-on 模板**(`CLAUDE.md.template` / `AGENTS.md.template`):复制到消费项目根目录后,成为 agent 永远在背景读取的短规则。
-- **场景 skill**(`dev-auto` / `dev-design-context` / `dev-grill-docs` / `dev-spec` / `dev-plan` / `dev-tdd` / `dev-fix` / `dev-image-to-code` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish`):特定时机用 Claude / Codex 跑的检查工具。
+- **场景 skill**(`dev-auto` / `dev-design-context` / `dev-grill-docs` / `dev-spec` / `dev-plan` / `dev-tdd` / `dev-fix` / `dev-image-to-code` / `swagger-doc-skill` / `dev-verify` / `dev-code-review` / `dev-commit-writer` / `dev-finish`):特定时机用 Claude / Codex 跑的检查和文档查询工具。
 
 不是替代你思考的工具,是**让你不用每次都重新想团队约定**的工具。
 
@@ -70,7 +70,7 @@ npx skills add Jason-chen-coder/dev-skills --global     # 全局
 
 ```bash
 ls .claude/skills/
-# 应看到 dev-auto / dev-design-context / dev-grill-docs / dev-spec / dev-plan / dev-tdd / dev-fix / dev-image-to-code / dev-verify / dev-code-review / dev-commit-writer / dev-finish
+# 应看到 dev-auto / dev-design-context / dev-grill-docs / dev-spec / dev-plan / dev-tdd / dev-fix / dev-image-to-code / swagger-doc-skill / dev-verify / dev-code-review / dev-commit-writer / dev-finish
 ```
 
 ### 其他 agent CLI(Cursor / Gemini CLI)
@@ -144,7 +144,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 ---
 
-## 十二个 skill 怎么选
+## 十三个 skill 怎么选
 
 先记用户入口,再理解流程门禁。你不需要主动点名每个 skill。
 
@@ -158,6 +158,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 | 需求已对齐,要把 spec 转成 Critic-approved 的实施 plan(尤其复杂功能 / 高风险改动) | `dev-plan` |
 | 修 bug:复现 + 假设 + 反向追溯 + 修 root cause + defense-in-depth + regression test + pattern analysis | `dev-fix` |
 | 给 UI 截图 / 设计图生成代码,并保留 input、tab、select、button 等真实控件 | `dev-image-to-code` |
+| 查询 Swagger / OpenAPI / Knife4j 文档里的模块、接口、请求响应或完整类型,或导出完整 Markdown / JSON | `swagger-doc-skill` |
 | 写完代码,commit 前要严格把关 | `dev-code-review` |
 
 ### 流程门禁和特殊入口
@@ -175,6 +176,8 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 `dev-code-review` 和 `dev-commit-writer` 是**二选一**,不要都跑。
 `dev-design-context` 是设计类工作的**一次性前置步骤**,会写 `.design-context.md`;普通后端任务可以跳过。
 `dev-image-to-code` 要求 UI 图 + 设计尺寸;如果缺尺寸,先问用户,用户没有再用图片像素兜底。图片里看不准的文案、状态、隐藏面板和业务行为必须先问。
+`swagger-doc-skill` 支持 Swagger UI、OpenAPI JSON/YAML、Knife4j、FastAPI docs 和 Redoc。它可列模块/tag、接口,查看单个接口的请求/响应,输出完整 schema / model / DTO,或导出整份 Markdown / JSON API 文档。对话里可以说 `用 swagger-doc-skill 查询这个 Knife4j 文档的模块、接口和完整类型: <docs-url>`。
+Swagger source 只在**当前 chat**复用:当前 chat 只有一个已确认来源时可继续追问;出现多个来源时必须先确认,不能跨 chat 继承。项目配置只在显式传入 `--config <path>` 时读取,不得把 chat 中的 URL、token 或 header 自动写入共享配置。
 `dev-grill-docs → dev-plan` 是松耦合衔接 —— spec 写完后用户决定要不要进 plan,简单功能可直接进编码,不强制。
 `dev-spec` 只保留兼容触发,实际按 `dev-grill-docs --spec-only` 执行,不会写 `CONTEXT.md` / ADR。
 `dev-fix` 与 `dev-grill-docs` 是**平行入口** —— 新需求走 dev-grill-docs,bug 报告走 dev-fix。feature / hotfix / refactor 的直接编码路径用 `dev-tdd`;bug 路径由 `dev-fix` 内置 failing test + red→green→red,之后在 `dev-verify → dev-code-review` 合流。
@@ -250,6 +253,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 - 至少跑 3 次 `dev-code-review`,熟悉报告格式。
 - 至少跑 1 次 `dev-grill-docs`,体验需求拷问和 spec artifact 生成(很多人这一步会「啊原来我没想清楚」)。旧提示里的 `dev-spec` 仍可用,但只是 spec-only 兼容入口。
+- 找一份可访问的 Swagger/OpenAPI/Knife4j 文档跑 1 次 `swagger-doc-skill`,分别查看模块、接口和完整类型定义;需要交付时再导出 Markdown / JSON。
 - 把 [`references/calibration-cases.md`](../references/calibration-cases.md) 的 case 自己跑一遍,对照 canonical answer,**这是最快内化 baseline 的方式**。
 
 ---

@@ -12,6 +12,7 @@
 ## [Unreleased]
 
 ### Added
+- **`swagger-doc-skill`**:新增 Swagger UI / OpenAPI / Knife4j / FastAPI docs / Redoc 查询与导出 skill。支持模块/tag、endpoint、单接口请求响应、完整 schema/model/DTO 类型定义,以及完整 Markdown / JSON API 文档导出;Swagger source 只在当前 chat 复用,多来源先确认,配置仅在显式 `--config <path>` 时读取。
 - **`dev-image-to-code` skill**:新增 UI 图 / 截图生成代码 skill。要求用户提供 UI 图和设计尺寸;若缺尺寸先询问,用户没有再用图片像素兜底。图片分析阶段按 `SOURCE / PARTIAL / GUESS` 分级,明确控件必须保留 input、tab、select、button 等语义和可见交互,实现后用截图、交互 smoke 和视觉对比验证。
 - **`dev-grill-docs` skill**:新增术语 / 边界 / 决策拷问 skill,吸收 grill-with-docs 模式。它先读现有代码和文档,一次只问一个关键问题,把稳定领域词汇写入 `CONTEXT.md`,必要时用 `docs/adr/` 记录 durable decision。
 - **SDD workflow guide**:新增 `docs/sdd-workflow.md`,把现有 dev-skills 流程定义为轻量 Spec-Driven Development:Spec-first / Spec-anchored 为主,明确 artifact contract、feature path、bug path、multi-agent contract 和 drift control。
@@ -29,9 +30,10 @@
 - **Skill 重命名**:入口推荐器统一命名为 `dev-auto`,目录迁移到 `skills/dev-auto/`,并同步 README、onboarding、landing page、Claude/Codex plugin manifest、历史 changelog 和仓库校验脚本。
 - **Always-on 模板瘦身**:`CLAUDE.md.template` 和 `AGENTS.md.template` 改为短版常驻规则,保留 baseline、硬规则、agent 工作方式、dev-skills 路由和少量 team-specific placeholder;详细团队治理说明移到 `docs/team-policy.md`。
 - **文档入口同步**:README 和 onboarding 增加规则分层说明,把 `docs/why-dev-baseline.md` 与 `docs/team-policy.md` 纳入新用户阅读路径。
-- **Skill inventory 同步到 12 个**:README、onboarding、landing page、Claude/Codex plugin manifest 和仓库校验脚本同步加入 `dev-grill-docs` 与 `dev-image-to-code`。
+- **Skill inventory 同步到 13 个**:README、onboarding、landing page、Claude/Codex plugin manifest 和仓库校验脚本同步纳入 `dev-grill-docs`、`dev-image-to-code` 与 `swagger-doc-skill`。
 
 ### Fixed
+- **Codex installer 清单补齐**:`scripts/install-codex-skills.sh` 原先遗漏 `dev-image-to-code`,导致 Codex 安装/升级未同步完整 skill inventory;现已补齐并纳入仓库校验。
 - **GitHub Pages 根路径 404**:当前仓库 Pages 发布源是 `master` 根目录,新增根目录 `index.html` 和 `.nojekyll`,让 `https://jason-chen-coder.github.io/dev-skills/` 直接加载 H5 正式站点。
 - **H5 升级命令入口缺失**:安装区新增 Install / Upgrade 操作切换,Claude Code / Codex / `npx skills` 都可以直接复制对应升级命令;Codex 的安装 / 升级细节收进 `scripts/install-codex-skills.sh`,页面和文档只暴露短命令。
 - **Codex skill metadata 加载兼容性**:缩短并重写全部 6 个 dev skill 的 `SKILL.md` frontmatter `description`,在 Codex 1024 字符限制内保留关键中英文触发词;将完整触发词、路由规则和参数说明移入正文 `Trigger routing` 段。

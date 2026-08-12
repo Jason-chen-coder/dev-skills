@@ -17,6 +17,7 @@ EXPECTED_SKILLS=(
   dev-design-context
   dev-grill-docs
   dev-image-to-code
+  swagger-doc-skill
 )
 
 AGENT_CAPABLE_SKILLS=(
@@ -26,6 +27,7 @@ AGENT_CAPABLE_SKILLS=(
   dev-verify
   dev-code-review
   dev-design-context
+  swagger-doc-skill
 )
 
 MAIN_AGENT_FIRST_SKILLS=(
@@ -45,6 +47,7 @@ SDD_AWARE_SKILLS=(
   dev-fix
   dev-verify
   dev-code-review
+  swagger-doc-skill
 )
 
 OLD_WORKFLOW_SKILL="dev-"
@@ -80,6 +83,11 @@ for skill in "${EXPECTED_SKILLS[@]}"; do
   [[ -f "skills/$skill/SKILL.md" ]] || fail "skills/$skill/SKILL.md missing"
   [[ -f "skills/$skill/references/dev-baseline.md" ]] || fail "skills/$skill/references/dev-baseline.md missing"
 done
+[[ -f skills/swagger-doc-skill/agents/openai.yaml ]] || fail "swagger-doc-skill agents/openai.yaml missing"
+[[ -f skills/swagger-doc-skill/references/output-format.md ]] || fail "swagger-doc-skill output-format reference missing"
+[[ -x skills/swagger-doc-skill/scripts/extract_swagger_docs.mjs ]] || fail "swagger-doc-skill extractor missing or not executable"
+[[ -f skills/swagger-doc-skill/scripts/extract_swagger_docs.test.mjs ]] || fail "swagger-doc-skill regression test missing"
+[[ -f skills/swagger-doc-skill/swagger.config.example.json ]] || fail "swagger-doc-skill config example missing"
 
 echo "Checking team template guard..."
 [[ ! -f CLAUDE.md ]] || fail "CLAUDE.md should not exist at repo root; use CLAUDE.md.template"
@@ -145,14 +153,17 @@ assert old_workflow not in serialized
 PY
 
 echo "Checking docs mention the expanded skill set..."
-grep -q '12 个 skill' README.md || fail "README.md should advertise 12 skills"
-grep -q 'skills-12' README.md || fail "README badge should advertise skills-12"
+grep -q '13 个 skill' README.md || fail "README.md should advertise 13 skills"
+grep -q 'skills-13' README.md || fail "README badge should advertise skills-13"
 grep -q 'dev-auto' README.md || fail "README.md missing dev-auto"
 grep -q 'dev-design-context' README.md || fail "README.md missing dev-design-context"
 grep -q 'dev-grill-docs' README.md || fail "README.md missing dev-grill-docs"
 grep -q 'dev-image-to-code' README.md || fail "README.md missing dev-image-to-code"
 grep -q 'dev-image-to-code' CHANGELOG.md || fail "CHANGELOG.md missing dev-image-to-code"
 grep -q 'dev-image-to-code' docs/onboarding.md || fail "docs/onboarding.md missing dev-image-to-code"
+grep -q 'swagger-doc-skill' README.md || fail "README.md missing swagger-doc-skill"
+grep -q 'swagger-doc-skill' CHANGELOG.md || fail "CHANGELOG.md missing swagger-doc-skill"
+grep -q 'swagger-doc-skill' docs/onboarding.md || fail "docs/onboarding.md missing swagger-doc-skill"
 grep -q 'dev-design-context' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing dev-design-context"
 grep -q 'dev-design-context' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing dev-design-context"
 grep -q 'dev-design-context' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing dev-design-context"
@@ -162,73 +173,45 @@ grep -q 'dev-grill-docs' .codex-plugin/plugin.json || fail ".codex-plugin/plugin
 grep -q 'dev-image-to-code' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing dev-image-to-code"
 grep -q 'dev-image-to-code' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing dev-image-to-code"
 grep -q 'dev-image-to-code' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing dev-image-to-code"
+grep -q 'swagger-doc-skill' .claude-plugin/plugin.json || fail ".claude-plugin/plugin.json missing swagger-doc-skill"
+grep -q 'swagger-doc-skill' .claude-plugin/marketplace.json || fail ".claude-plugin/marketplace.json missing swagger-doc-skill"
+grep -q 'swagger-doc-skill' .codex-plugin/plugin.json || fail ".codex-plugin/plugin.json missing swagger-doc-skill"
 grep -q 'dev-grill-docs' site/index.html || fail "site/index.html missing dev-grill-docs"
 grep -q 'dev-grill-docs' index.html || fail "index.html missing dev-grill-docs"
-grep -q 'dev-grill-docs' site/app.js || fail "site/app.js missing dev-grill-docs"
 grep -q 'dev-image-to-code' site/index.html || fail "site/index.html missing dev-image-to-code"
 grep -q 'dev-image-to-code' index.html || fail "index.html missing dev-image-to-code"
-grep -q 'dev-image-to-code' site/app.js || fail "site/app.js missing dev-image-to-code"
+grep -q 'swagger-doc-skill' site/index.html || fail "site/index.html missing swagger-doc-skill"
+grep -q 'swagger-doc-skill' index.html || fail "index.html missing swagger-doc-skill"
+installer_skills="$(awk '/^EXPECTED_SKILLS=\($/{inside=1; next} inside && /^\)/{exit} inside {print $1}' scripts/install-codex-skills.sh)"
+for skill in "${EXPECTED_SKILLS[@]}"; do
+  printf '%s\n' "$installer_skills" | grep -qx "$skill" || fail "Codex installer missing $skill"
+done
+installer_skill_count="$(printf '%s\n' "$installer_skills" | wc -l | tr -d ' ')"
+[[ "$installer_skill_count" -eq "${#EXPECTED_SKILLS[@]}" ]] || fail "Codex installer skill inventory differs from validator inventory"
+grep -q 'Do not inherit Swagger sources across chats' skills/swagger-doc-skill/SKILL.md || fail "swagger-doc-skill missing cross-chat source isolation"
+grep -q 'only reads config files when `--config' skills/swagger-doc-skill/SKILL.md || fail "swagger-doc-skill must require explicit config loading"
+grep -q '<skill-dir>/scripts/extract_swagger_docs.mjs' skills/swagger-doc-skill/SKILL.md || fail "swagger-doc-skill commands must resolve from the skill directory"
+if grep -q 'node swagger-doc-skill/scripts' skills/swagger-doc-skill/SKILL.md; then
+  fail "swagger-doc-skill commands must not depend on the project working directory"
+fi
 grep -q 'Compatibility alias for dev-grill-docs spec-only mode' skills/dev-spec/SKILL.md || fail "dev-spec should be a compatibility alias for dev-grill-docs"
 grep -q 'dev-grill-docs --spec-only' README.md || fail "README.md should describe dev-spec as dev-grill-docs --spec-only"
 grep -q 'dev-grill-docs --spec-only' docs/sdd-workflow.md || fail "docs/sdd-workflow.md should describe dev-spec as dev-grill-docs --spec-only"
 grep -q -- '-> dev-grill-docs' docs/multi-agent-policy.md || fail "docs/multi-agent-policy.md feature path should route through dev-grill-docs"
-grep -q 'dev-grill-docs user-export' site/app.js || fail "site/app.js runtime preview should recommend dev-grill-docs"
 grep -q 'dev-design-context' site/index.html || fail "site/index.html missing dev-design-context"
 grep -q 'dev-design-context' index.html || fail "index.html missing dev-design-context"
-grep -q 'dev-design-context' site/app.js || fail "site/app.js missing dev-design-context"
-grep -q 'agent-mode' site/index.html || fail "site/index.html missing agent-mode section"
-grep -q 'agent-mode' index.html || fail "index.html missing agent-mode section"
-grep -q 'agent.title' site/app.js || fail "site/app.js missing agent mode translations"
-grep -q 'experience-section' site/index.html || fail "site/index.html missing wrapped experience section"
-grep -q 'experience-section' index.html || fail "index.html missing wrapped experience section"
-grep -q 'data-experience-mode="agents"' site/index.html || fail "site/index.html missing agent top-level tab"
-grep -q 'data-experience-mode="agents"' index.html || fail "index.html missing agent top-level tab"
-grep -q 'data-experience-only="agents"' site/index.html || fail "site/index.html missing agent-only content marker"
-grep -q 'data-experience-only="agents"' index.html || fail "index.html missing agent-only content marker"
-grep -q 'workflow-grid-agents' site/index.html || fail "site/index.html missing agent workflow grid"
-grep -q 'workflow-grid-agents' index.html || fail "index.html missing agent workflow grid"
-grep -q 'data-install-action="upgrade"' site/index.html || fail "site/index.html missing upgrade install action"
-grep -q 'data-install-action="upgrade"' index.html || fail "index.html missing upgrade install action"
-grep -q 'install.action.upgrade' site/app.js || fail "site/app.js missing upgrade action translation"
-grep -q 'upgradeCommand' site/app.js || fail "site/app.js missing upgrade commands"
 grep -q 'id="articles"' site/index.html || fail "site/index.html missing CSDN articles section"
 grep -q 'id="articles"' index.html || fail "index.html missing CSDN articles section"
 grep -q 'href="#articles"' site/index.html || fail "site/index.html missing articles nav link"
 grep -q 'href="#articles"' index.html || fail "index.html missing articles nav link"
 grep -q 'category_13177255' site/index.html || fail "site/index.html missing CSDN column link"
 grep -q 'category_13177255' index.html || fail "index.html missing CSDN column link"
-grep -q 'articles.footer.link' site/app.js || fail "site/app.js missing articles translations"
-for article_key in latest commit fix workflow evidence intake; do
-  grep -q "articles.$article_key.title" site/app.js || fail "site/app.js missing articles.$article_key.title translation"
-done
-grep -q 'article-showcase' site/styles.css || fail "site/styles.css missing article showcase styles"
-grep -q 'article-cover' site/styles.css || fail "site/styles.css missing article cover styles"
-grep -q 'article-cover' site/index.html || fail "site/index.html missing article covers"
-grep -q 'article-cover' index.html || fail "index.html missing article covers"
-awk '/<section id="articles"/{in_articles=1} /<section id="install"/{in_articles=0} in_articles && /<p>/{exit 1}' site/index.html || fail "site/index.html articles section should use cover images instead of description paragraphs"
-awk '/<section id="articles"/{in_articles=1} /<section id="install"/{in_articles=0} in_articles && /<p>/{exit 1}' index.html || fail "index.html articles section should use cover images instead of description paragraphs"
 for article_id in 161932215 161881057 161851302 161822966 161792237 161752082; do
   grep -q "article/details/$article_id" site/index.html || fail "site/index.html missing CSDN article $article_id"
   grep -q "article/details/$article_id" index.html || fail "index.html missing CSDN article $article_id"
 done
-for cover_path in \
-  article-assets/sdd-ai-constraints/cover.png \
-  article-assets/dev-code-review-before-commit/00-infographic-no-direct-commit.png \
-  article-assets/dev-fix-root-cause/cover.png \
-  article-assets/ai-demand-to-commit/cover.png \
-  article-assets/ai-11-gates/delivery-gates-contrast.png \
-  article-assets/ai-danger-moment/cover.png; do
-  [[ -f "$cover_path" ]] || fail "missing article cover $cover_path"
-done
-grep -q '/plugin update dev-skills' site/app.js || fail "site/app.js missing Claude upgrade command"
-grep -q 'bash scripts/install-codex-skills.sh' site/app.js || fail "site/app.js missing simple Codex install command"
-grep -q 'bash scripts/install-codex-skills.sh --upgrade' site/app.js || fail "site/app.js missing simple Codex upgrade command"
 grep -q 'bash scripts/install-codex-skills.sh --upgrade' README.md || fail "README.md missing simple Codex upgrade command"
 grep -q 'bash scripts/install-codex-skills.sh --upgrade' docs/onboarding.md || fail "docs/onboarding.md missing simple Codex upgrade command"
-grep -q 'npx skills update' site/app.js || fail "site/app.js missing npx upgrade command"
-grep -q 'agentPreviews' site/app.js || fail "site/app.js missing agent runtime preview data"
-grep -q 'workflowNodeSpecsByMode' site/app.js || fail "site/app.js missing mode-specific workflow graph data"
-grep -q 'setExperienceMode' site/app.js || fail "site/app.js missing top-level experience mode switch"
 grep -q '^## 升级' docs/onboarding.md || fail "docs/onboarding.md missing upgrade section"
 if grep -q 'for skill in dev-auto' README.md docs/onboarding.md site/app.js; then
   fail "Codex user-facing install docs should use scripts/install-codex-skills.sh instead of exposing the sync loop"
@@ -241,9 +224,6 @@ grep -q 'docs/sdd-workflow.md' docs/onboarding.md || fail "docs/onboarding.md mi
 grep -q 'docs/sdd-workflow.md' docs/multi-agent-policy.md || fail "docs/multi-agent-policy.md missing docs/sdd-workflow.md"
 grep -q 'SDD artifact 对齐' CLAUDE.md.template || fail "CLAUDE.md.template missing SDD artifact rule"
 grep -q 'SDD artifact 对齐' AGENTS.md.template || fail "AGENTS.md.template missing SDD artifact rule"
-grep -q '轻量 SDD' site/app.js || fail "site/app.js missing SDD landing copy"
-grep -q '轻量 SDD' site/index.html || fail "site/index.html missing SDD fallback copy"
-grep -q '轻量 SDD' index.html || fail "index.html missing SDD fallback copy"
 grep -q 'docs/multi-agent-policy.md' README.md || fail "README.md missing docs/multi-agent-policy.md"
 grep -q 'docs/multi-agent-policy.md' docs/onboarding.md || fail "docs/onboarding.md missing docs/multi-agent-policy.md"
 grep -q 'Spec-anchored' docs/sdd-workflow.md || fail "docs/sdd-workflow.md missing Spec-anchored guidance"
@@ -270,6 +250,14 @@ echo "Checking SDD contract coverage..."
 for skill in "${SDD_AWARE_SKILLS[@]}"; do
   grep -q 'SDD' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md missing SDD handoff language"
 done
+
+echo "Checking swagger-doc-skill regression tests..."
+node --check skills/swagger-doc-skill/scripts/extract_swagger_docs.mjs
+node --check skills/swagger-doc-skill/scripts/extract_swagger_docs.test.mjs
+node skills/swagger-doc-skill/scripts/extract_swagger_docs.test.mjs
+
+echo "Checking landing page contract..."
+node scripts/test-landing-page.mjs
 
 if grep -RIEq "$OLD_WORKFLOW_SKILL|$OLD_WORKFLOW_TITLE" \
   README.md CLAUDE.md.template AGENTS.md.template CHANGELOG.md CONTRIBUTING.md \
