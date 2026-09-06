@@ -8,10 +8,10 @@
 
 ## 1. 行为基线
 
-所有任务都遵守 `references/dev-baseline.md` 的四条原则:
+以下四条原则自包含生效;安装包内的 `references/dev-baseline.md` 是详细版本:
 
-- **不假设**:多解时列选项;看不懂就停;隐含前提要显式。
-- **最小代码**:没要求的不做;单次使用不抽象;不为未来可能性写框架。
+- **不假设**:先查现有上下文;关键业务、契约或授权缺口才问;低风险可逆选择沿用项目惯例并说明重要假设。
+- **最小代码**:没要求的不做;抽象要有当前收益;流程长度按风险决定。
 - **外科手术式改动**:只动任务需要的代码;不顺手重构、格式化或改邻近注释。
 - **可验证成功标准**:完成前给出新鲜验证证据;测试必须断言行为,不是只断言 shape。
 
@@ -48,7 +48,7 @@
 - **写作和 review 分开**:authoring pass 负责创建或修改;review / verification pass 必须重新看 diff、跑命令、拿证据,不能只复述刚才的实现判断。
 - **完成前清零 pending**:结束前确认没有未处理 finding、TODO、失败测试或挂起命令;如果仍有风险,明确列出而不是说 ready。
 - **失败按归属回流**:验证失败回实现或 `dev-fix`;review P0/P1 先修再 commit;spec / plan blocked 回用户决策,不要硬推进。
-- **流程保持显式**:不要用隐藏后台流程、魔法关键词或自动调起其他 skill 跳过用户可见步骤。
+- **授权连续有效**:用户已批准的必要步骤继续执行,不在 skill 切换时重复确认;说明重要进展。只要分析、方案或 review 时保持对应模式。
 
 ---
 
@@ -66,13 +66,13 @@
 
 - 不知道下一步时跑 `dev-auto`;它只指路,不调起其他 skill。
 - UI / landing page / 产品界面类工作,首次进入项目前可跑 `dev-design-context`,把设计上下文沉淀到 `.design-context.md`。
-- 新功能 / 改功能先走 `dev-grill-docs`,生成 `.claude/artifacts/designs/<slug>.md`;稳定领域词汇可沉淀到 `CONTEXT.md`,必要时写 `docs/adr/`。
+- 新功能 / 改功能需求不清时走 `dev-grill-docs`,默认产物为 `.claude/artifacts/designs/<slug>.md`;项目已有文档位置则沿用,明确小改动不强制补 spec。
 - `dev-spec` 仅作兼容入口,等价于 `dev-grill-docs --spec-only`。
 - 复杂新功能在 `dev-grill-docs` 后可接 `dev-plan --deliberate`。
 - feature / refactor / direct hotfix 写生产代码前默认走 `dev-tdd`。
-- bug 报告走 `dev-fix`;它自带 failing regression test 和 red→green→red,不要再追加一轮 `dev-tdd`。
+- bug 报告走 `dev-fix`;它负责复现、根因和回归证据,不要再追加一轮 `dev-tdd`。需要反证时用隔离副本,不得 stash 或撤销用户改动。
 - 声称完成 / fixed / ready 前必须跑 `dev-verify` 或给出等价 fresh verification evidence。
-- commit 前默认跑 `dev-code-review`;只有用户明确说跳过 review 时才用 `dev-commit-writer`。
+- commit 请求默认跑 `dev-code-review`;只要 message 时用 `dev-commit-writer`,写 message 不等于 review 通过或授权提交。
 - 验证和 review 通过后用 `dev-finish` 处理 PR / merge / keep / discard。
 
 ---
@@ -95,6 +95,6 @@
 
 ## 8. 冲突处理
 
-- 用户当下明确指令 > 本文件 > skill 局部流程 > `references/dev-baseline.md`。
-- 如果用户指令与本文件冲突,先一句话点明冲突并请求确认;用户确认后照办,并在 commit / PR 描述里记录例外原因。
+- 遵守运行环境的指令优先级;本模板和 skill 的默认流程不能覆盖用户明确目标、限制及已有授权。
+- 对已明确的用户选择直接执行并在必要时说明取舍;只有缺少关键决定或对应动作授权时才询问,不为同一例外重复确认。
 - 如果 skill 输出与本文件冲突,以本文件为准,并把冲突作为 dev-skills bug 反馈。

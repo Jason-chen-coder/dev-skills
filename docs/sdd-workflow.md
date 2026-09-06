@@ -75,7 +75,9 @@ Spec-as-source treats implementation as mostly derived from specs. That requires
 | `.claude/artifacts/fixes/<slug>.md` | `dev-fix` | Bug contract: symptom, repro, hypotheses, root cause, fix, regression evidence. |
 | Chat evidence | `dev-tdd`, `dev-verify`, `dev-code-review` | Red/green evidence, verification commands, review verdict, commit message. |
 
-Artifact files are optional for tiny hotfixes, but once they exist they become the source of truth for the current work item.
+Use an existing project artifact convention when present; the paths above are defaults for compatibility. Small, clear work may keep its contract in the conversation. Existing artifacts are coordination evidence: check their status and relevance against the current request. A DRAFT file's existence does not establish approval.
+
+Reuse decisions and authorization already supplied by the user. Ask only about unresolved material choices; do not require another approval of the same scope at each skill boundary.
 
 ---
 
@@ -122,7 +124,7 @@ Bug work is still SDD, but the "spec" is the failure contract:
 - regression test
 - verification evidence
 
-Do not route bug work through a second `dev-tdd` phase after `dev-fix`. `dev-fix` already owns the failing test and red -> green -> red proof.
+Do not route bug work through a second `dev-tdd` phase after `dev-fix`. `dev-fix` already owns regression evidence. Red -> green is the usual proof; an additional fix reversal is useful only when test sensitivity remains uncertain, and must be isolated from the user's working tree and index.
 
 ---
 

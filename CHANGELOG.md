@@ -11,6 +11,14 @@
 
 ## [Unreleased]
 
+### Skill Workflow Revision
+
+- 精简 13 个正式 skill 的入口,按任务读取示例和专项参考;保持独立安装所需规则自包含,不绑定模型版本或虚构模型能力。
+- 调整共享 baseline:先查证再询问关键缺口,允许低风险可逆选择,沿用用户已有授权;流程和测试按风险伸缩。同步 13 份副本及团队模板/文档。
+- 删除固定访谈/假设配额、同上下文模拟独立批准、dirty 一律停下和通过 stash 反转修复等规则。保留业务/权限边界、工作区与 index 保护、真实验证和提交范围。
+- 更新触发及交付边界:只写 commit message 无需额外确认跳过 review;DRAFT artifact 不等于批准;dev-spec 独立安装有 fallback;截图缺尺寸可读取元数据。
+- 重写校准用例,覆盖正常路径、误触发、授权连续性和证据限制。结构检查与行为评估分开记录,不将入口缩短等同于已量化的模型性能提升。
+
 ### Added
 - **`swagger-doc-skill`**:新增 Swagger UI / OpenAPI / Knife4j / FastAPI docs / Redoc 查询与导出 skill。支持模块/tag、endpoint、单接口请求响应、完整 schema/model/DTO 类型定义,以及完整 Markdown / JSON API 文档导出;Swagger source 只在当前 chat 复用,多来源先确认,配置仅在显式 `--config <path>` 时读取。
 - **`dev-image-to-code` skill**:新增 UI 图 / 截图生成代码 skill。要求用户提供 UI 图和设计尺寸;若缺尺寸先询问,用户没有再用图片像素兜底。图片分析阶段按 `SOURCE / PARTIAL / GUESS` 分级,明确控件必须保留 input、tab、select、button 等语义和可见交互,实现后用截图、交互 smoke 和视觉对比验证。

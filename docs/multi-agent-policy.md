@@ -64,7 +64,9 @@ Common behavioral roles:
 | reviewer | `worker` | independent diff review before commit |
 | design explorer | `explorer` | design-system and UI convention discovery |
 
-These are behavioral roles, not necessarily native runtime types. If a runtime only exposes `default`, `explorer`, and `worker`, use the closest fit and put the role contract in the prompt.
+These are behavioral roles, not necessarily native runtime types. Inspect the actual runtime capabilities and use a supported role; do not invent an agent API, tool name or model identifier. Keep the runtime's configured model unless the user requests an available override.
+
+Repository links in skills are optional background for maintainers. A separately installed skill must work from its own instructions and bundled references without requiring this document in the consuming project.
 
 ---
 
@@ -72,6 +74,7 @@ These are behavioral roles, not necessarily native runtime types. If a runtime o
 
 Delegate only when all of these are true:
 
+- Delegation is available and permitted by the current runtime and task instructions.
 - The subtask is bounded.
 - The expected output is clear.
 - The assigned files or responsibility area are clear.
@@ -86,6 +89,8 @@ Do not delegate when:
 - the task involves final git operations
 - the task involves destructive cleanup or branch discard
 - the subtask is mainly a product decision rather than execution
+
+Independent review means a separate reviewer with the request, relevant source and actual diff. Sequentially writing "planner", "architect" and "critic" responses in one context is a self-check, not independent approval. When a reviewer is unavailable, report that limitation and provide the supported self-check evidence without inventing approval.
 
 ---
 

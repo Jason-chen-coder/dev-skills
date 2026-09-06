@@ -28,7 +28,7 @@
 ### 编码 / 完成门禁
 
 - feature / refactor / direct hotfix 写生产代码前默认走 `dev-tdd`。
-- bug 报告走 `dev-fix`;它内置 failing regression test、root-cause fix 和 red→green→red。
+- bug 报告走 `dev-fix`;它负责原问题复现、root-cause fix 和回归证据。通常 red→green 已足够,测试敏感性存疑时再在隔离副本反证。
 - 任何“完成 / fixed / ready / 可以 commit”声明前必须有 fresh verification evidence。
 - 分支实现完成且验证、review 通过后,用 `dev-finish` 处理 merge / PR / keep / discard。
 
@@ -44,7 +44,7 @@
 - 第一次写文件前,如果 `git status --short` 为空,且任务预计会修改代码 / 多文件规则 / 配置 / 测试,建议创建独立 worktree。
 - 可跳过的场景:纯 typo / 单文件小文档 / 用户明确说直接在当前目录改 / 当前已经在专用 worktree 或任务分支内。
 - 当前分支是 `main` / `master` / `release/*` 时,默认推荐 worktree。
-- 当前 working tree 已经 dirty 时,不要从脏目录直接建 worktree;先说明已有改动,避免混入用户改动。
+- 当前 working tree 已经 dirty 时,先确认归属并保留已有改动;可在范围清晰时继续原目录工作。确需隔离时基于明确的提交创建 worktree,不要自动 stash、搬移或清除用户改动。
 
 推荐命令:
 
@@ -100,7 +100,7 @@ PR 至少包含:
 
 建议门槛:
 
-- 任何修改业务逻辑的 PR 必须有单测;仅文档 / 配置 / 重命名可豁免。
+- 业务逻辑改动应有能够覆盖行为和风险的测试;优先复用现有测试层,无需强制使用单测。低影响文档 / 配置 / 重命名用相应检查。
 - PR 新增/删除 < 500 行为佳;超过先沟通拆分。
 - Reviewer ≥ 1 人 approval;核心模块(鉴权、支付、PII、迁移)≥ 2 人。
 - 不允许 self-merge,除非 hotfix 流程明确允许。
@@ -117,8 +117,8 @@ PR 至少包含:
 
 取舍参考:
 
-- 全局覆盖率 60-70% 是常见起点;< 50% 通常意味着 P0 bug 漏网风险高。
-- > 90% 全局覆盖率容易诱导凑数测试;“关键路径 100% + 全局 70%”通常更实用。
+- 覆盖率只能辅助发现未测试路径,不能直接推断故障严重度或正确性。
+- 优先验证关键业务结果、失败恢复和边界,避免为了百分比增加只匹配实现的测试。
 - 慢而 flaky 的 E2E 应少跑但跑在关键节点,不要用它替代单测。
 
 ---

@@ -155,7 +155,7 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 | 不知道下一步该跑哪个 / 失败了想恢复 | `dev-auto`(入口推荐器,只指路) |
 | 写代码前对模糊需求做对齐,并按需沉淀术语 / 决策 | `dev-grill-docs` |
 | 旧提示或旧工作流里写着 dev-spec | `dev-spec`(兼容入口,等价于 `dev-grill-docs --spec-only`) |
-| 需求已对齐,要把 spec 转成 Critic-approved 的实施 plan(尤其复杂功能 / 高风险改动) | `dev-plan` |
+| 需求已对齐,要把 spec 转成可执行和可验证的实施 plan(尤其复杂功能 / 高风险改动) | `dev-plan` |
 | 修 bug:复现 + 假设 + 反向追溯 + 修 root cause + defense-in-depth + regression test + pattern analysis | `dev-fix` |
 | 给 UI 截图 / 设计图生成代码,并保留 input、tab、select、button 等真实控件 | `dev-image-to-code` |
 | 查询 Swagger / OpenAPI / Knife4j 文档里的模块、接口、请求响应或完整类型,或导出完整 Markdown / JSON | `swagger-doc-skill` |
@@ -165,22 +165,22 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 | 类型 | Skill | 什么时候出现 |
 |---|---|---|
-| 流程门禁 | `dev-tdd` | feature / hotfix / refactor 写生产代码前,由 agent 提醒走红绿重构。 |
+| 流程门禁 | `dev-tdd` | feature / hotfix / refactor 按行为和风险选择测试;新增行为优先先测后改,重构可用原实现已通过的行为刻画测试,低影响改动可复用适当检查。 |
 | 流程门禁 | `dev-verify` | 声称完成 / fixed / ready 前,由 agent 要求 fresh evidence。 |
 | 流程门禁 | `dev-finish` | 验证和 review 通过后,用于 merge / PR / keep / discard。 |
 | 一次性设置 | `dev-design-context` | UI / landing page / 产品界面首次进入项目前,让 agent 先理解设计方向。 |
-| 看图写页面 | `dev-image-to-code` | 用户提供 UI 图和设计尺寸后,分析图片、确认疑点、实现页面并做截图 / 交互验证。 |
+| 看图写页面 | `dev-image-to-code` | 用户提供 UI 图后,分析图片、解决关键缺口、实现页面并做截图 / 交互验证;设计尺寸可从图片元数据兜底。 |
 | 需求对齐 | `dev-grill-docs` | 拷问术语、边界和决策,生成 spec artifact;稳定内容可写入 `CONTEXT.md` / ADR。 |
-| 显式旁路 | `dev-commit-writer` | 只有改动很简单 / 已自审过,并且明确只想要 commit message 时使用。 |
+| 消息生成 | `dev-commit-writer` | 明确只想要 commit message 时使用;不代表已通过 review 或授权执行 commit。 |
 
-`dev-code-review` 和 `dev-commit-writer` 是**二选一**,不要都跑。
-`dev-design-context` 是设计类工作的**一次性前置步骤**,会写 `.design-context.md`;普通后端任务可以跳过。
-`dev-image-to-code` 要求 UI 图 + 设计尺寸;如果缺尺寸,先问用户,用户没有再用图片像素兜底。图片里看不准的文案、状态、隐藏面板和业务行为必须先问。
+`dev-code-review` 可以在通过后给出 commit message,通常无需再跑 `dev-commit-writer`;用户后续单独请求 message 时仍可使用。
+`dev-design-context` 用于首次建立或明确重设设计方向,会写 `.design-context.md`;已有充分设计依据时无需重复执行。
+`dev-image-to-code` 要求 UI 图;缺设计尺寸时读取图片元数据作为暂定基准。裁剪/缩放会影响还原、关键文案或隐藏业务仍不清时才问,可逆的视觉细节参考图片和项目惯例。
 `swagger-doc-skill` 支持 Swagger UI、OpenAPI JSON/YAML、Knife4j、FastAPI docs 和 Redoc。它可列模块/tag、接口,查看单个接口的请求/响应,输出完整 schema / model / DTO,或导出整份 Markdown / JSON API 文档。对话里可以说 `用 swagger-doc-skill 查询这个 Knife4j 文档的模块、接口和完整类型: <docs-url>`。
 Swagger source 只在**当前 chat**复用:当前 chat 只有一个已确认来源时可继续追问;出现多个来源时必须先确认,不能跨 chat 继承。项目配置只在显式传入 `--config <path>` 时读取,不得把 chat 中的 URL、token 或 header 自动写入共享配置。
 `dev-grill-docs → dev-plan` 是松耦合衔接 —— spec 写完后用户决定要不要进 plan,简单功能可直接进编码,不强制。
 `dev-spec` 只保留兼容触发,实际按 `dev-grill-docs --spec-only` 执行,不会写 `CONTEXT.md` / ADR。
-`dev-fix` 与 `dev-grill-docs` 是**平行入口** —— 新需求走 dev-grill-docs,bug 报告走 dev-fix。feature / hotfix / refactor 的直接编码路径用 `dev-tdd`;bug 路径由 `dev-fix` 内置 failing test + red→green→red,之后在 `dev-verify → dev-code-review` 合流。
+`dev-fix` 与 `dev-grill-docs` 是**平行入口** —— 新需求走 dev-grill-docs,bug 报告走 dev-fix。feature / hotfix / refactor 的直接编码路径用 `dev-tdd`;bug 路径由 `dev-fix` 负责复现、根因修复和回归证据,之后在 `dev-verify → dev-code-review` 合流。
 `dev-auto` 是**可选入口推荐器**,不调起任何 skill,只读 `.claude/artifacts/` 推断当前 phase 并建议下一步。也支持 `--status` / `--next` / `--recover`。
 
 ---
@@ -199,7 +199,7 @@ Swagger source 只在**当前 chat**复用:当前 chat 只有一个已确认来�
 - `docs/multi-agent-policy.md` —— 支持多 agent runtime 时的分工、ownership、verifier / reviewer 协议。
 - `references/team-conventions.md` —— 写到具体语言时查。
 - `skills/dev-code-review/references/lang-conventions.md` —— 跨语言通用规范(dev-code-review 专属)。
-- `references/calibration-cases.md` —— 想理解 P0 / P1 / P2 边界 / dev-grill-docs ambiguity 评分 / dev-plan Critic verdict 边界时看。
+- `references/calibration-cases.md` —— 检查触发路由、关键缺口、已授权续做、独立评审和验证证据边界;将用例输入与预期观察分开执行。
 
 ---
 
