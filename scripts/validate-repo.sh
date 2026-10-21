@@ -251,6 +251,10 @@ for skill in "${SDD_AWARE_SKILLS[@]}"; do
   grep -q 'SDD' "skills/$skill/SKILL.md" || fail "skills/$skill/SKILL.md missing SDD handoff language"
 done
 
+echo "Checking behavior calibration fixture tooling (not agent trials)..."
+node --check scripts/calibrate-skills.mjs
+node --test scripts/calibrate-skills.test.mjs
+
 echo "Checking swagger-doc-skill regression tests..."
 node --check skills/swagger-doc-skill/scripts/extract_swagger_docs.mjs
 node --check skills/swagger-doc-skill/scripts/extract_swagger_docs.test.mjs

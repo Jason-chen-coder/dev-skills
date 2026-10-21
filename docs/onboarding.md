@@ -75,7 +75,7 @@ ls .claude/skills/
 
 ### 其他 agent CLI(Cursor / Gemini CLI)
 
-skill 是纯 Markdown,可以手动复制 SKILL.md 内容到对应工具的 system prompt 或 rules 区。具体路径问 leader。
+按对应工具的 skill 机制安装完整目录,保留 `SKILL.md`、`references/`、`scripts/` 等文件及相对路径。仅复制 `SKILL.md` 会漏掉基线和执行依赖。工具没有原生 skill 支持时,保留完整目录,在 rules 中说明触发条件和入口路径,执行相关任务时再加载所需内容;具体接入路径按该工具当前文档或团队约定确认。
 
 ---
 
@@ -124,21 +124,21 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 
 跑通一遍最常用的 `dev-code-review`:
 
-1. 在任何项目里**故意做一个改动**(比如新增一个函数)。
+1. 选一个范围明确的实际改动,或在临时练习仓库准备一个 diff。
 2. 别 commit,先在 Claude Code / Codex 里说:
 
    > 准备 commit,review 一下
 
-3. Claude 会调用 dev-code-review,产出一份结构化报告:
+3. Claude / Codex 会按 `dev-code-review` 审查,先列有证据的问题,再给简短结论;报告长度随实际问题调整,不必填空检查表。例如:
 
    ```
    ━━━ Dev Code Review ━━━
-   Verdict   : ✅ READY  /  ⚠ FIX P1  /  ❌ BLOCK
+   Verdict   : ✅ READY  /  ⚠ FIX P1  /  ❌ BLOCK  /  INCOMPLETE
    ...
    ```
 
-4. **照报告改**(如果有 P0/P1)。
-5. 改完再跑一次,直到 `✅ READY`,然后照报告里的 commit message commit。
+4. 处理确认的问题;如果是 `INCOMPLETE`,先补影响判断的证据。
+5. 有修改时再审查改后的结果。`✅ READY` 只覆盖已审查范围;需要提交时另按授权执行,commit message 仅在用户要求或已授权提交流程中生成。
 
 **第一次完整跑下来你就懂了。**
 
@@ -173,14 +173,14 @@ npx skills add Jason-chen-coder/dev-skills --global --force
 | 需求对齐 | `dev-grill-docs` | 拷问术语、边界和决策,生成 spec artifact;稳定内容可写入 `CONTEXT.md` / ADR。 |
 | 消息生成 | `dev-commit-writer` | 明确只想要 commit message 时使用;不代表已通过 review 或授权执行 commit。 |
 
-`dev-code-review` 可以在通过后给出 commit message,通常无需再跑 `dev-commit-writer`;用户后续单独请求 message 时仍可使用。
+`dev-code-review` 在用户要求或已授权提交流程中,可在通过后给出 commit message,通常无需再跑 `dev-commit-writer`;用户后续单独请求 message 时仍可使用。
 `dev-design-context` 用于首次建立或明确重设设计方向,会写 `.design-context.md`;已有充分设计依据时无需重复执行。
 `dev-image-to-code` 要求 UI 图;缺设计尺寸时读取图片元数据作为暂定基准。裁剪/缩放会影响还原、关键文案或隐藏业务仍不清时才问,可逆的视觉细节参考图片和项目惯例。
 `swagger-doc-skill` 支持 Swagger UI、OpenAPI JSON/YAML、Knife4j、FastAPI docs 和 Redoc。它可列模块/tag、接口,查看单个接口的请求/响应,输出完整 schema / model / DTO,或导出整份 Markdown / JSON API 文档。对话里可以说 `用 swagger-doc-skill 查询这个 Knife4j 文档的模块、接口和完整类型: <docs-url>`。
 Swagger source 只在**当前 chat**复用:当前 chat 只有一个已确认来源时可继续追问;出现多个来源时必须先确认,不能跨 chat 继承。项目配置只在显式传入 `--config <path>` 时读取,不得把 chat 中的 URL、token 或 header 自动写入共享配置。
-`dev-grill-docs → dev-plan` 是松耦合衔接 —— spec 写完后用户决定要不要进 plan,简单功能可直接进编码,不强制。
+需求清楚、范围小的工作可直接实施并做适当检查。业务含义、权限或不可逆操作仍有关键缺口时用 `dev-grill-docs` 对齐;需要需求文档时生成 spec。复杂或高风险工作先做 `dev-plan`,已有需求和方案可直接复用;已有授权覆盖的工作持续推进,不用在每个 skill 边界再次确认。
 `dev-spec` 只保留兼容触发,实际按 `dev-grill-docs --spec-only` 执行,不会写 `CONTEXT.md` / ADR。
-`dev-fix` 与 `dev-grill-docs` 是**平行入口** —— 新需求走 dev-grill-docs,bug 报告走 dev-fix。feature / hotfix / refactor 的直接编码路径用 `dev-tdd`;bug 路径由 `dev-fix` 负责复现、根因修复和回归证据,之后在 `dev-verify → dev-code-review` 合流。
+`dev-fix` 与 `dev-grill-docs` 是**平行入口** —— 需要梳理的新需求走 `dev-grill-docs`,bug 报告走 `dev-fix`。feature / hotfix / refactor 的直接编码路径用 `dev-tdd`;bug 路径由 `dev-fix` 负责复现、根因修复和回归证据,之后在 `dev-verify → dev-code-review` 合流。
 `dev-auto` 是**可选入口推荐器**,不调起任何 skill,只读 `.claude/artifacts/` 推断当前 phase 并建议下一步。也支持 `--status` / `--next` / `--recover`。
 
 ---
@@ -199,7 +199,9 @@ Swagger source 只在**当前 chat**复用:当前 chat 只有一个已确认来�
 - `docs/multi-agent-policy.md` —— 支持多 agent runtime 时的分工、ownership、verifier / reviewer 协议。
 - `references/team-conventions.md` —— 写到具体语言时查。
 - `skills/dev-code-review/references/lang-conventions.md` —— 跨语言通用规范(dev-code-review 专属)。
-- `references/calibration-cases.md` —— 检查触发路由、关键缺口、已授权续做、独立评审和验证证据边界;将用例输入与预期观察分开执行。
+- `references/calibration-cases.md` —— 检查触发路由、关键缺口、已授权续做、独立评审和验证证据边界;将用例输入与预期观察分开执行。按需参考[结果观察](../references/calibration-cases.md#optional-outcome-observations)与[下游项目 DORA 观察](../references/calibration-cases.md#optional-downstream-dora-observation),不增加必填记录。
+- `node scripts/calibrate-skills.mjs list` —— 查看已落地的离线校准场景;`prepare` 创建独立临时工作区,交给 agent 实际执行后再 `check`。仓库 CI 检查运行器自身,Agent 行为结论还需独立检查实际回答与操作证据。
+- `skills/dev-verify/references/project-verification.md` —— 项目验证方法需要反复复用时查阅;优先使用现有脚本和测试,不要求每次验证都新建文档。
 
 ---
 
@@ -211,11 +213,11 @@ Swagger source 只在**当前 chat**复用:当前 chat 只有一个已确认来�
 
 - 主 agent:负责用户沟通、拆分任务、最终整合、git 操作和完成声明。
 - explorer:查调用链、类似实现、设计系统和约定。
-- worker:只改明确分配的文件或模块,并对照 spec / plan 交付红绿证据。
-- verifier:独立跑验证命令,对照 SDD artifact 检查完成声明是否有证据。
-- reviewer:独立看 diff,对照 spec / ADR / fix artifact 做提交前判断,不参与实现。
+- worker:只改明确分配的文件或模块,并对照任务契约交付相应验证证据。
+- verifier:独立跑验证命令,对照任务契约检查完成声明是否有证据。
+- reviewer:独立看 diff,对照需求和相关 spec / ADR / fix artifact 做提交前判断,不参与实现。
 
-使用前先读 [`docs/sdd-workflow.md`](./sdd-workflow.md) 和 [`docs/multi-agent-policy.md`](./multi-agent-policy.md)。子 agent 的任务必须写清楚 objective、source artifact、write scope、do-not-edit、verification expected 和 output required。
+使用前先读 [`docs/sdd-workflow.md`](./sdd-workflow.md) 和 [`docs/multi-agent-policy.md`](./multi-agent-policy.md)。委派须符合用户授权或适用规则;子 agent 的任务要写清楚 objective、source requirement / artifact、write scope、do-not-edit、verification expected 和 output required。简单任务可直接引用当前请求,不用另造文档。
 
 ---
 
@@ -231,7 +233,7 @@ Swagger source 只在**当前 chat**复用:当前 chat 只有一个已确认来�
 `skills/dev-code-review/references/lang-conventions.md` 里有「其他语言」段落兜底。如果你常用某语言但 conventions 不全,提 PR 补。
 
 **「我的改动跨了 5 个文件,review 报告太长」**
-拆 commit。如果一个 commit 跨太多文件,基本说明 scope creep —— 这本身就是 dev-code-review 想拦的。
+先看改动是否服务同一意图、这些文件是否都是必要范围,以及结果能否独立验证。一次行为变更可能同时涉及实现、调用方、持久化、文案和测试,文件数不能直接证明 scope creep。只有混入可独立交付的其他意图时才拆分;review 报告应聚焦真实问题和验证缺口。
 
 **「我上传到团队仓库的 skill 设置,别人看不到」**
 确认你 commit 的是 skill 仓库本身,而不是消费 skill 的项目。skill 安装路径在 `~/.claude/skills/`,**不**进版本控制。

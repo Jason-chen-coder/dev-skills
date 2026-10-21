@@ -14,20 +14,20 @@
 
 ### SDD artifact contract
 
-- 复杂或中等复杂度 feature 默认把 `.claude/artifacts/designs/<slug>.md` 当作 intent contract,后续 plan / implementation / verify / review 都要对齐它。
-- 高风险或跨模块改动把 `.claude/artifacts/plans/<slug>.md` 当作 implementation contract;如果实现偏离 ADR,先更新 plan 或在 review 里显式说明 drift。
-- bug 路径把 `.claude/artifacts/fixes/<slug>.md` 当作 failure contract;它记录 symptom、root cause、regression test 和 verification evidence。
+- 范围清楚的小改动可在对话中保留 intent contract;需要持久需求文档的 feature 使用 `.claude/artifacts/designs/<slug>.md`,后续 plan / implementation / verify / review 都要对齐它。
+- 复杂或高风险改动把 `.claude/artifacts/plans/<slug>.md` 当作 implementation contract;如果实现偏离 ADR,先更新 plan 或在 review 里显式说明 drift。跨模块本身不构成高风险,要看接口、状态、数据和验证边界。
+- 复杂 bug 调查或明确要求时,把 `.claude/artifacts/fixes/<slug>.md` 当作 failure contract;简单修复可在对话中交付 symptom、root cause、regression test 和 verification evidence。
 - artifact 不是形式文档。它们存在时,`dev-verify` 和 `dev-code-review` 应对照检查;发现过期就报告 drift,不要静默忽略。
 
 ### 设计前置
 
-- 复杂改动(跨 ≥ 3 模块 / 鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)先过 `dev-grill-docs` 和 `dev-plan --deliberate`。
-- 常规单模块改动建议先过 `dev-grill-docs`,plan 可省略。旧提示里的 `dev-spec` 等价于 `dev-grill-docs --spec-only`。
-- 一句话改动 / hotfix 可以跳过 spec 和 plan,但行为改动仍建议走 `dev-tdd`,commit 前过 `dev-verify` + `dev-code-review`。
+- 复杂或高风险改动(例如鉴权 / 支付 / 数据迁移 / 公开 API breakage / PII 处理)先明确需求和实施方案;有相关 spec / plan 时复用,需要权衡时用 `dev-plan --deliberate`。
+- 业务含义、权限或不可逆操作有关键缺口时用 `dev-grill-docs` 对齐,用户要求需求文档时也可使用。旧提示里的 `dev-spec` 等价于 `dev-grill-docs --spec-only`。
+- 清楚、低风险的改动直接实施并做适当检查,可跳过 spec 和 plan;commit 前过 `dev-verify` + `dev-code-review`。沿用已有决定与授权,不在每个阶段重复确认。
 
 ### 编码 / 完成门禁
 
-- feature / refactor / direct hotfix 写生产代码前默认走 `dev-tdd`。
+- feature / refactor / direct hotfix 按 `dev-tdd` 选择测试策略:新增行为优先先测后改,重构可用已有行为测试,低影响改动复用适当检查。
 - bug 报告走 `dev-fix`;它负责原问题复现、root-cause fix 和回归证据。通常 red→green 已足够,测试敏感性存疑时再在隔离副本反证。
 - 任何“完成 / fixed / ready / 可以 commit”声明前必须有 fresh verification evidence。
 - 分支实现完成且验证、review 通过后,用 `dev-finish` 处理 merge / PR / keep / discard。

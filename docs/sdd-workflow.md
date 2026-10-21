@@ -6,7 +6,7 @@ This document explains how `dev-skills` applies SDD, or Spec-Driven Development,
 
 In this repo, SDD means:
 
-> Stable artifacts define intent, scope, plan, tests, verification, and review criteria before AI-generated code is treated as done.
+> A clear contract defines intent, scope, and acceptance criteria; implementation, verification, and review use that contract. Keep durable artifacts when the work needs them.
 
 It is a workflow contract, not a promise that code can be regenerated entirely from specs.
 
@@ -17,7 +17,7 @@ It is a workflow contract, not a promise that code can be regenerated entirely f
 `dev-skills` already separates the development path into stable phases:
 
 ```text
-design context -> grill/spec -> plan -> implement / fix -> verify -> review -> commit -> finish
+intent / context -> clarify / spec (when needed) -> plan (by risk) -> implement / fix -> verify -> review -> authorized delivery
 ```
 
 SDD gives those phases a clearer responsibility:
@@ -30,37 +30,47 @@ SDD gives those phases a clearer responsibility:
 - `dev-code-review` checks the diff against the contract before commit.
 - `dev-auto` recommends the next step but does not orchestrate hidden work.
 
-The practical goal is to stop AI coding from becoming "generate first, explain later". The spec and plan become the shared reference for humans, the main agent, and any delegated agents.
+The practical goal is to align intent before implementation. The current request is the contract for small work; relevant specs and plans provide durable references for larger work and handoffs.
 
 ---
 
 ## Adoption Levels
 
-### 1. Spec-first
+### 1. Direct, scoped work
 
-Use this for small or medium feature work.
+Use this when the request is clear, the scope is small, and the change is low risk.
+
+```text
+current request -> implement with appropriate checks -> dev-verify -> dev-code-review (when required)
+```
+
+The conversation can hold the goal, boundaries, and acceptance criteria. Prefer meaningful tests for new behavior; use existing checks or direct inspection for low-impact edits. A separate intake, spec, or plan artifact is not required.
+
+### 2. Spec-first
+
+Use this when material domain, permission, or irreversible-operation choices remain unresolved, or the user requests a requirements document.
 
 ```text
 dev-grill-docs -> dev-tdd -> dev-verify -> dev-code-review
 ```
 
-The spec can be short. It must still name the goal, in scope, out of scope, assumptions, and acceptance criteria.
+The spec can be short. It names the goal, scope, assumptions, and acceptance criteria. Reuse a relevant existing spec rather than repeating intake.
 
-### 2. Spec-anchored
+### 3. Spec-anchored
 
-Use this for complex, risky, or multi-agent work.
+Use this for complex or risky work, or when durable handoffs will help several agents coordinate.
 
 ```text
-dev-grill-docs -> dev-plan -> dev-tdd -> dev-verify -> dev-code-review
+relevant spec (existing or dev-grill-docs) -> dev-plan -> dev-tdd -> dev-verify -> dev-code-review
 ```
 
 The spec and plan live under `.claude/artifacts/` and act as long-lived references for implementation, verification, review, and commit messages.
 
-### 3. Spec-as-source
+### 4. Spec-as-source
 
 This is not the default for `dev-skills`.
 
-Spec-as-source treats implementation as mostly derived from specs. That requires much stricter schemas, generators, migration rules, and drift detection than this repo currently provides. For now, keep `dev-skills` at Spec-first or Spec-anchored strength.
+Spec-as-source treats implementation as mostly derived from specs. That requires much stricter schemas, generators, migration rules, and drift detection than this repo currently provides. Choose direct, Spec-first, or Spec-anchored work according to the task.
 
 ---
 
@@ -73,7 +83,7 @@ Spec-as-source treats implementation as mostly derived from specs. That requires
 | `CONTEXT.md` / `docs/adr/<nnnn>-<slug>.md` | `dev-grill-docs` | Durable domain language and cross-feature decisions, only when warranted. |
 | `.claude/artifacts/plans/<slug>.md` | `dev-plan` | Implementation contract: options, ADR, steps, risks, verification plan. |
 | `.claude/artifacts/fixes/<slug>.md` | `dev-fix` | Bug contract: symptom, repro, hypotheses, root cause, fix, regression evidence. |
-| Chat evidence | `dev-tdd`, `dev-verify`, `dev-code-review` | Red/green evidence, verification commands, review verdict, commit message. |
+| Chat evidence | `dev-tdd`, `dev-verify`, `dev-code-review` | Appropriate test/check evidence, verification commands, review verdict, commit message when requested. |
 
 Use an existing project artifact convention when present; the paths above are defaults for compatibility. Small, clear work may keep its contract in the conversation. Existing artifacts are coordination evidence: check their status and relevance against the current request. A DRAFT file's existence does not establish approval.
 
@@ -85,7 +95,7 @@ Reuse decisions and authorization already supplied by the user. Ask only about u
 
 ```text
 dev-design-context (optional)
-  -> dev-grill-docs
+  -> dev-grill-docs (only for material gaps or a requested requirements document)
   -> dev-plan (optional, required for complex / high-risk work)
   -> dev-tdd
   -> dev-verify
@@ -94,11 +104,13 @@ dev-design-context (optional)
   -> dev-finish
 ```
 
+Skip optional stages when the current request and existing evidence already provide the contract. Commit and branch operations need their corresponding authorization; authorization already given continues across skill boundaries.
+
 Rules:
 
 - `dev-grill-docs` must not leave scope implicit.
 - `dev-plan` must consume the spec when one exists and preserve out-of-scope boundaries.
-- `dev-tdd` should choose the smallest behavior from the spec acceptance criteria or the plan.
+- `dev-tdd` should choose the smallest coherent behavior from the current request or relevant spec / plan, with checks proportional to risk.
 - `dev-verify` must check requirements against fresh command output or direct inspection.
 - `dev-code-review` should treat clear divergence from spec or ADR as a real finding, not a style preference.
 
@@ -141,11 +153,11 @@ The main agent owns:
 - git operations
 - completion claims
 
-Sub-agents receive bounded tasks that reference the SDD artifacts:
+When delegation is authorized by the user or applicable instructions, sub-agents receive bounded tasks that reference the current requirement and any relevant SDD artifacts:
 
 ```text
 Objective:
-Source artifact: .claude/artifacts/designs/<slug>.md or plans/<slug>.md
+Source requirement / artifact: current request, designs/<slug>.md, or plans/<slug>.md
 Write scope:
 Read scope:
 Do not edit:
@@ -158,7 +170,7 @@ Recommended mapping:
 | Role | Source | Output |
 |---|---|---|
 | planner | spec | plan critique, options, ADR reservations |
-| worker | plan or selected AC | changed files plus red/green evidence |
+| worker | current request, plan, or selected AC | changed files plus appropriate test/check evidence |
 | verifier | spec, plan, or fix artifact | requirement checklist plus command evidence |
 | reviewer | spec, plan, fix artifact, diff | independent verdict before commit |
 
