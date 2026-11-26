@@ -5,7 +5,7 @@ const translations = {
   zh: {
     "page.lang": "zh-CN",
     "page.title": "dev-skills - AI 开发工作流 Skill 库",
-    "page.description": "12 个 AI 开发 skill,用轻量 SDD 覆盖需求、方案、实现、修 bug、看图写页面、验证、review 和收尾。",
+    "page.description": "13 个 AI 开发 skill,用轻量 SDD 覆盖需求、方案、实现、修 bug、看图写页面、Swagger/OpenAPI 查询导出、验证、review 和收尾。",
     "brand.aria": "dev-skills 首页",
     "nav.aria": "主导航",
     "nav.skills": "Skills",
@@ -19,38 +19,62 @@ const translations = {
     "language.label": "语言切换",
     "language.zh": "中文",
     "language.en": "EN",
-    "hero.eyebrow": "AI development workflow skills",
-    "hero.title": "从需求到提交,<br>每步可验证。",
-    "hero.text": "12 个 skill,用轻量 SDD 让每步可验证。",
+    "hero.eyebrow": "Claude Code + Codex · 13 skills",
+    "hero.title": "dev-skills",
+    "hero.statement": "把 AI 开发变成一条可验证的交付链。",
+    "hero.text": "覆盖需求澄清、方案与 TDD、bug 修复、UI 实现、Swagger/OpenAPI 契约查询，以及验证、评审和收尾；每个阶段都有明确入口与证据。",
     "hero.actions.label": "主要操作",
-    "hero.install": "Install",
-    "hero.preview": "Preview",
-    "hero.github": "GitHub",
+    "hero.install": "安装",
+    "hero.preview": "查看真实运行",
     "hero.install.aria": "查看安装方式",
-    "hero.preview.aria": "查看 skill 运行预览",
-    "hero.github.aria": "打开 GitHub 仓库",
-    "hero.preview.ariaLabel": "dev-skills workflow 和 multi-agent 预览",
+    "hero.preview.aria": "查看真实运行示例",
+    "hero.flow.aria": "从需求到评审与收尾的五阶段交付链",
+    "hero.flow.requirement.label": "需求",
+    "hero.flow.requirement.skill": "dev-grill-docs",
+    "hero.flow.plan.label": "方案",
+    "hero.flow.plan.skill": "dev-plan",
+    "hero.flow.implement.label": "实现",
+    "hero.flow.implement.skill": "dev-tdd + dev-fix",
+    "hero.flow.verify.label": "验证",
+    "hero.flow.verify.skill": "dev-verify",
+    "hero.flow.ship.label": "评审与收尾",
+    "hero.flow.ship.skill": "dev-code-review + dev-finish",
+    "hero.preview.ariaLabel": "dev-skills 真实运行示例",
+    "hero.terminal.tabs.aria": "Hero 运行示例",
+    "hero.terminal.api.label": "API docs",
+    "hero.terminal.api": "$ codex\n> 查 Petstore API 契约\nModules 3 · Endpoints 19 · Types 6\nExport  Markdown / JSON 可选",
     "hero.terminal.workflow.label": "Workflow",
-    "hero.terminal.workflow": "$ codex\n> dev-image-to-code 复刻 UI 图\n\n收到:\n- 设计尺寸:1518x950\n- tab / select / button 用真实控件\n- 不确定的隐藏行为先问\n\n接着实现,截图验证,再做交互 smoke。",
+    "hero.terminal.workflow": "$ codex\n> 用 dev-auto 推进登录页\nNext  dev-grill-docs -> dev-plan\nGate  dev-verify -> dev-code-review",
     "hero.terminal.agents.label": "Multi-agent",
-    "hero.terminal.agents": "$ codex\n> 登录页用 multi-agent 拆一下\n\n先定契约:\nsource: designs/login-page.md\nscope: 页面、状态、测试\n不要改:auth backend、全局主题\n\nExplorer 查约定\nWorker 实现\nVerifier 验证\n主 agent 整合。",
+    "hero.terminal.agents": "$ codex\n> 登录页用 multi-agent\nExplorer 查约定 · Worker 按 scope\nVerifier 独立检查 · Main 整合",
     "skills.eyebrow": "Skill library",
     "skills.title": "选一个入口就够了。",
-    "skills.text": "按当前卡点选择 skill;验证、review 和提交收尾会回到同一条证据链。",
+    "skills.text": "按当前卡点或 API 文档查询需求选择 skill;验证、review 和提交收尾会回到同一条证据链。",
     "skills.guide.aria": "dev-skills 使用入口",
     "skills.guide.related.aria": "相关 skills",
     "skills.guide.auto.label": "不确定",
     "skills.guide.auto.title": "先问 dev-auto",
     "skills.guide.auto.text": "目标清楚但路径不清楚时,让它给下一步。",
-    "skills.guide.scope.label": "需求",
-    "skills.guide.scope.title": "先收敛",
-    "skills.guide.scope.text": "模糊需求走 dev-grill-docs;复杂或高风险改动再补 plan。",
+    "skills.guide.scope.label": "需求 / API",
+    "skills.guide.scope.title": "先收敛、再查契约",
+    "skills.guide.scope.text": "模糊需求走 dev-grill-docs;Swagger/OpenAPI/Knife4j 查接口和类型用 swagger-doc-skill。",
     "skills.guide.build.label": "实现",
     "skills.guide.build.title": "写、复刻、修",
     "skills.guide.build.text": "新功能走 TDD;UI 图走 dev-image-to-code;bug 走 dev-fix。",
     "skills.guide.ship.label": "提交",
     "skills.guide.ship.title": "先验再提",
     "skills.guide.ship.text": "完成前验证;提交前 review;只要 message 再用 commit writer。",
+    "skills.swagger.aria": "Swagger 文档 source 使用规则",
+    "skills.swagger.kicker": "Swagger / OpenAPI",
+    "skills.swagger.title": "一个 chat,一个确认过的 source。",
+    "skills.swagger.text": "只复用当前 chat 已确认的文档;遇到多个来源先确认,不把 URL 或凭据写进共享配置。",
+    "skills.swagger.cta": "查看运行示例",
+    "skills.swagger.source.label": "Source",
+    "skills.swagger.source.value": "https://petstore3.swagger.io/api/v3/openapi.json",
+    "skills.swagger.query.label": "Query",
+    "skills.swagger.query.value": "模块、接口、可复用类型定义",
+    "skills.swagger.export.label": "Export",
+    "skills.swagger.export.value": "按需生成完整 Markdown / JSON",
     "articles.eyebrow": "Articles",
     "articles.title": "用文章解释 dev-skills 背后的工程判断。",
     "articles.list.aria": "dev-skills CSDN 专栏文章",
@@ -109,7 +133,7 @@ const translations = {
     "agent.check.text": "独立对照 artifact 检查命令证据、响应式、可访问性和 diff 风险。",
     "preview.eyebrow": "Runtime preview",
     "preview.title": "看关键节点在 Codex CLI 里怎么跑。",
-    "preview.text": "只保留高频节点和 UI 图生成代码示例。切换 tab 查看代表性输入和输出。",
+    "preview.text": "保留高频节点、UI 图生成代码和 API 文档查询示例。切换 tab 查看代表性输入和输出;减少动效时直接显示完整文本。",
     "preview.mode.aria": "Runtime preview 模式",
     "preview.mode.skills": "Skill workflow",
     "preview.mode.agents": "Multi-agent",
@@ -239,8 +263,8 @@ const translations = {
     "install.copy.upgrade.aria": "复制升级命令",
     "install.claude.installNotes": "首次安装后,如需团队规则,复制 CLAUDE.md.template 到项目根 CLAUDE.md;详细政策参考 docs/team-policy.md。",
     "install.claude.upgradeNotes": "如果 /plugin update 未生效,先 /plugin uninstall dev-skills 再 /plugin install dev-skills。团队规则模板仍需人工对比同步。",
-    "install.codex.installNotes": "脚本会同步 12 个 dev-skills 到 CODEX_HOME skills。短版团队规则复制 AGENTS.md.template 到项目根 AGENTS.md。",
-    "install.codex.upgradeNotes": "脚本会先拉最新仓库,再重新同步 12 个 dev-skills。AGENTS.md 不会自动覆盖。",
+    "install.codex.installNotes": "脚本会同步 13 个 dev-skills 到 CODEX_HOME skills。短版团队规则复制 AGENTS.md.template 到项目根 AGENTS.md。",
+    "install.codex.upgradeNotes": "脚本会先拉最新仓库,再重新同步 13 个 dev-skills。AGENTS.md 不会自动覆盖。",
     "install.npx.installNotes": "按需要安装到当前项目或全局。团队规则模板仍需按项目手动复制。",
     "install.npx.upgradeNotes": "优先使用 npx skills update;如果版本不支持 update,使用 add --force 重新安装。团队规则模板仍需人工同步。",
     "faq.eyebrow": "FAQ",
@@ -254,12 +278,24 @@ const translations = {
     "faq.4.summary": "什么时候用 dev-auto?",
     "faq.4.answer": "当你不知道下一步跑哪个 skill,或者需要从失败状态恢复时使用。它只建议,不调起其他 skill。",
     "faq.5.summary": "准备 commit 时为什么默认走 dev-code-review?",
-    "faq.5.answer": "团队策略是 commit 前先 review。dev-commit-writer 只用于用户明确表示跳过 review 且只要 message 的场景。"
+    "faq.5.answer": "团队策略是 commit 前先 review。dev-commit-writer 只用于用户明确表示跳过 review 且只要 message 的场景。",
+    "closing.eyebrow": "Ready to install",
+    "closing.title": "从下一次任务开始,让每一步都留下证据。",
+    "closing.text": "安装 dev-skills,按当前卡点选择入口;需要核对源码时,直接查看 GitHub 仓库。",
+    "closing.install": "安装 dev-skills",
+    "closing.install.aria": "前往安装 dev-skills",
+    "closing.github": "查看 GitHub",
+    "closing.github.aria": "查看 GitHub 仓库",
+    "footer.nav.aria": "项目资源",
+    "footer.readme": "README",
+    "footer.onboarding": "Onboarding",
+    "footer.changelog": "Changelog",
+    "footer.issues": "Issues"
   },
   en: {
     "page.lang": "en",
     "page.title": "dev-skills - AI development workflow skills",
-    "page.description": "Twelve AI development workflow skills for scoping, planning, coding, bug fixes, UI image-to-code work, verification, review, and ship handoff.",
+    "page.description": "Thirteen AI development skills for scoping, planning, coding, bug fixes, UI image-to-code work, Swagger/OpenAPI queries and exports, verification, review, and ship handoff.",
     "brand.aria": "dev-skills home",
     "nav.aria": "Primary navigation",
     "nav.skills": "Skills",
@@ -273,38 +309,62 @@ const translations = {
     "language.label": "Language",
     "language.zh": "中文",
     "language.en": "EN",
-    "hero.eyebrow": "AI development workflow skills",
-    "hero.title": "From request to commit, <br>every step verified.",
-    "hero.text": "12 skills. Lightweight SDD. Every step verified.",
+    "hero.eyebrow": "Claude Code + Codex · 13 skills",
+    "hero.title": "dev-skills",
+    "hero.statement": "Turn AI development into a verifiable delivery chain.",
+    "hero.text": "Cover requirements, planning and TDD, bug fixes, UI implementation, Swagger/OpenAPI contracts, verification, review, and finish with an explicit entry point and evidence at every stage.",
     "hero.actions.label": "Primary actions",
     "hero.install": "Install",
-    "hero.preview": "Preview",
-    "hero.github": "GitHub",
+    "hero.preview": "View runtime",
     "hero.install.aria": "View install options",
-    "hero.preview.aria": "View skill runtime previews",
-    "hero.github.aria": "Open the GitHub repository",
-    "hero.preview.ariaLabel": "dev-skills workflow and multi-agent preview",
+    "hero.preview.aria": "View real runtime examples",
+    "hero.flow.aria": "Five-stage delivery chain from requirements through review and finish",
+    "hero.flow.requirement.label": "Requirements",
+    "hero.flow.requirement.skill": "dev-grill-docs",
+    "hero.flow.plan.label": "Plan",
+    "hero.flow.plan.skill": "dev-plan",
+    "hero.flow.implement.label": "Build",
+    "hero.flow.implement.skill": "dev-tdd + dev-fix",
+    "hero.flow.verify.label": "Verify",
+    "hero.flow.verify.skill": "dev-verify",
+    "hero.flow.ship.label": "Review + finish",
+    "hero.flow.ship.skill": "dev-code-review + dev-finish",
+    "hero.preview.ariaLabel": "dev-skills real runtime examples",
+    "hero.terminal.tabs.aria": "Hero runtime examples",
+    "hero.terminal.api.label": "API docs",
+    "hero.terminal.api": "$ codex\n> Query the Petstore API contract\nModules 3 · Endpoints 19 · Types 6\nExport  Optional Markdown / JSON",
     "hero.terminal.workflow.label": "Workflow",
-    "hero.terminal.workflow": "$ codex\n> Use dev-image-to-code for this 1518x950 UI\n\nGot it:\n- image and size confirmed\n- tabs / select / button stay real controls\n- unknown hidden behavior gets clarified\n\nNext: implement, screenshot, then smoke-test interactions.",
+    "hero.terminal.workflow": "$ codex\n> Use dev-auto for the login page\nNext  dev-grill-docs -> dev-plan\nGate  dev-verify -> dev-code-review",
     "hero.terminal.agents.label": "Multi-agent",
-    "hero.terminal.agents": "$ codex\n> Split this login page for multi-agent\n\nDefine the contract first:\nsource: designs/login-page.md\nscope: page, states, tests\ndo not edit: auth backend, global theme\n\nExplorer checks conventions\nWorker builds\nVerifier checks\nMain agent integrates.",
+    "hero.terminal.agents": "$ codex\n> Split the login page across agents\nExplorer checks · Worker builds in scope\nVerifier checks · Main integrates",
     "skills.eyebrow": "Skill library",
     "skills.title": "Pick one entry point.",
-    "skills.text": "Choose the skill for the current blockage; verification, review, and ship handoff return to the same evidence chain.",
+    "skills.text": "Choose a skill for the current blockage or API documentation query; verification, review, and ship handoff return to the same evidence chain.",
     "skills.guide.aria": "dev-skills usage entries",
     "skills.guide.related.aria": "Related skills",
     "skills.guide.auto.label": "Unsure",
     "skills.guide.auto.title": "Ask dev-auto first",
     "skills.guide.auto.text": "Use it when the goal is clear but the path is not.",
-    "skills.guide.scope.label": "Scope",
-    "skills.guide.scope.title": "Clarify first",
-    "skills.guide.scope.text": "Use dev-grill-docs for fuzzy requests; add dev-plan for complex or risky work.",
+    "skills.guide.scope.label": "Scope / API",
+    "skills.guide.scope.title": "Clarify, then inspect",
+    "skills.guide.scope.text": "Use dev-grill-docs for fuzzy requests; use swagger-doc-skill for Swagger/OpenAPI/Knife4j endpoints and types.",
     "skills.guide.build.label": "Build",
     "skills.guide.build.title": "Code, clone, fix",
     "skills.guide.build.text": "Use TDD for features, dev-image-to-code for UI images, and dev-fix for bugs.",
     "skills.guide.ship.label": "Ship",
     "skills.guide.ship.title": "Verify first",
     "skills.guide.ship.text": "Verify before done; review before commit; use commit writer only for messages.",
+    "skills.swagger.aria": "Swagger documentation source rules",
+    "skills.swagger.kicker": "Swagger / OpenAPI",
+    "skills.swagger.title": "One chat, one confirmed source.",
+    "skills.swagger.text": "Reuse only the source confirmed in this chat; ask before choosing among multiple sources, and never persist URLs or credentials in shared config.",
+    "skills.swagger.cta": "View runtime example",
+    "skills.swagger.source.label": "Source",
+    "skills.swagger.source.value": "https://petstore3.swagger.io/api/v3/openapi.json",
+    "skills.swagger.query.label": "Query",
+    "skills.swagger.query.value": "modules, endpoints, reusable types",
+    "skills.swagger.export.label": "Export",
+    "skills.swagger.export.value": "Complete Markdown / JSON on request",
     "articles.eyebrow": "Articles",
     "articles.title": "Read the engineering judgment behind dev-skills.",
     "articles.list.aria": "dev-skills CSDN column articles",
@@ -363,7 +423,7 @@ const translations = {
     "agent.check.text": "Checks command evidence, responsive behavior, accessibility, and diff risk against the artifact.",
     "preview.eyebrow": "Runtime preview",
     "preview.title": "See the key workflow checkpoints in a Codex CLI-like flow.",
-    "preview.text": "The preview keeps high-frequency nodes plus a UI image-to-code example. Switch tabs for representative input and output.",
+    "preview.text": "The preview keeps high-frequency nodes plus UI image-to-code and API documentation examples. Switch tabs for representative input and output; reduced motion shows the complete text immediately.",
     "preview.mode.aria": "Runtime preview mode",
     "preview.mode.skills": "Skill workflow",
     "preview.mode.agents": "Multi-agent",
@@ -493,8 +553,8 @@ const translations = {
     "install.copy.upgrade.aria": "Copy upgrade command",
     "install.claude.installNotes": "After first install, copy CLAUDE.md.template to CLAUDE.md at your project root if you need always-on team rules; use docs/team-policy.md for the detailed policy.",
     "install.claude.upgradeNotes": "If /plugin update does not take effect, run /plugin uninstall dev-skills and then /plugin install dev-skills. Team-rule templates still need manual comparison.",
-    "install.codex.installNotes": "The script syncs the twelve dev-skills into CODEX_HOME skills. Copy AGENTS.md.template to AGENTS.md at your project root for always-on rules.",
-    "install.codex.upgradeNotes": "The script pulls the latest repo, then resyncs the twelve dev-skills. AGENTS.md is not overwritten automatically.",
+    "install.codex.installNotes": "The script syncs the thirteen dev-skills into CODEX_HOME skills. Copy AGENTS.md.template to AGENTS.md at your project root for always-on rules.",
+    "install.codex.upgradeNotes": "The script pulls the latest repo, then resyncs the thirteen dev-skills. AGENTS.md is not overwritten automatically.",
     "install.npx.installNotes": "Install into the current project or globally as needed. Team-rule templates still need to be copied per project.",
     "install.npx.upgradeNotes": "Prefer npx skills update. If your version does not support update, reinstall with add --force. Team-rule templates still need manual sync.",
     "faq.eyebrow": "FAQ",
@@ -508,7 +568,19 @@ const translations = {
     "faq.4.summary": "When should I use dev-auto?",
     "faq.4.answer": "Use it when you are unsure which skill comes next, or when you need to recover from a failed state. It recommends only; it does not invoke other skills.",
     "faq.5.summary": "Why does commit preparation default to dev-code-review?",
-    "faq.5.answer": "The team policy is to review before committing. dev-commit-writer is only for cases where the user explicitly skips review and asks only for a message."
+    "faq.5.answer": "The team policy is to review before committing. dev-commit-writer is only for cases where the user explicitly skips review and asks only for a message.",
+    "closing.eyebrow": "Ready to install",
+    "closing.title": "Start the next task with evidence at every step.",
+    "closing.text": "Install dev-skills and choose the entry point that matches the current blockage; inspect the GitHub repository whenever you need the source.",
+    "closing.install": "Install dev-skills",
+    "closing.install.aria": "Go to dev-skills installation",
+    "closing.github": "View GitHub",
+    "closing.github.aria": "Open the GitHub repository",
+    "footer.nav.aria": "Project resources",
+    "footer.readme": "README",
+    "footer.onboarding": "Onboarding",
+    "footer.changelog": "Changelog",
+    "footer.issues": "Issues"
   }
 };
 
@@ -527,16 +599,30 @@ const localizedTargets = [
   { selector: ".nav-links a[href^='https://github.com']", key: "nav.github" },
   { selector: ".language-switch", key: "language.label", attr: "aria-label" },
   { selector: ".hero .eyebrow", key: "hero.eyebrow" },
-  { selector: ".hero h1", key: "hero.title", html: true },
+  { selector: ".hero h1", key: "hero.title" },
+  { selector: ".hero-statement", key: "hero.statement" },
   { selector: ".hero-text", key: "hero.text" },
   { selector: ".hero-actions", key: "hero.actions.label", attr: "aria-label" },
   { selector: ".hero-actions .primary", key: "hero.install" },
   { selector: ".hero-actions .primary", key: "hero.install.aria", attr: "aria-label" },
   { selector: ".hero-actions .secondary", key: "hero.preview" },
   { selector: ".hero-actions .secondary", key: "hero.preview.aria", attr: "aria-label" },
-  { selector: ".hero-actions .ghost", key: "hero.github" },
-  { selector: ".hero-actions .ghost", key: "hero.github.aria", attr: "aria-label" },
+  { selector: ".hero-flow", key: "hero.flow.aria", attr: "aria-label" },
+  { selector: ".hero-flow li:nth-child(1) span", key: "hero.flow.requirement.label" },
+  { selector: ".hero-flow li:nth-child(1) strong", key: "hero.flow.requirement.skill" },
+  { selector: ".hero-flow li:nth-child(2) span", key: "hero.flow.plan.label" },
+  { selector: ".hero-flow li:nth-child(2) strong", key: "hero.flow.plan.skill" },
+  { selector: ".hero-flow li:nth-child(3) span", key: "hero.flow.implement.label" },
+  { selector: ".hero-flow li:nth-child(3) strong", key: "hero.flow.implement.skill" },
+  { selector: ".hero-flow li:nth-child(4) span", key: "hero.flow.verify.label" },
+  { selector: ".hero-flow li:nth-child(4) strong", key: "hero.flow.verify.skill" },
+  { selector: ".hero-flow li:nth-child(5) span", key: "hero.flow.ship.label" },
+  { selector: ".hero-flow li:nth-child(5) strong", key: "hero.flow.ship.skill" },
   { selector: ".hero-preview", key: "hero.preview.ariaLabel", attr: "aria-label" },
+  { selector: ".hero-terminal-tabs", key: "hero.terminal.tabs.aria", attr: "aria-label" },
+  { selector: "[data-hero-terminal-mode='workflow']", key: "hero.terminal.workflow.label" },
+  { selector: "[data-hero-terminal-mode='api-docs']", key: "hero.terminal.api.label" },
+  { selector: "[data-hero-terminal-mode='agents']", key: "hero.terminal.agents.label" },
   { selector: "#skills .section-heading .eyebrow", key: "skills.eyebrow" },
   { selector: "#skills .section-heading h2", key: "skills.title" },
   { selector: "#skills .section-heading p:last-child", key: "skills.text" },
@@ -557,6 +643,17 @@ const localizedTargets = [
   { selector: ".skill-guide-card:nth-child(4) h3", key: "skills.guide.ship.title" },
   { selector: ".skill-guide-card:nth-child(4) p", key: "skills.guide.ship.text" },
   { selector: ".skill-guide-card:nth-child(4) ul", key: "skills.guide.related.aria", attr: "aria-label" },
+  { selector: ".swagger-callout", key: "skills.swagger.aria", attr: "aria-label" },
+  { selector: ".swagger-callout-kicker", key: "skills.swagger.kicker" },
+  { selector: ".swagger-callout-copy h3", key: "skills.swagger.title" },
+  { selector: ".swagger-callout-copy p", key: "skills.swagger.text" },
+  { selector: "[data-preview-skill-link='swagger-doc-skill']", key: "skills.swagger.cta" },
+  { selector: ".swagger-callout-facts div:nth-child(1) dt", key: "skills.swagger.source.label" },
+  { selector: ".swagger-callout-facts div:nth-child(1) dd", key: "skills.swagger.source.value" },
+  { selector: ".swagger-callout-facts div:nth-child(2) dt", key: "skills.swagger.query.label" },
+  { selector: ".swagger-callout-facts div:nth-child(2) dd", key: "skills.swagger.query.value" },
+  { selector: ".swagger-callout-facts div:nth-child(3) dt", key: "skills.swagger.export.label" },
+  { selector: ".swagger-callout-facts div:nth-child(3) dd", key: "skills.swagger.export.value" },
   { selector: "#articles .section-heading .eyebrow", key: "articles.eyebrow" },
   { selector: "#articles .section-heading h2", key: "articles.title" },
   { selector: ".article-showcase", key: "articles.list.aria", attr: "aria-label" },
@@ -706,7 +803,19 @@ const localizedTargets = [
   { selector: ".faq-list details:nth-child(4) summary", key: "faq.4.summary" },
   { selector: ".faq-list details:nth-child(4) p", key: "faq.4.answer" },
   { selector: ".faq-list details:nth-child(5) summary", key: "faq.5.summary" },
-  { selector: ".faq-list details:nth-child(5) p", key: "faq.5.answer" }
+  { selector: ".faq-list details:nth-child(5) p", key: "faq.5.answer" },
+  { selector: ".closing-cta .eyebrow", key: "closing.eyebrow" },
+  { selector: ".closing-cta h2", key: "closing.title" },
+  { selector: ".closing-cta > p:not(.eyebrow)", key: "closing.text" },
+  { selector: ".closing-actions .primary", key: "closing.install" },
+  { selector: ".closing-actions .primary", key: "closing.install.aria", attr: "aria-label" },
+  { selector: ".closing-actions .secondary", key: "closing.github" },
+  { selector: ".closing-actions .secondary", key: "closing.github.aria", attr: "aria-label" },
+  { selector: ".footer-nav", key: "footer.nav.aria", attr: "aria-label" },
+  { selector: ".footer-nav a:nth-child(1)", key: "footer.readme" },
+  { selector: ".footer-nav a:nth-child(2)", key: "footer.onboarding" },
+  { selector: ".footer-nav a:nth-child(3)", key: "footer.changelog" },
+  { selector: ".footer-nav a:nth-child(4)", key: "footer.issues" }
 ];
 
 const skillPreviews = {
@@ -720,6 +829,11 @@ const skillPreviews = {
       title: "Dev Grill Docs",
       input: "$ codex\n> 帮我设计登陆页面",
       output: "Intake\n  UI request + fuzzy scope\n  .design-context.md: check first\nWave 1 | Focus: Goal\nWhy\n  登陆页面可能只是前端 UI,也可能接入真实认证流程。\nRecommended\n  先限定为登录页 UI + 基础状态,认证后端不进本轮。\nQuestion\n  这次是只设计/实现前端 UI,还是要接入真实登录认证流程?\nWrite\n  .claude/artifacts/designs/login-page.md"
+    },
+    "swagger-doc-skill": {
+      title: "Swagger Doc Skill",
+      input: "$ codex\n> 用 swagger-doc-skill 查询模块、全部接口和完整类型\n> https://petstore3.swagger.io/api/v3/openapi.json",
+      output: "Source\n  https://petstore3.swagger.io/api/v3/openapi.json\nModules   3\nEndpoints 19\nTypes     6\n可选导出格式\n  完整 Markdown / JSON"
     },
     "dev-image-to-code": {
       title: "Dev Image To Code",
@@ -757,6 +871,11 @@ const skillPreviews = {
       title: "Dev Grill Docs",
       input: "$ codex\n> Use dev-grill-docs to design a login page",
       output: "Intake\n  UI request + fuzzy scope\n  .design-context.md: check first\nWave 1 | Focus: Goal\nWhy\n  A login page may be UI-only or wired to real authentication.\nRecommended\n  Start with login page UI + basic states; keep auth backend out of this round.\nQuestion\n  Is this frontend UI only, or should it connect to the real login flow?\nWrite\n  .claude/artifacts/designs/login-page.md"
+    },
+    "swagger-doc-skill": {
+      title: "Swagger Doc Skill",
+      input: "$ codex\n> Use swagger-doc-skill to query modules, every endpoint, and complete types\n> https://petstore3.swagger.io/api/v3/openapi.json",
+      output: "Source\n  https://petstore3.swagger.io/api/v3/openapi.json\nModules   3\nEndpoints 19\nTypes     6\nAvailable export formats\n  Complete Markdown / JSON"
     },
     "dev-image-to-code": {
       title: "Dev Image To Code",
@@ -868,20 +987,13 @@ const installOptions = {
 };
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const PREVIEW_AUTO_CYCLE_MS = 10000;
-const HERO_TERMINAL_HOLD_MS = 6000;
 const SECTION_REVEAL_SELECTOR = ".section, .runtime-section, .workflow-section, .agent-mode-section";
 const SECTION_REVEAL_TRIGGER_RATIO = 0.78;
 const EXPERIENCE_TAB_CONTENT_SELECTOR = ".experience-section [data-experience-only]:not([hidden]), .experience-section .runtime-section, .experience-section .workflow-section";
 const TAB_CONTENT_FADE_MS = 800;
 let previewRunId = 0;
-let heroTypingRunId = 0;
-let heroTerminalIndex = 0;
+let activeHeroTerminalMode = "workflow";
 let headerFrame = 0;
-let previewAutoCycleTimer = 0;
-let previewCountdownFrame = 0;
-let previewAutoCycling = false;
-let previewUserInteracted = false;
 const mobileNavMedia = window.matchMedia("(max-width: 860px)");
 let workflowGraph = null;
 let activeWorkflowMode = "skills";
@@ -969,10 +1081,17 @@ function activeSkillPreviewData() {
 function heroTerminalScripts() {
   return [
     {
+      mode: "workflow",
       label: translate("hero.terminal.workflow.label"),
       text: translate("hero.terminal.workflow")
     },
     {
+      mode: "api-docs",
+      label: translate("hero.terminal.api.label"),
+      text: translate("hero.terminal.api")
+    },
+    {
+      mode: "agents",
       label: translate("hero.terminal.agents.label"),
       text: translate("hero.terminal.agents")
     }
@@ -1063,7 +1182,6 @@ function setLanguage(language, persist = true) {
   }
 
   applyLanguage();
-  heroTerminalIndex = 0;
   renderHeroTerminal();
   renderWorkflowGraph();
   const activePreview = previewButtons().find((button) => button.classList.contains("is-active")) || previewButtons()[0];
@@ -1093,41 +1211,52 @@ async function typeText(target, text, delay, isCurrent = () => true) {
   return isCurrent();
 }
 
-async function renderHeroTerminal() {
-  const terminal = document.querySelector(".hero-terminal");
-  const pre = terminal?.querySelector("pre");
-  const code = terminal?.querySelector("code");
-  if (!terminal || !pre || !code) return;
+function renderHeroTerminal(mode = activeHeroTerminalMode) {
+  const terminal = document.querySelector("#hero-terminal-panel");
+  const code = terminal?.querySelector("[data-hero-terminal-content]");
+  const script = heroTerminalScripts().find((item) => item.mode === mode) || heroTerminalScripts()[0];
+  const tabs = [...document.querySelectorAll("[data-hero-terminal-mode]")];
+  const activeTab = tabs.find((tab) => tab.dataset.heroTerminalMode === script.mode);
+  if (!terminal || !code || !activeTab) return;
 
-  const scripts = heroTerminalScripts();
-  const activeIndex = heroTerminalIndex % scripts.length;
-  const script = scripts[activeIndex];
-  const runId = heroTypingRunId + 1;
-  heroTypingRunId = runId;
-  terminal.dataset.heroTerminalMode = activeIndex === 0 ? "workflow" : "agents";
-  terminal.classList.remove("is-typed");
+  activeHeroTerminalMode = script.mode;
+  terminal.dataset.heroTerminalMode = script.mode;
+  terminal.setAttribute("aria-labelledby", activeTab.id);
+  code.textContent = script.text;
 
-  const mode = terminal.querySelector("[data-hero-terminal-label]");
-  if (mode) mode.textContent = script.label;
+  const label = terminal.querySelector("[data-hero-terminal-label]");
+  if (label) label.textContent = script.label;
 
-  if (!pre.querySelector(".hero-cursor")) {
-    const cursor = document.createElement("span");
-    cursor.className = "cursor hero-cursor";
-    cursor.setAttribute("aria-hidden", "true");
-    pre.append(cursor);
-  }
+  tabs.forEach((tab) => {
+    const isActive = tab === activeTab;
+    tab.classList.toggle("is-active", isActive);
+    tab.setAttribute("aria-selected", String(isActive));
+    tab.setAttribute("tabindex", isActive ? "0" : "-1");
+  });
+}
 
-  terminal.classList.add("is-typing");
-  const typed = await typeText(code, script.text, 17, () => runId === heroTypingRunId);
-  if (!typed) return;
-  terminal.classList.remove("is-typing");
-  terminal.classList.add("is-typed");
+function setupHeroTerminalTabs() {
+  const tabs = [...document.querySelectorAll("[data-hero-terminal-mode]")];
+  if (tabs.length === 0) return;
 
-  await sleep(HERO_TERMINAL_HOLD_MS);
-  if (runId !== heroTypingRunId) return;
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => renderHeroTerminal(tab.dataset.heroTerminalMode));
+    tab.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
 
-  heroTerminalIndex = (activeIndex + 1) % scripts.length;
-  renderHeroTerminal();
+      const currentIndex = tabs.indexOf(event.currentTarget);
+      let targetIndex = currentIndex;
+      if (event.key === "ArrowLeft") targetIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+      if (event.key === "ArrowRight") targetIndex = (currentIndex + 1) % tabs.length;
+      if (event.key === "Home") targetIndex = 0;
+      if (event.key === "End") targetIndex = tabs.length - 1;
+
+      event.preventDefault();
+      const targetTab = tabs[targetIndex];
+      targetTab.focus();
+      renderHeroTerminal(targetTab.dataset.heroTerminalMode);
+    });
+  });
 }
 
 async function renderPreview(skill) {
@@ -1167,9 +1296,10 @@ function setActiveButton(buttons, activeButton) {
   buttons.forEach((button) => {
     const isActive = button === activeButton;
     button.classList.toggle("is-active", isActive);
-    button.classList.remove("is-auto-counting");
-    button.style.removeProperty("--preview-progress-angle");
     button.setAttribute("aria-selected", String(isActive));
+    if (button.classList.contains("skill-tab")) {
+      button.setAttribute("tabindex", isActive ? "0" : "-1");
+    }
   });
 }
 
@@ -1177,109 +1307,52 @@ function previewButtons() {
   return [...document.querySelectorAll(`.skill-tab[data-preview-mode="${currentPreviewMode}"]`)];
 }
 
-function stopPreviewAutoCycle() {
-  if (previewAutoCycleTimer) {
-    window.clearTimeout(previewAutoCycleTimer);
-    previewAutoCycleTimer = 0;
-  }
+function updateRuntimePreviewPanelLabel(button) {
+  const panel = document.querySelector("#runtime-preview-panel");
+  if (!panel || !button?.id) return;
 
-  if (previewCountdownFrame) {
-    window.cancelAnimationFrame(previewCountdownFrame);
-    previewCountdownFrame = 0;
-  }
+  panel.setAttribute("aria-labelledby", button.id);
+}
 
-  document.querySelectorAll(".skill-tab").forEach((button) => {
-    button.classList.remove("is-auto-counting");
-    button.style.removeProperty("--preview-progress-angle");
+function setupPreviewTabs() {
+  document.querySelectorAll("[data-preview-tabs]").forEach((tablist) => {
+    tablist.setAttribute("aria-orientation", "horizontal");
+    const tabs = [...tablist.querySelectorAll(".skill-tab")];
+    const initialTab = tabs.find((tab) => tab.classList.contains("is-active")) || tabs[0];
+
+    tabs.forEach((tab) => {
+      tab.id = `preview-tab-${tab.dataset.previewMode}-${tab.dataset.skill}`;
+      tab.setAttribute("aria-controls", "runtime-preview-panel");
+      tab.setAttribute("tabindex", tab === initialTab ? "0" : "-1");
+      tab.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+
+        const currentIndex = tabs.indexOf(event.currentTarget);
+        let targetIndex = currentIndex;
+        if (event.key === "ArrowLeft") targetIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        if (event.key === "ArrowRight") targetIndex = (currentIndex + 1) % tabs.length;
+        if (event.key === "Home") targetIndex = 0;
+        if (event.key === "End") targetIndex = tabs.length - 1;
+
+        event.preventDefault();
+        const targetTab = tabs[targetIndex];
+        targetTab.focus();
+        activatePreview(targetTab);
+      });
+    });
   });
 }
 
-function nextPreviewButton() {
-  const buttons = previewButtons();
-  const activeIndex = buttons.findIndex((button) => button.classList.contains("is-active"));
-  return buttons[(activeIndex + 1) % buttons.length] || buttons[0];
-}
-
-function schedulePreviewAutoCycle(button) {
-  if (previewUserInteracted || !button) return;
-
-  if (previewAutoCycleTimer) {
-    window.clearTimeout(previewAutoCycleTimer);
-  }
-
-  if (previewCountdownFrame) {
-    window.cancelAnimationFrame(previewCountdownFrame);
-    previewCountdownFrame = 0;
-  }
-
-  button.classList.add("is-auto-counting");
-  button.style.setProperty("--preview-progress-angle", "0turn");
-
-  if (!reduceMotion) {
-    const startedAt = window.performance.now();
-    const renderCountdown = (now) => {
-      if (previewUserInteracted || !button.classList.contains("is-active")) {
-        previewCountdownFrame = 0;
-        return;
-      }
-
-      const progress = Math.max(0, Math.min((now - startedAt) / PREVIEW_AUTO_CYCLE_MS, 1));
-      button.style.setProperty("--preview-progress-angle", `${progress}turn`);
-
-      if (progress < 1) {
-        previewCountdownFrame = window.requestAnimationFrame(renderCountdown);
-      } else {
-        previewCountdownFrame = 0;
-      }
-    };
-
-    previewCountdownFrame = window.requestAnimationFrame(renderCountdown);
-  }
-
-  previewAutoCycleTimer = window.setTimeout(() => {
-    previewAutoCycleTimer = 0;
-    if (previewUserInteracted) return;
-
-    const nextButton = nextPreviewButton();
-    if (!nextButton) return;
-
-    previewAutoCycling = true;
-    nextButton.click();
-    previewAutoCycling = false;
-  }, PREVIEW_AUTO_CYCLE_MS);
-}
-
-function activatePreview(button, userInitiated = false) {
+function activatePreview(button) {
   if (!button) return;
 
-  if (userInitiated) {
-    previewUserInteracted = true;
-    stopPreviewAutoCycle();
-  }
-
   setActiveButton(document.querySelectorAll(".skill-tab"), button);
+  updateRuntimePreviewPanelLabel(button);
   renderPreview(button.dataset.skill);
-
-  if (!userInitiated) {
-    schedulePreviewAutoCycle(button);
-  }
 }
 
-function startPreviewAutoCycle() {
-  const buttons = previewButtons();
-  if (buttons.length < 2 || previewAutoCycleTimer) return;
-
-  const activeButton = buttons.find((button) => button.classList.contains("is-active")) || buttons[0];
-  schedulePreviewAutoCycle(activeButton);
-}
-
-function setPreviewMode(mode, userInitiated = true) {
+function setPreviewMode(mode) {
   if (!["skills", "agents"].includes(mode)) return;
-
-  if (userInitiated) {
-    previewUserInteracted = true;
-    stopPreviewAutoCycle();
-  }
 
   currentPreviewMode = mode;
   document.querySelectorAll("[data-preview-tabs]").forEach((tablist) => {
@@ -1288,7 +1361,19 @@ function setPreviewMode(mode, userInitiated = true) {
 
   const buttons = previewButtons();
   const activeButton = buttons.find((button) => button.classList.contains("is-active")) || buttons[0];
-  activatePreview(activeButton, userInitiated);
+  activatePreview(activeButton);
+}
+
+function setupSwaggerPreviewLink() {
+  document.querySelectorAll("[data-preview-skill-link]").forEach((link) => {
+    link.addEventListener("click", () => {
+      setExperienceMode("skills", true);
+
+      const targetSkill = link.dataset.previewSkillLink;
+      const targetTab = document.querySelector(`.skill-tab[data-preview-mode="skills"][data-skill="${targetSkill}"]`);
+      if (targetTab) activatePreview(targetTab);
+    });
+  });
 }
 
 function escapeHtml(value) {
@@ -1563,7 +1648,8 @@ function renderWorkflowGraph() {
   if (!graphContainer) return;
 
   updateWorkflowModeText();
-  const width = Math.max(320, Math.floor(graphContainer.getBoundingClientRect().width || graphContainer.clientWidth));
+  const measuredWidth = Math.floor(graphContainer.getBoundingClientRect().width || graphContainer.clientWidth);
+  const width = measuredWidth || 240;
   const data = buildWorkflowGraphData(width);
   if (!G6?.Graph) {
     if (workflowGraph) {
@@ -1677,14 +1763,14 @@ function setExperienceMode(mode, userInitiated = true) {
   });
 
   revealVisibleSections();
-  setPreviewMode(mode, userInitiated);
+  setPreviewMode(mode);
   setWorkflowMode(mode);
   if (userInitiated) animateExperienceContent();
 }
 
 document.querySelectorAll(".skill-tab").forEach((button) => {
   button.addEventListener("click", () => {
-    activatePreview(button, !previewAutoCycling);
+    activatePreview(button);
   });
 });
 
@@ -1810,10 +1896,12 @@ function revealVisibleSections() {
 function setupSectionReveal() {
   const sections = document.querySelectorAll(SECTION_REVEAL_SELECTOR);
   if (!sections.length) return;
+  const skillsSection = document.querySelector("#skills");
 
   sections.forEach((section) => {
     section.classList.add("section-reveal");
   });
+  if (skillsSection) revealSection(skillsSection);
 
   if (reduceMotion || !("IntersectionObserver" in window)) {
     sections.forEach(revealSection);
@@ -1834,6 +1922,7 @@ function setupSectionReveal() {
   });
 
   sections.forEach((section) => {
+    if (section === skillsSection) return;
     observer.observe(section);
   });
   revealVisibleSections();
@@ -1848,6 +1937,9 @@ function scheduleHeaderStateUpdate() {
   });
 }
 
+setupPreviewTabs();
+setupSwaggerPreviewLink();
+setupHeroTerminalTabs();
 applyLanguage();
 setupMobileNav();
 setupSectionReveal();
@@ -1867,4 +1959,3 @@ setupWorkflowGraphResizeObserver();
 window.addEventListener("load", renderWorkflowGraph);
 window.addEventListener("resize", scheduleWorkflowGraphRender);
 renderHeroTerminal();
-startPreviewAutoCycle();

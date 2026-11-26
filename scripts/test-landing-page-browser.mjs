@@ -68,15 +68,7 @@ try {
     });
     await page.goto(url, { waitUntil: "load" });
     await checkLayout(page, `${width}px initial`);
-    assert.ok((await page.locator("#why").boundingBox()).y < height, `${width}px: first viewport must reveal the next section`);
-    const logo = page.locator(".hero-logo img");
-    assert.ok(await logo.evaluate((image) => image.complete && image.naturalWidth >= 320), "hero logo must use a loaded full-resolution asset");
-    const heroBox = await page.locator(".hero").boundingBox();
-    const logoBox = await logo.boundingBox();
-    if (width > 900) {
-      assert.ok(logoBox.x >= heroBox.x + heroBox.width, `${width}px: logo must occupy the right side of the introduction`);
-    }
-    assert.ok((await page.locator("#why").boundingBox()).y >= Math.max(heroBox.y + heroBox.height, logoBox.y + logoBox.height), `${width}px: examples must follow the introduction and logo`);
+    assert.ok((await page.locator("#demo").boundingBox()).y < height, `${width}px: hero interactive demo must be visible`);
     await page.screenshot({ path: join(output, `desktop-${width}.png`) });
 
     const scenarios = page.locator("[data-scenario]");
@@ -126,14 +118,14 @@ try {
     assert.equal((await page.locator("#install-command").innerText()).trim(), "npx skills add Jason-chen-coder/dev-skills");
     await checkTabKeys(page, "[data-install-mode]");
     await checkTabKeys(page, "[data-install-action]");
-    if (await page.locator("[data-workflow]").count()) {
-      const flows = page.locator("[data-workflow]");
-      for (let index = 0; index < await flows.count(); index += 1) {
-        await flows.nth(index).click();
-        assert.equal(await flows.nth(index).getAttribute("aria-selected"), "true");
-        await checkLayout(page, `${width}px workflow ${index}`);
+    if (await page.locator("[data-stage]").count()) {
+      const stages = page.locator("[data-stage]");
+      for (let index = 0; index < await stages.count(); index += 1) {
+        await stages.nth(index).click();
+        assert.equal(await stages.nth(index).getAttribute("aria-selected"), "true");
+        await checkLayout(page, `${width}px stage ${index}`);
       }
-      await checkTabKeys(page, "[data-workflow]");
+      await checkTabKeys(page, "[data-stage]");
     }
 
     if (await page.locator("#menu-toggle").isVisible()) {

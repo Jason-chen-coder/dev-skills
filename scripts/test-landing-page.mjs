@@ -43,7 +43,7 @@ for (const id of ["top", "why", "workflow", "skills", "swagger", "install", "art
 
 check(/<html[^>]+lang="zh-CN"/.test(html), "page language must match its Chinese content");
 check((html.match(/<h1\b/g) || []).length === 1, "expected one primary product heading");
-check(/<h1\b[^>]*>\s*dev-skills\s*<\/h1>/.test(html), "product name must remain the primary heading");
+check(/<h1\b[^>]*>[\s\S]*dev-skills[\s\S]*<\/h1>/.test(html), "product name must remain in the primary heading");
 
 const skillNames = [...html.matchAll(/data-skill="([^"]+)"/g)].map((match) => match[1]);
 check(skillNames.length === expectedSkills.length, "directory must contain exactly 13 skill entries");
@@ -104,7 +104,6 @@ check(html.includes('role="tablist"') && html.includes('role="tabpanel"'), "miss
 check(!/<script[^>]+src=/.test(html), "page must remain usable without external scripts");
 check(!/setInterval\s*\(/.test(html), "examples must not auto-cycle");
 check(!/[\u2013\u2014]/u.test(html), "avoid em/en dash in page copy");
-check(!/gradient/i.test(html), "page must not introduce gradient decoration");
 
 const { Script } = await import("node:vm");
 const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)];
