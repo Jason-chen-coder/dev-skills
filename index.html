@@ -1,0 +1,4524 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="dev-skills：面向 Claude Code 与 Codex 的 13 个开源 AI 编程工程技能，覆盖需求对齐、方案拆解、TDD、根因修复、UI 还原、Swagger 契约查询与提交前评审。">
+  <meta property="og:title" content="dev-skills · 给 AI 编程装上工程门禁">
+  <meta property="og:description" content="13 个按需触发的工程技能，把 AI 写代码、做界面和查接口变成一条可验证的交付链。">
+  <title>dev-skills · 给 AI 编程装上工程门禁</title>
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem("dev-skills-theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (_) {}
+      document.documentElement.classList.add("hl-js");
+    })();
+  </script>
+  <style>
+    @property --hl-angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @property --hl-flow-x {
+      syntax: "<percentage>";
+      initial-value: 0%;
+      inherits: false;
+    }
+
+    @property --hl-sheen-x {
+      syntax: "<percentage>";
+      initial-value: -60%;
+      inherits: false;
+    }
+
+    :root,
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --hl-bg: #0a0c11;
+      --hl-bg-2: #0e1118;
+      --hl-surface: #12161e;
+      --hl-raised: #191f2b;
+      --hl-code: #080a0f;
+      --hl-line: rgba(255, 255, 255, 0.08);
+      --hl-line-strong: rgba(255, 255, 255, 0.16);
+      --hl-text: #eef1f6;
+      --hl-muted: #a6afbe;
+      --hl-dim: #7b8496;
+      --hl-faint: #4a5262;
+      --hl-c1: #48aaff;
+      --hl-c2: #8fd6ff;
+      --hl-c3: #ffc46b;
+      --hl-c4: #ff8a4c;
+      --hl-ok: #34d399;
+      --hl-ok-soft: rgba(52, 211, 153, 0.14);
+      --hl-err: #fb7185;
+      --hl-err-soft: rgba(251, 113, 133, 0.12);
+      --hl-warn: #ffc46b;
+      --hl-warn-soft: rgba(255, 196, 107, 0.12);
+      --hl-blue-soft: rgba(72, 170, 255, 0.14);
+      --hl-grad: linear-gradient(100deg, #34d399 0%, #48aaff 34%, #eef6ff 52%, #ffc46b 74%, #ff8a4c 100%);
+      --hl-glow-a: rgba(72, 170, 255, 0.24);
+      --hl-glow-b: rgba(255, 170, 80, 0.16);
+      --hl-glow-ok: rgba(52, 211, 153, 0.18);
+      --hl-btn-bg: #eef1f6;
+      --hl-btn-text: #0a0c11;
+      --hl-nav-bg: rgba(10, 12, 17, 0.82);
+      --hl-hex-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98'%3E%3Cpath d='M28 66 0 50V16L28 0l28 16v34L28 66Zm0 0v32' fill='none' stroke='rgba(255,255,255,0.045)' stroke-width='1'/%3E%3C/svg%3E");
+      --hl-max: 76rem;
+      --hl-pad: clamp(1.25rem, 4vw, 2.75rem);
+      --hl-nav-h: 64px;
+      --hl-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --hl-mono: "Geist Mono", "JetBrains Mono", "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --hl-bg: #f7f8fb;
+      --hl-bg-2: #eef1f6;
+      --hl-surface: #ffffff;
+      --hl-raised: #f1f4f9;
+      --hl-code: #f3f5fa;
+      --hl-line: rgba(12, 22, 44, 0.09);
+      --hl-line-strong: rgba(12, 22, 44, 0.17);
+      --hl-text: #0b0f17;
+      --hl-muted: #475061;
+      --hl-dim: #667085;
+      --hl-faint: #b4bccb;
+      --hl-c1: #0169cc;
+      --hl-c2: #2b8de6;
+      --hl-c3: #b86e00;
+      --hl-c4: #c4501c;
+      --hl-ok: #0f8a5f;
+      --hl-ok-soft: rgba(15, 138, 95, 0.1);
+      --hl-err: #d93855;
+      --hl-err-soft: rgba(217, 56, 85, 0.09);
+      --hl-warn: #a66000;
+      --hl-warn-soft: rgba(184, 110, 0, 0.1);
+      --hl-blue-soft: rgba(1, 105, 204, 0.1);
+      --hl-grad: linear-gradient(100deg, #0f8a5f 0%, #0169cc 36%, #5f59c4 56%, #b86e00 78%, #c4501c 100%);
+      --hl-glow-a: rgba(1, 105, 204, 0.14);
+      --hl-glow-b: rgba(230, 140, 30, 0.13);
+      --hl-glow-ok: rgba(15, 138, 95, 0.12);
+      --hl-btn-bg: #0b0f17;
+      --hl-btn-text: #ffffff;
+      --hl-nav-bg: rgba(247, 248, 251, 0.86);
+      --hl-hex-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98'%3E%3Cpath d='M28 66 0 50V16L28 0l28 16v34L28 66Zm0 0v32' fill='none' stroke='rgba(12,22,44,0.05)' stroke-width='1'/%3E%3C/svg%3E");
+    }
+
+    * { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--hl-nav-h) + 12px);
+    }
+    body {
+      margin: 0;
+      background: var(--hl-bg);
+      color: var(--hl-text);
+      font-family: var(--hl-sans);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, p, ul, ol { margin: 0; }
+    ul, ol { padding: 0; list-style: none; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; color: inherit; }
+    button { background: none; border: 0; cursor: pointer; }
+    code, pre { font-family: var(--hl-mono); }
+    img { display: block; max-width: 100%; }
+    [hidden] { display: none !important; }
+
+    :is(a, button, input):focus-visible {
+      outline: 2px solid var(--hl-c1);
+      outline-offset: 2px;
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: none;
+    }
+
+    .hl-wrap {
+      max-width: var(--hl-max);
+      margin-inline: auto;
+      padding-inline: var(--hl-pad);
+      min-width: 0;
+    }
+
+    /* ==================== NAVBAR ==================== */
+    .hl-header {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      height: var(--hl-nav-h);
+      background: var(--hl-nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--hl-line);
+    }
+
+    .hl-nav-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .hl-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      flex: none;
+    }
+
+    .hl-brand img {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: #fafafa;
+      padding: 2px;
+      box-shadow: 0 0 0 1px var(--hl-line-strong);
+    }
+
+    .hl-brand-tag {
+      font-family: var(--hl-mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--hl-dim);
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+    }
+
+    .hl-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-left: auto;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--hl-muted);
+    }
+
+    .hl-nav-links a {
+      white-space: nowrap;
+      transition: color 0.18s ease;
+    }
+    .hl-nav-links a:hover { color: var(--hl-text); }
+
+    .hl-nav-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 8px;
+    }
+
+    .hl-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+      color: var(--hl-muted);
+      font-size: 13px;
+      font-weight: 500;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+      white-space: nowrap;
+    }
+    .hl-icon-btn:hover {
+      border-color: var(--hl-line-strong);
+      color: var(--hl-text);
+    }
+
+    .hl-nav-cta {
+      display: inline-flex;
+      align-items: center;
+      height: 34px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: var(--hl-btn-bg);
+      color: var(--hl-btn-text) !important;
+      font-size: 13.5px;
+      font-weight: 650;
+      white-space: nowrap;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .hl-nav-cta:hover { transform: translateY(-1px); opacity: 0.92; }
+
+    .hl-menu-btn {
+      display: none;
+      margin-left: auto;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ==================== RIGHT PROGRESS RAIL ==================== */
+    .hl-rail {
+      position: fixed;
+      z-index: 40;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    body.has-rail .hl-rail,
+    .hl-rail:focus-within {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .hl-rail ol { display: grid; gap: 3px; }
+    .hl-rail a {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 42px;
+      height: 22px;
+      padding-right: 4px;
+      border-radius: 6px;
+    }
+    .hl-rail-tick {
+      display: block;
+      width: 11px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--hl-dim);
+      opacity: 0.55;
+      transition: width 0.32s var(--ease-out), opacity 0.22s ease, background 0.22s ease;
+    }
+    .hl-rail a:is(:hover, :focus-visible) .hl-rail-tick {
+      width: 22px;
+      opacity: 1;
+      background: var(--hl-text);
+    }
+    .hl-rail a[aria-current="true"] .hl-rail-tick {
+      width: 34px;
+      height: 3px;
+      opacity: 1;
+      background: var(--hl-grad);
+      box-shadow: 0 0 12px var(--hl-glow-a);
+    }
+    .hl-rail-label {
+      position: absolute;
+      right: calc(100% + 8px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+      box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.5);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--hl-text);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateX(5px);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .hl-rail-count {
+      font-family: var(--hl-mono);
+      font-size: 11px;
+      color: var(--hl-dim);
+    }
+    .hl-rail a:is(:hover, :focus-visible) .hl-rail-label {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ==================== HERO SECTION ==================== */
+    .hl-hero {
+      position: relative;
+      padding: clamp(3.4rem, 8.5vh, 5.8rem) var(--hl-pad) clamp(3.2rem, 7vh, 5.5rem);
+      text-align: center;
+      isolation: isolate;
+      overflow: clip;
+    }
+
+    .hl-hero::before {
+      content: "";
+      position: absolute;
+      z-index: -2;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, var(--hl-line-strong) 1px, transparent 1.6px);
+      background-size: 28px 24px;
+      mask-image: radial-gradient(72% 58% at 50% 24%, #000 18%, transparent 76%);
+      -webkit-mask-image: radial-gradient(72% 58% at 50% 24%, #000 18%, transparent 76%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .hl-hero-glow {
+      position: absolute;
+      z-index: -1;
+      inset: 24% -10% -6%;
+      background:
+        radial-gradient(42% 46% at 30% 48%, var(--hl-glow-a), transparent 70%),
+        radial-gradient(36% 42% at 72% 54%, var(--hl-glow-b), transparent 72%),
+        radial-gradient(32% 38% at 50% 26%, var(--hl-glow-ok), transparent 70%);
+      filter: blur(18px);
+      pointer-events: none;
+    }
+
+    .hl-hero-copy {
+      max-width: 56rem;
+      margin-inline: auto;
+    }
+
+    .hl-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      background: color-mix(in srgb, var(--hl-surface) 74%, transparent);
+      color: var(--hl-muted);
+      font-family: var(--hl-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .hl-eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--hl-ok);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--hl-ok) 24%, transparent);
+    }
+
+    .hl-hero h1 {
+      margin-top: 1.5rem;
+      font-size: clamp(2.65rem, 6.2vw, 5.15rem);
+      font-weight: 700;
+      line-height: 1.13;
+      letter-spacing: -0.03em;
+      word-break: keep-all;
+      text-wrap: balance;
+    }
+    .hl-hero h1 > span { display: block; }
+
+    .hl-hero-lead {
+      color: color-mix(in srgb, var(--hl-text) 64%, transparent);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+
+    .hl-hero-shine {
+      --metal-hi: var(--hl-text);
+      --metal-mid: color-mix(in srgb, var(--hl-text) 64%, var(--hl-bg));
+      --metal-lo: color-mix(in srgb, var(--hl-text) 42%, var(--hl-bg));
+      --metal-glint: #ffffff;
+      position: relative;
+      display: inline-block;
+      padding: 0 0.04em 0.05em;
+      font-size: 1.03em;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background:
+        linear-gradient(108deg, transparent 36%, var(--metal-glint) 50%, transparent 64%),
+        linear-gradient(100deg, var(--metal-hi) 0%, var(--metal-mid) 22%, var(--metal-hi) 40%, var(--metal-lo) 56%, var(--metal-hi) 76%, var(--metal-mid) 92%, var(--metal-hi) 100%);
+      background-size: 240% 100%, 200% 100%;
+      background-position: var(--hl-sheen-x) 0, var(--hl-flow-x) 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: hl-title-flow 10s linear infinite, hl-title-sheen 6s 1.2s ease-in-out infinite;
+    }
+
+    :root[data-theme="light"] .hl-hero-shine {
+      --metal-glint: #48aaff;
+    }
+
+    .hl-hero-shine::before {
+      content: attr(data-text);
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      padding: inherit;
+      background: inherit;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: blur(26px);
+      opacity: 0.36;
+      pointer-events: none;
+    }
+
+    .hl-caret {
+      display: inline-block;
+      width: 0.068em;
+      height: 0.78em;
+      margin-left: 0.06em;
+      border-radius: 3px;
+      background: var(--hl-ok);
+      box-shadow: 0 0 18px color-mix(in srgb, var(--hl-ok) 65%, transparent);
+      vertical-align: -0.07em;
+      transform: translateX(-0.16em);
+      animation: hl-caret-blink 1.08s 1s steps(1, end) infinite;
+    }
+
+    .hl-hero-intro {
+      max-width: 48rem;
+      margin: 1.45rem auto 0;
+      color: var(--hl-muted);
+      font-size: clamp(1rem, 1.35vw, 1.125rem);
+      line-height: 1.75;
+      text-wrap: pretty;
+    }
+
+    .hl-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 2rem;
+    }
+
+    .hl-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .hl-btn-primary {
+      background: var(--hl-btn-bg);
+      color: var(--hl-btn-text) !important;
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--hl-c1) 38%, transparent), 0 10px 30px -10px var(--hl-glow-a);
+    }
+    .hl-btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--hl-c1) 70%, transparent), 0 14px 38px -8px var(--hl-glow-a);
+    }
+
+    .hl-btn-ghost {
+      border: 1px solid var(--hl-line-strong);
+      background: color-mix(in srgb, var(--hl-surface) 65%, transparent);
+      color: var(--hl-text);
+    }
+    .hl-btn-ghost:hover {
+      border-color: var(--hl-dim);
+      background: var(--hl-surface);
+    }
+
+    .hl-hero-cmd-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 100%;
+      margin-top: 1.15rem;
+      padding: 6px 8px 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line);
+      background: color-mix(in srgb, var(--hl-surface) 80%, transparent);
+      font-family: var(--hl-mono);
+      font-size: 12.5px;
+      color: var(--hl-muted);
+    }
+    .hl-hero-cmd-pill .prompt-s { color: var(--hl-ok); user-select: none; flex: none; }
+    .hl-hero-cmd-pill code {
+      color: var(--hl-text);
+      min-width: 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+
+    .hl-copy-mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex: none;
+      white-space: nowrap;
+      height: 28px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-raised);
+      color: var(--hl-text);
+      font-family: var(--hl-sans);
+      font-size: 12px;
+      font-weight: 500;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+    .hl-copy-mini:hover { border-color: var(--hl-c1); }
+    .hl-copy-mini.is-copied {
+      border-color: color-mix(in srgb, var(--hl-ok) 60%, transparent);
+      color: var(--hl-ok);
+    }
+
+    /* ==================== INTERACTIVE HERO WORKBENCH ==================== */
+    .hl-window-wrap {
+      max-width: 72rem;
+      margin: clamp(2.4rem, 5.5vh, 3.8rem) auto 0;
+      perspective: 1800px;
+    }
+
+    .hl-window {
+      --tilt: 0;
+      position: relative;
+      border-radius: 18px;
+      background: var(--hl-surface);
+      box-shadow:
+        0 40px 120px -30px var(--hl-glow-a),
+        0 26px 80px -40px var(--hl-glow-b),
+        0 0 0 1px var(--hl-line-strong);
+      text-align: left;
+      transform-origin: 50% 0%;
+      transform: rotateX(calc((1 - var(--tilt)) * 6deg)) scale(calc(0.97 + var(--tilt) * 0.03));
+      transition: transform 0.22s linear;
+    }
+
+    .hl-window::before {
+      content: "";
+      position: absolute;
+      z-index: 3;
+      inset: -1px;
+      padding: 1.5px;
+      border-radius: inherit;
+      background: conic-gradient(
+        from var(--hl-angle),
+        transparent 0deg,
+        var(--hl-ok) 36deg,
+        var(--hl-c1) 82deg,
+        var(--hl-c2) 110deg,
+        transparent 150deg,
+        transparent 210deg,
+        var(--hl-c3) 256deg,
+        var(--hl-c4) 294deg,
+        transparent 340deg
+      );
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+      pointer-events: none;
+      animation: hl-spin 10s linear infinite;
+    }
+
+    .hl-win-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 42px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--hl-line);
+      border-radius: 18px 18px 0 0;
+      background: var(--hl-bg-2);
+      font-size: 12px;
+    }
+
+    .hl-win-dots {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+    .hl-win-dots span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .hl-win-dots span:nth-child(1) { background: #ff5f57; }
+    .hl-win-dots span:nth-child(2) { background: #febc2e; }
+    .hl-win-dots span:nth-child(3) { background: #28c840; }
+
+    .hl-win-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--hl-mono);
+      color: var(--hl-dim);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .hl-live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--hl-mono);
+      font-size: 11px;
+      color: var(--hl-muted);
+    }
+    .hl-live-pill i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--hl-c3);
+      box-shadow: 0 0 10px var(--hl-c3);
+    }
+
+    /* 3-Column Interactive Studio Shell */
+    .wb-shell {
+      display: grid;
+      grid-template-columns: 224px minmax(0, 1fr) 248px;
+      min-height: 515px;
+      border-radius: 0 0 18px 18px;
+      overflow: hidden;
+      background: var(--hl-surface);
+    }
+
+    .wb-sidebar {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--hl-line);
+      background: var(--hl-bg-2);
+      padding: 14px 10px;
+      gap: 14px;
+    }
+
+    .wb-side-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 8px;
+      font-weight: 650;
+      font-size: 13.5px;
+    }
+
+    .wb-side-head-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wb-group-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      margin-bottom: 6px;
+      font-size: 11px;
+      font-family: var(--hl-mono);
+      color: var(--hl-dim);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .wb-queue-list {
+      display: grid;
+      gap: 4px;
+    }
+
+    .wb-queue-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--hl-muted);
+      text-align: left;
+      transition: background 0.16s ease, color 0.16s ease;
+    }
+    .wb-queue-item:hover {
+      background: var(--hl-raised);
+      color: var(--hl-text);
+    }
+
+    .wb-badge {
+      flex: none;
+      padding: 1px 6px;
+      border-radius: 5px;
+      font-size: 10.5px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .wb-badge--warn { background: var(--hl-warn-soft); color: var(--hl-warn); }
+    .wb-badge--err { background: var(--hl-err-soft); color: var(--hl-err); }
+    .wb-badge--blue { background: var(--hl-blue-soft); color: var(--hl-c1); }
+    .wb-badge--ok { background: var(--hl-ok-soft); color: var(--hl-ok); }
+
+    .wb-rooms {
+      display: grid;
+      gap: 3px;
+    }
+
+    .wb-room-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--hl-muted);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .wb-room-btn:hover {
+      background: color-mix(in srgb, var(--hl-raised) 70%, transparent);
+      color: var(--hl-text);
+    }
+    .wb-room-btn[aria-selected="true"] {
+      background: var(--hl-raised);
+      color: var(--hl-text);
+      font-weight: 600;
+      box-shadow: inset 2px 0 0 var(--hl-c1);
+    }
+    .wb-room-tag {
+      font-family: var(--hl-mono);
+      font-size: 10.5px;
+      color: var(--hl-dim);
+    }
+
+    .wb-side-foot {
+      margin-top: auto;
+      padding: 10px 8px 2px;
+      border-top: 1px solid var(--hl-line);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .wb-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #34d399, #48aaff);
+      flex: none;
+    }
+    .wb-user-meta strong { display: block; font-size: 12.5px; line-height: 1.2; }
+    .wb-user-meta span { font-size: 11px; color: var(--hl-dim); font-family: var(--hl-mono); }
+
+    /* Center Chat / Workspace Pane */
+    .wb-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: var(--hl-surface);
+    }
+
+    .wb-main-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--hl-line);
+      flex-wrap: wrap;
+    }
+
+    .wb-channel-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 650;
+    }
+    .wb-channel-meta code {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--hl-ok);
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--hl-ok-soft);
+    }
+
+    .wb-view-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .wb-tab-btn {
+      position: relative;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--hl-muted);
+      transition: background 0.16s ease, color 0.16s ease;
+    }
+    .wb-tab-btn:hover { color: var(--hl-text); background: var(--hl-raised); }
+    .wb-tab-btn[aria-selected="true"] {
+      background: var(--hl-raised);
+      color: var(--hl-text);
+      box-shadow: 0 0 0 1px var(--hl-line-strong);
+    }
+
+    .wb-feed {
+      flex: 1;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      max-height: 410px;
+    }
+
+    .wb-msg-user {
+      align-self: flex-end;
+      max-width: 86%;
+      padding: 10px 14px;
+      border-radius: 13px 13px 4px 13px;
+      background: color-mix(in srgb, var(--hl-c1) 18%, var(--hl-raised));
+      border: 1px solid color-mix(in srgb, var(--hl-c1) 34%, transparent);
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--hl-text);
+    }
+    .wb-msg-user .at-skill {
+      color: var(--hl-c2);
+      font-family: var(--hl-mono);
+      font-weight: 600;
+    }
+    :root[data-theme="light"] .wb-msg-user .at-skill { color: var(--hl-c1); }
+
+    .wb-msg-agent {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .wb-agent-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-family: var(--hl-mono);
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--hl-raised);
+      border: 1px solid var(--hl-line-strong);
+      color: var(--hl-ok);
+      flex: none;
+      margin-top: 2px;
+    }
+
+    .wb-agent-body {
+      flex: 1;
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .wb-agent-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .wb-agent-head strong { font-family: var(--hl-mono); font-size: 12.5px; color: var(--hl-text); }
+    .wb-agent-head span { color: var(--hl-dim); }
+
+    .wb-card {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-bg-2);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .wb-card-bullets {
+      display: grid;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .wb-card-bullets li {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--hl-muted);
+    }
+    .wb-card-bullets li::before {
+      content: "›";
+      color: var(--hl-ok);
+      font-weight: 700;
+      flex: none;
+    }
+    .wb-card-bullets code {
+      font-size: 11.5px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--hl-code);
+      color: var(--hl-text);
+    }
+
+    .wb-decision {
+      margin-top: 10px;
+      display: grid;
+      gap: 6px;
+    }
+    .wb-decision-label {
+      font-size: 11px;
+      font-family: var(--hl-mono);
+      color: var(--hl-warn);
+      letter-spacing: 0.04em;
+    }
+
+    .wb-opt-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+      font-size: 12.5px;
+      color: var(--hl-text);
+      text-align: left;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.16s ease;
+    }
+    .wb-opt-btn:hover {
+      border-color: var(--hl-c1);
+      background: color-mix(in srgb, var(--hl-c1) 10%, var(--hl-surface));
+      transform: translateX(2px);
+    }
+    .wb-opt-btn.is-picked {
+      border-color: var(--hl-ok);
+      background: var(--hl-ok-soft);
+      color: var(--hl-text);
+    }
+    .wb-opt-key {
+      font-family: var(--hl-mono);
+      font-weight: 700;
+      color: var(--hl-c1);
+      margin-right: 6px;
+    }
+    .wb-opt-btn.is-picked .wb-opt-key { color: var(--hl-ok); }
+
+    .wb-outcome-box {
+      padding: 11px 13px;
+      border-radius: 10px;
+      border: 1px solid color-mix(in srgb, var(--hl-ok) 40%, transparent);
+      background: var(--hl-ok-soft);
+      font-family: var(--hl-mono);
+      font-size: 12px;
+      color: var(--hl-text);
+      display: grid;
+      gap: 4px;
+      animation: hl-fade-up 0.28s var(--ease-out) both;
+    }
+    .wb-outcome-box .ok-tag { color: var(--hl-ok); font-weight: 700; }
+
+    /* Artifact Preview Pane inside Workbench */
+    .wb-artifact-view {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-code);
+      font-family: var(--hl-mono);
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--hl-muted);
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .wb-artifact-path {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 9px;
+      background: var(--hl-bg-2);
+      border: 1px solid var(--hl-line);
+      font-family: var(--hl-mono);
+      font-size: 11.5px;
+      color: var(--hl-c2);
+    }
+    :root[data-theme="light"] .wb-artifact-path { color: var(--hl-c1); }
+
+    .wb-composer {
+      margin-top: auto;
+      padding: 10px 14px;
+      border-top: 1px solid var(--hl-line);
+      background: var(--hl-bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .wb-composer-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .wb-chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+      font-size: 11.5px;
+      color: var(--hl-muted);
+      transition: border-color 0.16s ease, color 0.16s ease;
+    }
+    .wb-chip:hover { border-color: var(--hl-c1); color: var(--hl-text); }
+
+    /* Right Inspector */
+    .wb-inspector {
+      border-left: 1px solid var(--hl-line);
+      background: var(--hl-bg-2);
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .wb-pipe-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .wb-pipe-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+      font-size: 12px;
+    }
+    .wb-pipe-item strong {
+      font-family: var(--hl-mono);
+      font-size: 11.5px;
+      display: block;
+      color: var(--hl-text);
+    }
+    .wb-pipe-item small {
+      font-size: 11px;
+      color: var(--hl-dim);
+    }
+    .wb-pipe-item.is-active {
+      border-color: color-mix(in srgb, var(--hl-c1) 45%, transparent);
+    }
+    .wb-pipe-item.is-done {
+      border-color: color-mix(in srgb, var(--hl-ok) 40%, transparent);
+    }
+
+    .wb-file-card {
+      padding: 9px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+      text-align: left;
+      transition: border-color 0.18s ease;
+    }
+    .wb-file-card:hover { border-color: var(--hl-c1); }
+    .wb-file-card code {
+      display: block;
+      font-size: 11px;
+      color: var(--hl-ok);
+      word-break: break-all;
+    }
+    .wb-file-card span {
+      display: block;
+      margin-top: 3px;
+      font-size: 11px;
+      color: var(--hl-dim);
+    }
+
+    .wb-beacon {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--hl-c1);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--hl-c1) 30%, transparent), 0 0 12px var(--hl-c1);
+      pointer-events: none;
+      animation: hl-pulse 2s ease-in-out infinite;
+    }
+    .wb-beacon.is-seen { display: none; }
+
+    .hl-window-caption {
+      margin-top: 1.15rem;
+      font-family: var(--hl-mono);
+      font-size: 12px;
+      color: var(--hl-dim);
+      letter-spacing: 0.04em;
+    }
+
+    /* ==================== SCROLL-LIT MANIFESTO ==================== */
+    .hl-statement {
+      position: relative;
+      padding-block: clamp(5.5rem, 15vh, 9.5rem);
+      overflow: clip;
+    }
+    .hl-statement::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--hl-hex-grid);
+      background-size: 56px 98px;
+      mask-image: radial-gradient(64% 62% at 50% 50%, #000 10%, transparent 78%);
+      -webkit-mask-image: radial-gradient(64% 62% at 50% 50%, #000 10%, transparent 78%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hl-statement-text {
+      position: relative;
+      max-width: 64rem;
+      font-size: clamp(1.7rem, 3.85vw, 3.3rem);
+      font-weight: 650;
+      line-height: 1.42;
+      letter-spacing: -0.015em;
+      text-wrap: pretty;
+    }
+
+    .hl-js .hl-statement:not(.is-lit) .hl-w {
+      color: color-mix(in srgb, var(--hl-dim) 58%, transparent);
+    }
+    .hl-js .hl-statement.is-lit .hl-w {
+      color: var(--hl-text);
+      transition: color 0.45s ease calc(var(--i) * 45ms);
+    }
+    .hl-js .hl-statement.is-lit .hl-w.is-accent {
+      color: var(--hl-ok);
+    }
+
+    /* ==================== SHARED EDITORIAL SECTION HEADER ==================== */
+    .hl-section {
+      position: relative;
+      padding-block: clamp(4.8rem, 12.5vh, 8.2rem);
+      scroll-margin-top: var(--hl-nav-h);
+      overflow-x: clip;
+    }
+
+    .hl-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--hl-muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .hl-kicker-hex {
+      width: 13px;
+      height: 13px;
+      flex: none;
+      background: var(--hl-grad);
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    }
+
+    .hl-h2 {
+      max-width: 58rem;
+      margin-top: 1rem;
+      font-size: clamp(2rem, 4.3vw, 3.6rem);
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      word-break: keep-all;
+      text-wrap: balance;
+    }
+    .hl-h2 > span { display: block; }
+    .hl-h2 .hl-h2-dim { color: var(--hl-dim); }
+
+    .hl-body {
+      max-width: 44rem;
+      margin-top: 1.15rem;
+      color: var(--hl-muted);
+      font-size: 16px;
+      line-height: 1.75;
+      text-wrap: pretty;
+    }
+
+    .hl-inline-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 1.5rem;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--hl-text);
+      transition: color 0.18s ease, gap 0.18s ease;
+    }
+    .hl-inline-link:hover { color: var(--hl-c1); gap: 9px; }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+      transition-delay: var(--delay, 0ms);
+    }
+    .hl-js .reveal:not(.is-visible) {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* ==================== CLOSED-LOOP ANIMATED STAGE (CollabModel style) ==================== */
+    .cm-frame {
+      margin-top: 2.5rem;
+      border-radius: 20px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-bg-2);
+      box-shadow: 0 30px 90px -45px var(--hl-glow-a), inset 0 1px rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+
+    .cm-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--hl-line);
+      background: color-mix(in srgb, var(--hl-surface) 75%, transparent);
+    }
+
+    .cm-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cm-pill-group {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-bg);
+    }
+
+    .cm-mode-btn {
+      padding: 5px 13px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--hl-muted);
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+    .cm-mode-btn[aria-selected="true"] {
+      background: var(--hl-raised);
+      color: var(--hl-text);
+      box-shadow: 0 0 0 1px var(--hl-line-strong);
+    }
+    .cm-mode-btn[data-loop-mode="ungated"][aria-selected="true"] {
+      background: var(--hl-err-soft);
+      color: var(--hl-err);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--hl-err) 40%, transparent);
+    }
+
+    .cm-bar-desc {
+      font-size: 13px;
+      color: var(--hl-muted);
+    }
+
+    .cm-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cm-ctrl {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+      font-size: 12px;
+      color: var(--hl-muted);
+      transition: border-color 0.18s ease, color 0.18s ease;
+    }
+    .cm-ctrl:hover { border-color: var(--hl-c1); color: var(--hl-text); }
+
+    .cm-stage {
+      position: relative;
+      padding: 28px 22px 24px;
+      background-image: radial-gradient(circle at 1px 1px, var(--hl-line) 1px, transparent 1.5px);
+      background-size: 26px 26px;
+    }
+
+    .cm-canvas-grid {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr) 230px;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .cm-node-col {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .cm-node {
+      position: relative;
+      padding: 13px 14px;
+      border-radius: 13px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+    }
+    .cm-node.is-active {
+      border-color: var(--hl-c1);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--hl-c1) 40%, transparent), 0 12px 32px -14px var(--hl-glow-a);
+      transform: translateY(-2px);
+    }
+    .cm-node.is-done {
+      border-color: color-mix(in srgb, var(--hl-ok) 45%, transparent);
+    }
+    .cm-node.is-err {
+      border-color: color-mix(in srgb, var(--hl-err) 55%, transparent);
+      box-shadow: 0 0 24px -10px var(--hl-err);
+    }
+
+    .cm-node-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+    .cm-node-top code {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--hl-text);
+    }
+    .cm-node p {
+      font-size: 12px;
+      color: var(--hl-dim);
+      line-height: 1.45;
+    }
+
+    .cm-hub {
+      border-radius: 16px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+      box-shadow: 0 22px 60px -28px rgba(0, 0, 0, 0.65);
+    }
+    .cm-frame.is-ungated .cm-hub {
+      border-color: color-mix(in srgb, var(--hl-err) 45%, transparent);
+    }
+
+    .cm-hub-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--hl-line);
+    }
+    .cm-hub-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 650;
+      font-size: 14px;
+    }
+    .cm-hub-title small {
+      display: block;
+      font-weight: 400;
+      font-size: 11.5px;
+      color: var(--hl-dim);
+    }
+
+    .cm-hub-log {
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: var(--hl-code);
+      border: 1px solid var(--hl-line);
+      display: grid;
+      gap: 6px;
+      min-height: 116px;
+    }
+
+    .cm-log-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--hl-mono);
+      font-size: 11.5px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      color: var(--hl-muted);
+      background: transparent;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .cm-log-line.is-lit {
+      background: color-mix(in srgb, var(--hl-c1) 14%, transparent);
+      color: var(--hl-text);
+    }
+    .cm-frame.is-ungated .cm-log-line.is-lit {
+      background: var(--hl-err-soft);
+      color: var(--hl-err);
+    }
+
+    .cm-hub-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .cm-subbox {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-bg-2);
+    }
+    .cm-subbox--warn {
+      border-color: color-mix(in srgb, var(--hl-warn) 38%, transparent);
+    }
+    .cm-subbox-title {
+      font-size: 11px;
+      font-family: var(--hl-mono);
+      color: var(--hl-dim);
+      margin-bottom: 6px;
+    }
+    .cm-subbox--warn .cm-subbox-title { color: var(--hl-warn); }
+    .cm-subbox-rows {
+      display: grid;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--hl-muted);
+    }
+    .cm-subbox-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    /* 6-Step Interactive Timeline Strip */
+    .cm-steps {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      border-top: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+    }
+
+    .cm-step-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 15px 14px 16px;
+      text-align: left;
+      border-right: 1px solid var(--hl-line);
+      transition: background 0.18s ease;
+    }
+    .cm-step-btn:last-child { border-right: 0; }
+    .cm-step-btn:hover { background: var(--hl-raised); }
+    .cm-step-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: transparent;
+      transition: background 0.2s ease;
+    }
+    .cm-step-btn[aria-selected="true"] {
+      background: color-mix(in srgb, var(--hl-raised) 70%, transparent);
+    }
+    .cm-step-btn[aria-selected="true"]::before {
+      background: var(--hl-grad);
+    }
+    .cm-frame.is-ungated .cm-step-btn[aria-selected="true"]::before {
+      background: var(--hl-err);
+    }
+
+    .cm-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: var(--hl-mono);
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid var(--hl-line-strong);
+      color: var(--hl-dim);
+      transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    }
+    .cm-step-btn[aria-selected="true"] .cm-step-num {
+      background: var(--hl-c1);
+      border-color: var(--hl-c1);
+      color: #fff;
+    }
+    .cm-frame.is-ungated .cm-step-btn[aria-selected="true"] .cm-step-num {
+      background: var(--hl-err);
+      border-color: var(--hl-err);
+    }
+    .cm-step-title {
+      font-size: 13px;
+      font-weight: 650;
+      color: var(--hl-text);
+    }
+    .cm-step-desc {
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: var(--hl-dim);
+    }
+
+    /* ==================== ROUTING SCHEMATIC ==================== */
+    .route-card {
+      margin-top: 2.5rem;
+      border-radius: 20px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-bg-2);
+      overflow: hidden;
+      box-shadow: 0 26px 76px -40px var(--hl-glow-a);
+    }
+
+    .route-well {
+      padding: 26px 24px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .route-svg {
+      display: block;
+      width: 100%;
+      min-width: 820px;
+      height: auto;
+      font-family: var(--hl-sans);
+      user-select: none;
+    }
+
+    .schem-mono { font-family: var(--hl-mono); }
+    .schem-flow-ok { stroke-dasharray: 6 7; animation: schem-dash 14s linear infinite; }
+    .schem-flow-subtle { stroke-dasharray: 5 6; animation: schem-dash 18s linear infinite; }
+    .schem-flow-blue { stroke-dasharray: 5 6; animation: schem-dash 15s linear infinite; }
+    .svg-stage-group { transition: opacity 0.25s ease, filter 0.25s ease; }
+    .svg-stage-group.is-dim { opacity: 0.18; }
+    .svg-stage-group.is-focus { filter: drop-shadow(0 0 12px rgba(72, 170, 255, 0.28)); }
+
+    .route-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      border-top: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+    }
+
+    .route-tab {
+      position: relative;
+      padding: 14px 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--hl-muted);
+      border-right: 1px solid var(--hl-line);
+      transition: color 0.18s ease, background 0.18s ease;
+    }
+    .route-tab:last-child { border-right: 0; }
+    .route-tab:hover { color: var(--hl-text); background: var(--hl-raised); }
+    .route-tab[aria-selected="true"] {
+      color: var(--hl-text);
+      font-weight: 650;
+      background: color-mix(in srgb, var(--hl-raised) 65%, transparent);
+    }
+    .route-tab[aria-selected="true"]::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--hl-grad);
+    }
+
+    .route-readout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 20px;
+      border-top: 1px solid var(--hl-line);
+      background: var(--hl-code);
+      font-size: 13px;
+    }
+    .route-readout-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .route-tag {
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: var(--hl-ok-soft);
+      color: var(--hl-ok);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .route-readout code {
+      color: var(--hl-muted);
+      font-size: 12.5px;
+    }
+    .route-gate-note {
+      color: var(--hl-c2);
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+    :root[data-theme="light"] .route-gate-note { color: var(--hl-c1); }
+
+    /* ==================== 13 SKILLS: MONUMENTAL NUMERAL + CLOUD + MATRIX ==================== */
+    .skills-hero-row {
+      margin-top: 2.4rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+      gap: 28px;
+      align-items: center;
+    }
+
+    .skills-big-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hl-big-num {
+      font-size: clamp(4.6rem, 9.5vw, 7.6rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      background: var(--hl-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .skills-big-meta strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 650;
+      color: var(--hl-text);
+    }
+    .skills-big-meta span {
+      display: block;
+      margin-top: 4px;
+      font-size: 13.5px;
+      color: var(--hl-dim);
+    }
+
+    .skills-cloud {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid var(--hl-line);
+      background:
+        radial-gradient(60% 80% at 70% 25%, var(--hl-glow-a), transparent 72%),
+        radial-gradient(50% 70% at 25% 85%, var(--hl-glow-b), transparent 75%),
+        var(--hl-bg-2);
+    }
+
+    .cloud-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      background: color-mix(in srgb, var(--hl-surface) 88%, transparent);
+      font-family: var(--hl-mono);
+      font-size: 12px;
+      color: var(--hl-text);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cloud-pill i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pill-c, var(--hl-c1));
+    }
+    .cloud-pill:hover {
+      transform: translateY(-2px);
+      border-color: var(--hl-c1);
+      box-shadow: 0 8px 22px -10px var(--hl-glow-a);
+    }
+
+    .skills-toolbar {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .filter-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-bg-2);
+    }
+
+    .filter-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--hl-muted);
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+    .filter-pill:hover { color: var(--hl-text); }
+    .filter-pill[aria-pressed="true"] {
+      background: var(--hl-btn-bg);
+      color: var(--hl-btn-text);
+      font-weight: 650;
+    }
+
+    .skill-search {
+      width: min(260px, 100%);
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+      font-size: 13.5px;
+      color: var(--hl-text);
+      transition: border-color 0.18s ease;
+    }
+    .skill-search::placeholder { color: var(--hl-dim); }
+    .skill-search:focus { border-color: var(--hl-c1); outline: none; }
+
+    .skills-grid {
+      margin-top: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .skill-card {
+      grid-column: span 4;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 18px 18px 17px;
+      border-radius: 15px;
+      border: 1px solid var(--hl-line);
+      background: linear-gradient(180deg, var(--hl-surface), color-mix(in srgb, var(--hl-surface) 45%, transparent));
+      transition: transform 0.22s var(--ease-out), border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    /* 3 + 4 + 3 + 3 = 13 cards, zero orphan row on desktop */
+    @media (min-width: 901px) {
+      .skills-grid:not(.is-filtered) .skill-card:nth-child(4),
+      .skills-grid:not(.is-filtered) .skill-card:nth-child(5),
+      .skills-grid:not(.is-filtered) .skill-card:nth-child(6),
+      .skills-grid:not(.is-filtered) .skill-card:nth-child(7) {
+        grid-column: span 3;
+      }
+    }
+    .skill-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--hl-line-strong);
+      box-shadow: 0 18px 42px -24px var(--hl-glow-a);
+    }
+
+    .skill-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .skill-code {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 7px;
+      background: var(--hl-bg-2);
+      border: 1px solid var(--hl-line);
+      color: var(--hl-c2);
+    }
+    :root[data-theme="light"] .skill-code { color: var(--hl-c1); }
+    .skill-card[data-cat="build"] .skill-code { color: var(--hl-warn); }
+    .skill-card[data-cat="ship"] .skill-code { color: var(--hl-ok); }
+
+    .skill-card h3 {
+      font-size: 16px;
+      font-weight: 650;
+      color: var(--hl-text);
+      margin-top: 2px;
+    }
+    .skill-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--hl-muted);
+    }
+    .skill-card .icon {
+      color: var(--hl-dim);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .skill-card:hover .icon {
+      color: var(--hl-text);
+      transform: translate(2px, -2px);
+    }
+
+    .skill-empty {
+      margin-top: 16px;
+      padding: 28px;
+      text-align: center;
+      border-radius: 14px;
+      border: 1px dashed var(--hl-line-strong);
+      color: var(--hl-dim);
+      font-size: 14px;
+    }
+
+    /* ==================== SAFETY & PERMISSION BOUNDARIES ==================== */
+    .perm-grid {
+      margin-top: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(300px, 1.32fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .layer-card {
+      padding: 22px 20px;
+      border-radius: 16px;
+      border: 1px solid var(--hl-line);
+      background: linear-gradient(180deg, var(--hl-surface), color-mix(in srgb, var(--hl-surface) 45%, transparent));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      width: 100%;
+      transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s var(--ease-out);
+    }
+    .layer-card:hover {
+      border-color: var(--hl-line-strong);
+      transform: translateY(-2px);
+    }
+    .layer-card[aria-selected="true"] {
+      border-color: color-mix(in srgb, var(--hl-c1) 58%, transparent);
+      box-shadow: 0 24px 60px -34px var(--hl-glow-a);
+    }
+    .layer-card[data-bound="readonly"][aria-selected="true"] {
+      border-color: color-mix(in srgb, var(--hl-ok) 58%, transparent);
+      box-shadow: 0 24px 60px -34px var(--hl-glow-ok);
+    }
+    .layer-card[data-bound="gated"][aria-selected="true"] {
+      border-color: color-mix(in srgb, var(--hl-warn) 58%, transparent);
+      box-shadow: 0 24px 60px -34px var(--hl-glow-b);
+    }
+    .layer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+    .layer-card h3 {
+      font-size: 17.5px;
+      font-weight: 650;
+      color: var(--hl-text);
+    }
+    .layer-tag {
+      font-family: var(--hl-mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--hl-blue-soft);
+      color: var(--hl-c1);
+      flex: none;
+    }
+    .layer-tag--ok { background: var(--hl-ok-soft); color: var(--hl-ok); }
+    .layer-tag--warn { background: var(--hl-warn-soft); color: var(--hl-warn); }
+    .layer-code {
+      font-family: var(--hl-mono);
+      font-size: 12px;
+      color: var(--hl-dim);
+    }
+    .layer-card p {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--hl-muted);
+    }
+    .layer-pills {
+      margin-top: auto;
+      padding-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .layer-pills span {
+      font-family: var(--hl-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--hl-bg-2);
+      border: 1px solid var(--hl-line);
+      color: var(--hl-muted);
+    }
+
+    /* Interactive Gate Interception Card (Live-synced with selected boundary tier) */
+    .gate-card {
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--hl-warn) 45%, transparent);
+      background:
+        radial-gradient(80% 70% at 85% 15%, var(--hl-glow-b), transparent 72%),
+        var(--hl-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.25s ease, background 0.25s ease;
+    }
+    .gate-card[data-tone="ok"] {
+      border-color: color-mix(in srgb, var(--hl-ok) 48%, transparent);
+      background:
+        radial-gradient(80% 70% at 85% 15%, var(--hl-glow-ok), transparent 72%),
+        var(--hl-surface);
+    }
+    .gate-card[data-tone="blue"] {
+      border-color: color-mix(in srgb, var(--hl-c1) 48%, transparent);
+      background:
+        radial-gradient(80% 70% at 85% 15%, var(--hl-glow-a), transparent 72%),
+        var(--hl-surface);
+    }
+    .gate-card-kicker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--hl-mono);
+      font-size: 11.5px;
+      color: var(--hl-warn);
+      font-weight: 600;
+    }
+    .gate-card[data-tone="ok"] .gate-card-kicker { color: var(--hl-ok); }
+    .gate-card[data-tone="blue"] .gate-card-kicker { color: var(--hl-c1); }
+    .gate-card h3 {
+      font-size: 16px;
+      font-weight: 650;
+    }
+    .gate-code-strip {
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: var(--hl-code);
+      border: 1px solid var(--hl-line);
+      font-family: var(--hl-mono);
+      font-size: 11.5px;
+      line-height: 1.65;
+      color: var(--hl-muted);
+      display: grid;
+      gap: 5px;
+    }
+    .gate-code-strip .p1 { color: var(--hl-err); }
+    .gate-code-strip .p2 { color: var(--hl-warn); }
+    .gate-code-strip .ok { color: var(--hl-ok); }
+    .gate-code-strip .info { color: var(--hl-c2); }
+    :root[data-theme="light"] .gate-code-strip .info { color: var(--hl-c1); }
+    .gate-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .gate-btn-primary {
+      height: 38px;
+      border-radius: 10px;
+      background: var(--hl-btn-bg);
+      color: var(--hl-btn-text);
+      font-size: 13px;
+      font-weight: 650;
+      transition: opacity 0.18s ease;
+    }
+    .gate-btn-primary:hover { opacity: 0.9; }
+    .gate-btn-ghost {
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-bg-2);
+      color: var(--hl-text);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .gate-btn-ghost:hover { border-color: var(--hl-dim); }
+    .gate-footnote {
+      font-size: 11.5px;
+      color: var(--hl-dim);
+      min-height: 18px;
+    }
+
+    .flagship-label {
+      margin-top: 2rem;
+      margin-bottom: 10px;
+      font-family: var(--hl-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      color: var(--hl-dim);
+      text-transform: uppercase;
+    }
+
+    /* Two Flagship Artifact / Bypass Cards */
+    .flagship-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .flagship-card {
+      padding: 20px 22px;
+      border-radius: 16px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      transition: border-color 0.2s ease;
+    }
+    .flagship-card:hover { border-color: var(--hl-line-strong); }
+    .flagship-card h3 {
+      font-size: 16px;
+      font-weight: 650;
+      margin-top: 6px;
+    }
+    .flagship-card p {
+      margin-top: 5px;
+      font-size: 13px;
+      color: var(--hl-muted);
+      line-height: 1.6;
+    }
+    .flagship-card code {
+      font-size: 12px;
+      color: var(--hl-text);
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: var(--hl-bg-2);
+    }
+    .flagship-link {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      font-size: 12.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: border-color 0.18s ease, color 0.18s ease;
+    }
+    .flagship-link:hover { border-color: var(--hl-c1); color: var(--hl-c1); }
+
+    /* ==================== 5-HEX LIFECYCLE + 3 TILES (SuperHive Progress style) ==================== */
+    .hex-track {
+      position: relative;
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .hex-track::before {
+      content: "";
+      position: absolute;
+      top: 22px;
+      left: 24px;
+      right: 24px;
+      height: 1px;
+      background: var(--hl-line-strong);
+      z-index: 0;
+    }
+
+    .hex-step {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      text-align: left;
+      padding: 0 8px 8px 0;
+    }
+
+    .hex-node {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      font-family: var(--hl-mono);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--hl-dim);
+      background: var(--hl-bg);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+    .hex-node::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--hl-line-strong);
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+      transition: background 0.25s ease;
+    }
+    .hex-node::after {
+      content: "";
+      position: absolute;
+      inset: 1.5px;
+      background: var(--hl-bg);
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    }
+    .hex-node span { position: relative; z-index: 2; }
+
+    .hex-step[aria-selected="true"] .hex-node {
+      color: var(--hl-text);
+      transform: scale(1.06);
+    }
+    .hex-step[aria-selected="true"] .hex-node::before {
+      background: var(--hl-grad);
+    }
+    .hex-step.is-passed .hex-node::before {
+      background: var(--hl-ok);
+    }
+    .hex-step.is-passed .hex-node {
+      color: var(--hl-ok);
+    }
+
+    .hex-step h3 {
+      font-size: 14.5px;
+      font-weight: 650;
+      color: var(--hl-muted);
+      transition: color 0.2s ease;
+    }
+    .hex-step[aria-selected="true"] h3 { color: var(--hl-text); }
+    .hex-step p {
+      font-size: 12.5px;
+      color: var(--hl-dim);
+      line-height: 1.55;
+    }
+
+    .hl-tiles {
+      margin-top: 2.2rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .hl-tile {
+      padding: 24px 22px;
+      border-radius: 16px;
+      border: 1px solid var(--hl-line);
+      background: linear-gradient(180deg, var(--hl-surface), color-mix(in srgb, var(--hl-surface) 38%, transparent));
+    }
+    .hl-tile-kicker {
+      font-family: var(--hl-mono);
+      font-size: 11.5px;
+      font-weight: 650;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--hl-c1);
+    }
+    .hl-tile:nth-child(2) .hl-tile-kicker { color: var(--hl-ok); }
+    .hl-tile:nth-child(3) .hl-tile-kicker { color: var(--hl-c3); }
+    .hl-tile h3 {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: 650;
+    }
+    .hl-tile p {
+      margin-top: 8px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--hl-muted);
+    }
+
+    /* ==================== INSTALL SECTION (SuperHive 2-Step Split) ==================== */
+    .install-controls {
+      margin-top: 2.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .install-tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+    }
+    .install-tab {
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--hl-muted);
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+    .install-tab:hover { color: var(--hl-text); }
+    .install-tab[aria-selected="true"] {
+      background: var(--hl-btn-bg);
+      color: var(--hl-btn-text);
+      font-weight: 650;
+    }
+
+    .install-right-ctrls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .scope-fieldset {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+      font-size: 12.5px;
+      color: var(--hl-muted);
+    }
+    .scope-fieldset label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hl-steps {
+      margin-top: 1.6rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      border-top: 1px solid var(--hl-line);
+    }
+
+    .hl-step {
+      padding: 2rem 2rem 1.8rem 0;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      min-width: 0;
+    }
+    .hl-step + .hl-step {
+      padding: 2rem 0 1.8rem 2rem;
+      border-left: 1px solid var(--hl-line);
+    }
+
+    .hl-step-num {
+      color: var(--hl-c1);
+      font-size: 13.5px;
+      font-weight: 650;
+    }
+    .hl-step + .hl-step .hl-step-num { color: var(--hl-ok); }
+    .hl-step h3 {
+      font-size: 24px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .hl-cmd-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+      max-width: 100%;
+      padding: 12px 12px 12px 18px;
+      border-radius: 16px;
+      border: 1px solid var(--hl-line-strong);
+      background: var(--hl-surface);
+    }
+    .hl-cmd-box pre {
+      margin: 0;
+      flex: 1;
+      min-width: 0;
+      overflow-x: auto;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--hl-text);
+    }
+
+    .hl-step-hint {
+      font-size: 13.5px;
+      color: var(--hl-muted);
+      line-height: 1.65;
+    }
+    .hl-step-hint code {
+      font-size: 12.5px;
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: var(--hl-surface);
+      border: 1px solid var(--hl-line);
+      color: var(--hl-text);
+    }
+
+    .status-note {
+      font-family: var(--hl-mono);
+      font-size: 12px;
+      color: var(--hl-ok);
+      min-height: 18px;
+    }
+
+    /* ==================== ARTICLES GRID ==================== */
+    .articles-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .articles-grid {
+      margin-top: 2.2rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .article-card {
+      display: flex;
+      flex-direction: column;
+      border-radius: 16px;
+      border: 1px solid var(--hl-line);
+      background: var(--hl-surface);
+      overflow: hidden;
+      transition: transform 0.24s var(--ease-out), border-color 0.22s ease, box-shadow 0.24s ease;
+    }
+    .article-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--hl-line-strong);
+      box-shadow: 0 22px 46px -26px var(--hl-glow-a);
+    }
+    .article-plate {
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--hl-bg-2);
+      border-bottom: 1px solid var(--hl-line);
+    }
+    .article-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s var(--ease-out);
+    }
+    .article-card:hover .article-plate img { transform: scale(1.03); }
+    .article-info {
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+    .article-info h3 {
+      font-size: 15.5px;
+      font-weight: 650;
+      line-height: 1.5;
+      color: var(--hl-text);
+    }
+    .article-foot {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: var(--hl-dim);
+      font-family: var(--hl-mono);
+    }
+    .article-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--hl-sans);
+      font-weight: 500;
+      color: var(--hl-muted);
+      transition: color 0.18s ease;
+    }
+    .article-card:hover .article-more { color: var(--hl-c1); }
+
+    /* ==================== COMMUNITY + NUMBERED DOCS + FOOTER ==================== */
+    .hl-community {
+      position: relative;
+      overflow: clip;
+    }
+    .hl-community::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 10% -10% -20%;
+      background: radial-gradient(46% 52% at 50% 60%, var(--hl-glow-a), transparent 72%);
+      filter: blur(22px);
+      pointer-events: none;
+    }
+
+    .comm-grid {
+      margin-top: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .comm-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid var(--hl-line);
+      background: linear-gradient(180deg, var(--hl-surface), color-mix(in srgb, var(--hl-surface) 45%, transparent));
+      min-height: 148px;
+      transition: transform 0.2s var(--ease-out), border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .comm-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--hl-line-strong);
+      box-shadow: 0 20px 44px -26px var(--hl-glow-a);
+    }
+    .comm-card--primary {
+      border-color: color-mix(in srgb, var(--hl-c1) 46%, transparent);
+      background:
+        radial-gradient(90% 90% at 15% 0%, var(--hl-glow-a), transparent 70%),
+        var(--hl-surface);
+    }
+    .comm-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--hl-dim);
+    }
+    .comm-kicker {
+      font-family: var(--hl-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--hl-dim);
+    }
+    .comm-card h3 {
+      font-size: 16.5px;
+      font-weight: 650;
+      color: var(--hl-text);
+    }
+    .comm-card p {
+      font-size: 13px;
+      color: var(--hl-muted);
+      line-height: 1.55;
+    }
+
+    .docs-index {
+      margin-top: 3.5rem;
+    }
+    .docs-index-label {
+      font-size: 13px;
+      color: var(--hl-dim);
+      margin-bottom: 14px;
+    }
+    .docs-list {
+      border-top: 1px solid var(--hl-line);
+    }
+    .docs-list a {
+      display: grid;
+      grid-template-columns: 44px 140px minmax(0, 1fr) 24px;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 8px;
+      border-bottom: 1px solid var(--hl-line);
+      transition: background 0.18s ease, padding-left 0.18s ease;
+    }
+    .docs-list a:hover {
+      background: color-mix(in srgb, var(--hl-surface) 70%, transparent);
+      padding-left: 14px;
+    }
+    .docs-num {
+      font-family: var(--hl-mono);
+      font-size: 12px;
+      color: var(--hl-dim);
+    }
+    .docs-cat {
+      font-size: 13.5px;
+      color: var(--hl-muted);
+    }
+    .docs-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--hl-text);
+    }
+    .docs-arrow {
+      color: var(--hl-dim);
+      transition: transform 0.18s ease, color 0.18s ease;
+    }
+    .docs-list a:hover .docs-arrow {
+      color: var(--hl-c1);
+      transform: translateX(3px);
+    }
+
+    .hl-footer {
+      border-top: 1px solid var(--hl-line);
+      padding: 28px 0 40px;
+      font-size: 13px;
+      color: var(--hl-dim);
+    }
+    .hl-footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .hl-footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .hl-footer-links a:hover { color: var(--hl-text); }
+
+    /* ==================== KEYFRAMES ==================== */
+    @keyframes hl-spin { to { --hl-angle: 360deg; } }
+    @keyframes hl-title-flow { to { --hl-flow-x: 200%; } }
+    @keyframes hl-title-sheen {
+      0%, 58% { --hl-sheen-x: -60%; }
+      100% { --hl-sheen-x: 160%; }
+    }
+    @keyframes hl-caret-blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    @keyframes hl-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.7; }
+    }
+    @keyframes hl-fade-up {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes schem-dash { to { stroke-dashoffset: -220; } }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 1120px) {
+      .wb-shell { grid-template-columns: 200px minmax(0, 1fr); }
+      .wb-inspector { display: none; }
+      .perm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cm-canvas-grid { grid-template-columns: 1fr; }
+      .cm-node-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .comm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hl-rail { display: none; }
+    }
+
+    @media (max-width: 900px) {
+      .skills-hero-row { grid-template-columns: 1fr; }
+      .skills-grid, .articles-grid, .hl-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .skill-card { grid-column: auto; }
+      .cm-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .cm-step-btn { border-bottom: 1px solid var(--hl-line); }
+      .flagship-row { grid-template-columns: 1fr; }
+      .hex-track { grid-template-columns: 1fr; gap: 18px; }
+      .hex-track::before { display: none; }
+      .hex-step { flex-direction: row; align-items: flex-start; gap: 14px; }
+      .hl-steps { grid-template-columns: 1fr; }
+      .hl-step, .hl-step + .hl-step { padding: 1.5rem 0; border-left: 0; }
+      .hl-step + .hl-step { border-top: 1px solid var(--hl-line); }
+    }
+
+    @media (max-width: 780px) {
+      .hl-nav-inner { gap: 10px; }
+      .hl-nav-links {
+        display: none;
+        position: fixed;
+        top: var(--hl-nav-h);
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 16px 20px 22px;
+        background: var(--hl-bg);
+        border-bottom: 1px solid var(--hl-line-strong);
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+      }
+      .hl-nav-links.is-open { display: flex; }
+      .hl-nav-links a { padding: 10px 8px; font-size: 15px; }
+      .hl-nav-tools { margin-left: auto; gap: 6px; }
+      .hl-nav-cta { display: none; }
+      .hl-menu-btn { display: inline-flex; margin-left: 0; flex: none; }
+      .hl-brand-tag { display: none; }
+      #theme-label { display: none; }
+
+      .hl-hero { text-align: left; }
+      .hl-hero-actions { justify-content: flex-start; }
+      .hl-window-wrap { max-width: 100%; overflow: hidden; }
+      .hl-window { transform: none !important; max-width: 100%; }
+      .hl-win-title { display: none; }
+
+      .wb-shell { grid-template-columns: minmax(0, 1fr); min-height: auto; }
+      .wb-sidebar {
+        min-width: 0;
+        max-width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid var(--hl-line);
+      }
+      .wb-sidebar > div { min-width: 0; max-width: 100%; }
+      .wb-queue-wrap, .wb-side-foot { display: none; }
+      .wb-rooms {
+        display: flex;
+        overflow-x: auto;
+        max-width: 100%;
+        gap: 6px;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .wb-room-btn { width: auto; flex: none; gap: 8px; }
+      .wb-beacon { display: none; }
+
+      .cm-node-col { grid-template-columns: 1fr; }
+      .cm-hub-split { grid-template-columns: 1fr; }
+      .cm-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .route-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .skills-grid, .articles-grid, .hl-tiles, .perm-grid, .comm-grid { grid-template-columns: 1fr; }
+      .docs-list a { grid-template-columns: 34px minmax(0, 1fr) 20px; }
+      .docs-cat { display: none; }
+      .flagship-card { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+      }
+      .hl-window { transform: none !important; }
+      .hl-js .hl-statement .hl-w { color: var(--hl-text) !important; }
+      .hl-js .reveal { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body id="top">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" stroke="none"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2C6.48 2 2 6.58 2 12.26c0 4.54 2.87 8.39 6.84 9.75.5.09.68-.22.68-.49 0-.24-.01-.88-.01-1.72-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.63-1.37-2.22-.26-4.55-1.14-4.55-5.08 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.31.1-2.72 0 0 .84-.27 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.64 1.03 2.76 0 3.95-2.34 4.82-4.57 5.07.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.59.69.49A10.26 10.26 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/></symbol>
+  </svg>
+
+  <!-- STICKY HEADER -->
+  <header class="hl-header">
+    <div class="hl-wrap hl-nav-inner">
+      <a class="hl-brand" href="#top">
+        <img src="./assets/landing/logo-small.webp" alt="" width="26" height="26">
+        <span>dev-skills</span>
+        <span class="hl-brand-tag">v0.8</span>
+      </a>
+
+      <nav class="hl-nav-links" id="primary-nav" aria-label="主导航">
+        <a href="#loop">闭环门禁</a>
+        <a href="#workflow">任务路由</a>
+        <a href="#skills">13 个技能</a>
+        <a href="#architecture">安全边界</a>
+        <a href="#install">安装</a>
+        <a href="#articles">专栏</a>
+      </nav>
+
+      <div class="hl-nav-tools">
+        <button class="hl-icon-btn" id="theme-toggle" type="button" aria-label="切换明暗主题">
+          <svg class="icon" id="theme-icon" aria-hidden="true"><use href="#i-moon"/></svg>
+          <span id="theme-label">深色</span>
+        </button>
+        <a class="hl-icon-btn" href="https://github.com/Jason-chen-coder/dev-skills" aria-label="GitHub 仓库">
+          <svg class="icon" aria-hidden="true"><use href="#i-github"/></svg>
+        </a>
+        <a class="hl-nav-cta" href="#install">立即安装</a>
+      </div>
+
+      <button class="hl-menu-btn" id="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="primary-nav">
+        <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- RIGHT SECTION PROGRESS RAIL -->
+  <nav class="hl-rail" id="section-rail" aria-label="页面进度">
+    <ol>
+      <li><a href="#loop" data-rail="loop"><span class="hl-rail-label"><span class="hl-rail-count">01</span>闭环门禁</span><span class="hl-rail-tick"></span></a></li>
+      <li><a href="#workflow" data-rail="workflow"><span class="hl-rail-label"><span class="hl-rail-count">02</span>任务路由</span><span class="hl-rail-tick"></span></a></li>
+      <li><a href="#skills" data-rail="skills"><span class="hl-rail-label"><span class="hl-rail-count">03</span>13 个技能</span><span class="hl-rail-tick"></span></a></li>
+      <li><a href="#architecture" data-rail="architecture"><span class="hl-rail-label"><span class="hl-rail-count">04</span>安全边界</span><span class="hl-rail-tick"></span></a></li>
+      <li><a href="#gates" data-rail="gates"><span class="hl-rail-label"><span class="hl-rail-count">05</span>状态与验证</span><span class="hl-rail-tick"></span></a></li>
+      <li><a href="#install" data-rail="install"><span class="hl-rail-label"><span class="hl-rail-count">06</span>一键安装</span><span class="hl-rail-tick"></span></a></li>
+      <li><a href="#articles" data-rail="articles"><span class="hl-rail-label"><span class="hl-rail-count">07</span>延伸阅读</span><span class="hl-rail-tick"></span></a></li>
+      <li><a href="#community" data-rail="community"><span class="hl-rail-label"><span class="hl-rail-count">08</span>开源文档</span><span class="hl-rail-tick"></span></a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <!-- ==================== HERO ==================== -->
+    <section class="hl-hero" aria-labelledby="hero-title">
+      <div class="hl-hero-glow" aria-hidden="true"></div>
+      <div class="hl-hero-copy">
+        <p class="hl-eyebrow">
+          <span class="hl-eyebrow-dot" aria-hidden="true"></span>
+          <span>开源 · MIT · 13 个工程技能 · 适配 Claude Code &amp; Codex</span>
+        </p>
+
+        <h1 id="hero-title">
+          <span class="hl-hero-lead">给 AI 编程，</span>
+          <span><span class="hl-hero-shine" data-text="装上工程门禁。">装上工程门禁。</span><span class="hl-caret" aria-hidden="true"></span></span>
+        </h1>
+
+        <p class="hl-hero-intro">
+          从需求对齐、红框对接口、方案拆解、TDD 编码、根因修 Bug 到提交前 Diff 评审。<br>
+          每一步都有明确入口与验证证据，零侵入你的原仓库。
+        </p>
+
+        <div class="hl-hero-actions">
+          <a class="hl-btn hl-btn-primary" href="#install">立即安装<svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></a>
+          <a class="hl-btn hl-btn-ghost" href="#loop">看门禁怎么运转</a>
+        </div>
+
+        <div class="hl-hero-cmd-pill">
+          <span class="prompt-s">$</span>
+          <code id="hero-cmd">npx skills add Jason-chen-coder/dev-skills</code>
+          <button class="hl-copy-mini" id="copy-hero-cmd" type="button">
+            <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+            <span id="hero-copy-label">复制</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FULL-WIDTH INTERACTIVE STUDIO DEMO WINDOW -->
+      <div class="hl-window-wrap">
+        <div class="hl-window" id="hero-window">
+          <div class="hl-win-bar">
+            <div class="hl-win-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div class="hl-win-title" id="wb-win-title">dev-skills · #fix-login-loading</div>
+            <div class="hl-live-pill"><i aria-hidden="true"></i><span>可交互 · 真实工作流演示</span></div>
+          </div>
+
+          <div class="wb-shell">
+            <!-- Left Sidebar -->
+            <aside class="wb-sidebar" aria-label="演示任务列表">
+              <div class="wb-side-head">
+                <div class="wb-side-head-left">
+                  <img src="./assets/landing/logo-small.webp" alt="" width="18" height="18" style="border-radius:4px;background:#fafafa;padding:1px;">
+                  <span>dev-skills</span>
+                </div>
+                <span class="wb-badge wb-badge--ok">13 skills</span>
+              </div>
+
+              <div class="wb-queue-wrap">
+                <div class="wb-group-label"><span>需要你确认</span><span id="wb-pending-count">3</span></div>
+                <div class="wb-queue-list">
+                  <button class="wb-queue-item" type="button" data-jump-room="bug">
+                    <span class="wb-badge wb-badge--warn" id="q-badge-bug">等你拍板</span>
+                    <span>dev-fix · 401</span>
+                  </button>
+                  <button class="wb-queue-item" type="button" data-jump-room="align">
+                    <span class="wb-badge wb-badge--blue" id="q-badge-align">接口缺口</span>
+                    <span>grill-docs</span>
+                  </button>
+                  <button class="wb-queue-item" type="button" data-jump-room="review">
+                    <span class="wb-badge wb-badge--err" id="q-badge-review">评审拦截</span>
+                    <span>P1 风险</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <div class="wb-group-label"><span>实战场景</span><span>5</span></div>
+                <div class="wb-rooms" role="tablist" aria-label="切换实战演示场景">
+                  <button class="wb-room-btn" type="button" role="tab" aria-selected="true" data-wb-room="bug">
+                    <span># fix-login-loading</span>
+                    <span class="wb-room-tag">dev-fix</span>
+                  </button>
+                  <button class="wb-room-btn" type="button" role="tab" aria-selected="false" data-wb-room="align">
+                    <span># order-api-align</span>
+                    <span class="wb-room-tag">grill</span>
+                    <span class="wb-beacon" data-beacon="room"></span>
+                  </button>
+                  <button class="wb-room-btn" type="button" role="tab" aria-selected="false" data-wb-room="review">
+                    <span># pre-commit-review</span>
+                    <span class="wb-room-tag">review</span>
+                  </button>
+                  <button class="wb-room-btn" type="button" role="tab" aria-selected="false" data-wb-room="ui">
+                    <span># ui-from-mockup</span>
+                    <span class="wb-room-tag">img2code</span>
+                  </button>
+                  <button class="wb-room-btn" type="button" role="tab" aria-selected="false" data-wb-room="swagger">
+                    <span># swagger-petstore</span>
+                    <span class="wb-room-tag">openapi</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="wb-side-foot">
+                <div class="wb-avatar" aria-hidden="true">D</div>
+                <div class="wb-user-meta">
+                  <strong>Claude Code / Codex</strong>
+                  <span>零侵入原仓库</span>
+                </div>
+              </div>
+            </aside>
+
+            <!-- Center Conversation / Artifact Pane -->
+            <div class="wb-main">
+              <div class="wb-main-top">
+                <div class="wb-channel-meta">
+                  <span id="wb-room-name"># fix-login-loading</span>
+                  <code id="wb-active-skill">Skill(dev-fix)</code>
+                </div>
+                <div class="wb-view-tabs" role="tablist" aria-label="切换工作区视图">
+                  <button class="wb-tab-btn" type="button" role="tab" aria-selected="true" data-wb-view="chat">对话与门禁</button>
+                  <button class="wb-tab-btn" type="button" role="tab" aria-selected="false" data-wb-view="artifact">
+                    契约产物
+                    <span class="wb-beacon" data-beacon="artifact"></span>
+                  </button>
+                  <button class="wb-tab-btn" type="button" role="tab" aria-selected="false" data-wb-view="log">实证输出</button>
+                </div>
+              </div>
+
+              <div class="wb-feed" id="wb-feed" aria-live="polite"></div>
+
+              <div class="wb-composer">
+                <div class="wb-composer-chips">
+                  <button class="wb-chip" type="button" id="wb-copy-prompt">复制当前提示词</button>
+                  <a class="wb-chip" id="wb-skill-doc" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-fix/SKILL.md">查看 SKILL.md ↗</a>
+                </div>
+                <span class="status-note" id="wb-status" style="min-height:auto"></span>
+              </div>
+            </div>
+
+            <!-- Right Inspector -->
+            <aside class="wb-inspector" aria-label="当前门禁链与产物">
+              <div>
+                <div class="wb-group-label"><span>当前门禁链</span><span id="wb-gate-progress">1/3</span></div>
+                <div class="wb-pipe-list" id="wb-pipe-list"></div>
+              </div>
+              <div>
+                <div class="wb-group-label"><span>沉淀产物</span><span>点击预览</span></div>
+                <button class="wb-file-card" type="button" id="wb-artifact-jump" style="width:100%">
+                  <code id="wb-artifact-name">src/auth/login.test.ts</code>
+                  <span id="wb-artifact-desc">复现 401 回归测试与根因记录</span>
+                </button>
+              </div>
+            </aside>
+          </div>
+        </div>
+        <p class="hl-window-caption">这是能直接点的演示：切换左侧实战场景 · 点击门禁决策选项 · 切到「契约产物」查看红框报告与 OpenAPI 类型</p>
+      </div>
+    </section>
+
+    <!-- ==================== SCROLL-LIT MANIFESTO ==================== -->
+    <section class="hl-statement" id="manifesto" aria-label="一句话说清" data-statement>
+      <div class="hl-wrap">
+        <p class="hl-statement-text" id="statement-text">
+          <span class="hl-w" style="--i:0">你在终端里说一句。</span>
+          <span class="hl-w" style="--i:1">AI 先对齐边界、</span>
+          <span class="hl-w" style="--i:2">查清接口契约、</span>
+          <span class="hl-w" style="--i:3">拆出实施方案，</span>
+          <span class="hl-w is-accent" style="--i:4">再动第一行代码。</span>
+          <span class="hl-w" style="--i:5">遇到关键缺口停下来问你，</span>
+          <span class="hl-w" style="--i:6">写完拿真实测试和 Diff 评审交卷——</span>
+          <span class="hl-w is-accent" style="--i:7">每一步都有证据可查。</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 01: ANIMATED CLOSED-LOOP STAGE ==================== -->
+    <section class="hl-section" id="loop" aria-labelledby="loop-title">
+      <div class="hl-wrap">
+        <div class="reveal">
+          <p class="hl-kicker"><span class="hl-kicker-hex" aria-hidden="true"></span><span>闭环门禁 · 为什么不是裸写</span></p>
+          <h2 class="hl-h2" id="loop-title">
+            <span>无门禁靠运气，</span>
+            <span class="hl-h2-dim">有门禁把返工挡在第一行代码之前。</span>
+          </h2>
+          <p class="hl-body">
+            AI 写代码越来越快，但真正消耗时间的是需求没对齐、修 Bug 只改表面、以及没人把关的盲目提交。切换下方模式，直接看一条任务在两种模式下的真实走向。
+          </p>
+        </div>
+
+        <div class="cm-frame reveal" id="cm-frame" style="--delay: 80ms">
+          <div class="cm-bar">
+            <div class="cm-bar-left">
+              <div class="cm-pill-group" role="tablist" aria-label="切换演示模式">
+                <button class="cm-mode-btn" type="button" role="tab" aria-selected="true" data-loop-mode="gated">dev-skills 门禁闭环</button>
+                <button class="cm-mode-btn" type="button" role="tab" aria-selected="false" data-loop-mode="ungated">无门禁盲写对比</button>
+              </div>
+              <span class="cm-bar-desc" id="cm-bar-desc">6 步可验证闭环，每一步产物跨阶段复用</span>
+            </div>
+            <div class="cm-bar-right">
+              <button class="cm-ctrl" id="cm-toggle-play" type="button" aria-pressed="false">
+                <svg class="icon" id="cm-play-icon" aria-hidden="true"><use href="#i-pause"/></svg>
+                <span id="cm-play-text">暂停</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="cm-stage">
+            <div class="cm-canvas-grid">
+              <!-- Left column: Upstream Skills -->
+              <div class="cm-node-col">
+                <div class="cm-node" data-cm-node="0">
+                  <div class="cm-node-top"><code>dev-grill-docs</code><span class="wb-badge wb-badge--blue" data-cm-badge="0">对齐</span></div>
+                  <p>拷问边界与红框对接口</p>
+                </div>
+                <div class="cm-node" data-cm-node="1">
+                  <div class="cm-node-top"><code>dev-plan</code><span class="wb-badge wb-badge--blue" data-cm-badge="1">方案</span></div>
+                  <p>高风险任务先拆实施蓝图</p>
+                </div>
+                <div class="cm-node" data-cm-node="2">
+                  <div class="cm-node-top"><code>dev-tdd / dev-fix</code><span class="wb-badge wb-badge--warn" data-cm-badge="2">实现</span></div>
+                  <p>测试驱动或根因最小修复</p>
+                </div>
+              </div>
+
+              <!-- Center Hub: Contract Room -->
+              <div class="cm-hub">
+                <div class="cm-hub-head">
+                  <div class="cm-hub-title">
+                    <span class="hl-kicker-hex" aria-hidden="true"></span>
+                    <div>
+                      <span id="cm-hub-name">契约交付室 · #order-export</span>
+                      <small id="cm-hub-sub">Spec-Anchored · .claude/artifacts/</small>
+                    </div>
+                  </div>
+                  <span class="wb-badge wb-badge--ok" id="cm-hub-state">门禁保护中</span>
+                </div>
+
+                <div class="cm-hub-log" id="cm-hub-log"></div>
+
+                <div class="cm-hub-split">
+                  <div class="cm-subbox">
+                    <div class="cm-subbox-title">契约白板</div>
+                    <div class="cm-subbox-rows" id="cm-board-rows"></div>
+                  </div>
+                  <div class="cm-subbox cm-subbox--warn">
+                    <div class="cm-subbox-title" id="cm-gate-title">门禁状态</div>
+                    <div class="cm-subbox-rows" id="cm-gate-rows"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right column: Downstream Gate Skills -->
+              <div class="cm-node-col">
+                <div class="cm-node" data-cm-node="3">
+                  <div class="cm-node-top"><code>dev-verify</code><span class="wb-badge wb-badge--ok" data-cm-badge="3">实证</span></div>
+                  <p>真实命令输出与盲区声明</p>
+                </div>
+                <div class="cm-node" data-cm-node="4">
+                  <div class="cm-node-top"><code>dev-code-review</code><span class="wb-badge wb-badge--err" data-cm-badge="4">评审</span></div>
+                  <p>提交前 Diff 风险与回归拦截</p>
+                </div>
+                <div class="cm-node" data-cm-node="5">
+                  <div class="cm-node-top"><code>commit · dev-finish</code><span class="wb-badge wb-badge--ok" data-cm-badge="5">交付</span></div>
+                  <p>按用户授权提交、建 PR 或收尾</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cm-steps" id="cm-steps" role="tablist" aria-label="闭环步骤"></div>
+        </div>
+
+        <a class="hl-inline-link" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/docs/sdd-workflow.md">
+          <span>读 SDD 契约工作流完整说明</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-right"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 02: MULTI-TRACK TASK ROUTING ==================== -->
+    <section class="hl-section" id="workflow" aria-labelledby="workflow-title">
+      <div class="hl-wrap">
+        <div class="reveal">
+          <p class="hl-kicker"><span class="hl-kicker-hex" aria-hidden="true"></span><span>任务路由 · 按风险选最短路径</span></p>
+          <h2 class="hl-h2" id="workflow-title">
+            <span>不是重型状态机，</span>
+            <span class="hl-h2-dim">五条路径各走各的最短闭环。</span>
+          </h2>
+          <p class="hl-body">
+            清楚的小改动直接实施并验证；Bug 修复自带回归测试不重复走 TDD；查 Swagger / OpenAPI 走独立旁路直出契约与类型，不打断编码流。
+          </p>
+        </div>
+
+        <div class="route-card reveal" style="--delay: 80ms">
+          <div class="route-well">
+            <svg class="route-svg" id="workflow-svg" viewBox="0 0 1260 456" role="img" aria-label="dev-skills 五条任务路由流程图">
+              <defs>
+                <pattern id="s2-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+                  <circle cx="14" cy="14" r="1" fill="rgba(148,163,184,0.14)"/>
+                </pattern>
+                <filter id="s2-glow" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <marker id="s2-arr" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M1.2 1.5 L6.5 4 L1.2 6.5" fill="none" stroke="#8a96ad" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+                <marker id="s2-arr-ok" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M1.2 1.5 L6.5 4 L1.2 6.5" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+                <marker id="s2-arr-blue" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M1.2 1.5 L6.5 4 L1.2 6.5" fill="none" stroke="#48aaff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+              </defs>
+
+              <rect width="1260" height="456" rx="12" fill="#0b0e15"/>
+              <rect width="1260" height="456" rx="12" fill="url(#s2-grid)"/>
+
+              <!-- Connectors -->
+              <path d="M 220 192 C 258 192, 252 74, 290 74" fill="none" stroke="#7b8496" stroke-width="1.75" class="schem-flow-subtle" marker-end="url(#s2-arr)"/>
+              <path d="M 220 212 C 254 212, 254 182, 290 182" fill="none" stroke="#7b8496" stroke-width="1.75" class="schem-flow-subtle" marker-end="url(#s2-arr)"/>
+              <path d="M 220 232 C 254 232, 254 286, 290 286" fill="none" stroke="#7b8496" stroke-width="1.75" class="schem-flow-subtle" marker-end="url(#s2-arr)"/>
+              <path d="M 220 252 C 258 252, 252 389, 290 389" fill="none" stroke="#48aaff" stroke-width="1.75" class="schem-flow-blue" marker-end="url(#s2-arr-blue)"/>
+
+              <line x1="478" y1="74" x2="504" y2="74" stroke="#7b8496" stroke-width="1.75" class="schem-flow-subtle" marker-end="url(#s2-arr)"/>
+              <line x1="692" y1="74" x2="718" y2="74" stroke="#7b8496" stroke-width="1.75" class="schem-flow-subtle" marker-end="url(#s2-arr)"/>
+
+              <path d="M 906 74 C 944 74, 938 164, 972 164" fill="none" stroke="rgba(52,211,153,0.22)" stroke-width="1.6"/>
+              <path d="M 906 74 C 944 74, 938 164, 972 164" fill="none" stroke="#34d399" stroke-width="1.9" class="schem-flow-ok" marker-end="url(#s2-arr-ok)"/>
+              <path d="M 906 182 L 972 182" fill="none" stroke="rgba(52,211,153,0.22)" stroke-width="1.6"/>
+              <path d="M 906 182 L 972 182" fill="none" stroke="#34d399" stroke-width="1.9" class="schem-flow-ok" marker-end="url(#s2-arr-ok)"/>
+              <path d="M 906 286 C 944 286, 938 200, 972 200" fill="none" stroke="rgba(52,211,153,0.22)" stroke-width="1.6"/>
+              <path d="M 906 286 C 944 286, 938 200, 972 200" fill="none" stroke="#34d399" stroke-width="1.9" class="schem-flow-ok" marker-end="url(#s2-arr-ok)"/>
+              <line x1="906" y1="389" x2="972" y2="389" stroke="#48aaff" stroke-width="1.75" class="schem-flow-blue" marker-end="url(#s2-arr-blue)"/>
+
+              <!-- Unified Gate Box -->
+              <rect x="978" y="32" width="254" height="294" rx="12" fill="#101521" stroke="rgba(52,211,153,0.38)"/>
+              <text x="1105" y="57" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="700">统一质量门禁</text>
+
+              <line x1="1105" y1="136" x2="1105" y2="150" stroke="#34d399" stroke-width="1.75" class="schem-flow-ok" marker-end="url(#s2-arr-ok)"/>
+              <line x1="1105" y1="220" x2="1105" y2="234" stroke="#34d399" stroke-width="1.75" class="schem-flow-ok" marker-end="url(#s2-arr-ok)"/>
+
+              <!-- Signal Packets -->
+              <circle r="4" fill="#34d399" filter="url(#s2-glow)">
+                <animateMotion dur="5.2s" repeatCount="indefinite" path="M 220 192 C 258 192, 252 74, 296 74 L 906 74 C 944 74, 938 164, 998 164 L 1105 104 L 1105 274"/>
+              </circle>
+              <circle r="4" fill="#ffc46b" filter="url(#s2-glow)">
+                <animateMotion dur="4.6s" begin="1.8s" repeatCount="indefinite" path="M 220 212 C 254 212, 254 182, 296 182 L 998 182 L 1105 188 L 1105 274"/>
+              </circle>
+              <circle r="3.8" fill="#48aaff" filter="url(#s2-glow)">
+                <animateMotion dur="4.2s" begin="0.9s" repeatCount="indefinite" path="M 220 252 C 258 252, 252 389, 296 389 L 978 389"/>
+              </circle>
+
+              <!-- Entry -->
+              <g class="svg-stage-group" data-svg-stage="align">
+                <rect x="28" y="150" width="192" height="144" rx="12" fill="#151b28" stroke="rgba(255,255,255,0.22)"/>
+                <text x="124" y="204" text-anchor="middle" fill="#eef1f6" font-size="18" font-weight="700">自然语言任务</text>
+                <rect x="54" y="226" width="140" height="36" rx="7" fill="#090c12" stroke="rgba(255,255,255,0.14)"/>
+                <text x="124" y="249" text-anchor="middle" fill="#8fd6ff" font-size="13.5" class="schem-mono">dev-auto</text>
+              </g>
+
+              <!-- Track 1: Feature -->
+              <g class="svg-stage-group" data-svg-stage="align">
+                <rect x="296" y="32" width="182" height="84" rx="11" fill="#121826" stroke="rgba(255,255,255,0.18)"/>
+                <text x="387" y="66" text-anchor="middle" fill="#eef1f6" font-size="17" font-weight="700">需求对齐</text>
+                <text x="387" y="94" text-anchor="middle" fill="#a6afbe" font-size="13" class="schem-mono">dev-grill-docs</text>
+              </g>
+              <g class="svg-stage-group" data-svg-stage="plan">
+                <rect x="510" y="32" width="182" height="84" rx="11" fill="#121826" stroke="rgba(255,255,255,0.18)"/>
+                <text x="601" y="66" text-anchor="middle" fill="#eef1f6" font-size="17" font-weight="700">拆解方案</text>
+                <text x="601" y="94" text-anchor="middle" fill="#a6afbe" font-size="13" class="schem-mono">dev-plan</text>
+              </g>
+              <g class="svg-stage-group" data-svg-stage="build">
+                <rect x="724" y="32" width="182" height="84" rx="11" fill="#121826" stroke="rgba(255,255,255,0.18)"/>
+                <text x="815" y="66" text-anchor="middle" fill="#eef1f6" font-size="17" font-weight="700">测试驱动</text>
+                <text x="815" y="94" text-anchor="middle" fill="#6ee7b7" font-size="13" class="schem-mono">dev-tdd</text>
+              </g>
+
+              <!-- Track 2: Bug Fix -->
+              <g class="svg-stage-group" data-svg-stage="build">
+                <rect x="296" y="142" width="610" height="80" rx="11" fill="#121826" stroke="rgba(255,255,255,0.18)"/>
+                <circle cx="328" cy="182" r="4" fill="#ffc46b"/>
+                <text x="346" y="188" fill="#eef1f6" font-size="17" font-weight="700">根因排查与回归修复</text>
+                <rect x="704" y="162" width="180" height="40" rx="7" fill="#090c12" stroke="rgba(255,196,107,0.34)"/>
+                <text x="794" y="187" text-anchor="middle" fill="#ffc46b" font-size="13.5" class="schem-mono">dev-fix</text>
+              </g>
+
+              <!-- Track 3: UI Image to Code -->
+              <g class="svg-stage-group" data-svg-stage="build">
+                <rect x="296" y="246" width="610" height="80" rx="11" fill="#121826" stroke="rgba(255,255,255,0.18)"/>
+                <circle cx="328" cy="286" r="4" fill="#eef1f6"/>
+                <text x="346" y="292" fill="#eef1f6" font-size="17" font-weight="700">看图还原真实控件页面</text>
+                <rect x="704" y="266" width="180" height="40" rx="7" fill="#090c12" stroke="rgba(255,255,255,0.14)"/>
+                <text x="794" y="291" text-anchor="middle" fill="#eef1f6" font-size="13" class="schem-mono">dev-image-to-code</text>
+              </g>
+
+              <!-- Track 4: Swagger Bypass -->
+              <g class="svg-stage-group" data-svg-stage="align">
+                <rect x="296" y="352" width="610" height="74" rx="11" fill="#0f1522" stroke="rgba(72,170,255,0.34)" stroke-dasharray="6 5"/>
+                <circle cx="328" cy="389" r="4" fill="#48aaff"/>
+                <text x="346" y="395" fill="#cbd5e1" font-size="17" font-weight="650">Swagger / OpenAPI 独立旁路</text>
+                <rect x="704" y="369" width="180" height="40" rx="7" fill="#090c12" stroke="rgba(72,170,255,0.4)"/>
+                <text x="794" y="394" text-anchor="middle" fill="#8fd6ff" font-size="13" class="schem-mono">swagger-doc-skill</text>
+              </g>
+
+              <!-- Unified Gates -->
+              <g class="svg-stage-group" data-svg-stage="verify">
+                <rect x="998" y="72" width="214" height="64" rx="9" fill="#171e2e" stroke="rgba(255,255,255,0.14)"/>
+                <text x="1105" y="100" text-anchor="middle" fill="#eef1f6" font-size="16.5" font-weight="700">实证验证</text>
+                <text x="1105" y="123" text-anchor="middle" fill="#a6afbe" font-size="12.5" class="schem-mono">dev-verify</text>
+              </g>
+
+              <g class="svg-stage-group" data-svg-stage="ship">
+                <rect x="998" y="156" width="214" height="64" rx="9" fill="#171e2e" stroke="rgba(255,255,255,0.14)"/>
+                <text x="1105" y="184" text-anchor="middle" fill="#eef1f6" font-size="16.5" font-weight="700">Diff 评审</text>
+                <text x="1105" y="207" text-anchor="middle" fill="#a6afbe" font-size="12.5" class="schem-mono">dev-code-review</text>
+
+                <rect x="998" y="240" width="214" height="68" rx="9" fill="#102925" stroke="rgba(52,211,153,0.52)"/>
+                <text x="1105" y="269" text-anchor="middle" fill="#ffffff" font-size="16.5" font-weight="750">授权交付</text>
+                <text x="1105" y="293" text-anchor="middle" fill="#6ee7b7" font-size="12.5" class="schem-mono">commit · dev-finish</text>
+              </g>
+
+              <!-- Bypass Output -->
+              <g class="svg-stage-group" data-svg-stage="align">
+                <rect x="978" y="352" width="254" height="74" rx="11" fill="#101726" stroke="rgba(72,170,255,0.36)" stroke-dasharray="6 5"/>
+                <text x="1105" y="384" text-anchor="middle" fill="#eef1f6" font-size="16" font-weight="700">直出契约与类型</text>
+                <text x="1105" y="408" text-anchor="middle" fill="#8fd6ff" font-size="12.5" class="schem-mono">MD · JSON · TS</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="route-tabs" role="tablist" aria-label="高亮交付阶段">
+            <button class="route-tab" id="stage-1" role="tab" aria-selected="true" aria-controls="stage-panel" tabindex="0" data-stage="all" type="button">全景</button>
+            <button class="route-tab" id="stage-2" role="tab" aria-selected="false" aria-controls="stage-panel" tabindex="-1" data-stage="align" type="button">需求与接口</button>
+            <button class="route-tab" id="stage-3" role="tab" aria-selected="false" aria-controls="stage-panel" tabindex="-1" data-stage="build" type="button">编码与修复</button>
+            <button class="route-tab" id="stage-4" role="tab" aria-selected="false" aria-controls="stage-panel" tabindex="-1" data-stage="verify" type="button">实证验证</button>
+            <button class="route-tab" id="stage-5" role="tab" aria-selected="false" aria-controls="stage-panel" tabindex="-1" data-stage="ship" type="button">评审与交付</button>
+          </div>
+
+          <div class="route-readout" id="stage-panel" role="tabpanel" aria-labelledby="stage-1">
+            <div class="route-readout-left">
+              <span class="route-tag" id="stage-label">全景</span>
+              <code id="stage-artifact">.claude/artifacts/designs/ · plans/ · &lt;feature&gt;-integration.html</code>
+            </div>
+            <span class="route-gate-note" id="stage-gate">跨阶段复用已有产物，不重复确认</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 03: 13 SKILLS ==================== -->
+    <section class="hl-section" id="skills" aria-labelledby="skills-title">
+      <div class="hl-wrap">
+        <div class="reveal">
+          <p class="hl-kicker"><span class="hl-kicker-hex" aria-hidden="true"></span><span>技能矩阵 · 按需触发</span></p>
+          <h2 class="hl-h2" id="skills-title">
+            <span>覆盖研发全链路，</span>
+            <span class="hl-h2-dim">但你不用背下来。</span>
+          </h2>
+          <p class="hl-body">
+            第一次用只记住一句话：不知道下一步做什么，先输入 <code>dev-auto</code>。它会根据当前代码与文档证据推荐下一步，绝不擅自替你执行。
+          </p>
+        </div>
+
+        <div class="skills-hero-row reveal" style="--delay: 70ms">
+          <div class="skills-big-stat">
+            <span class="hl-big-num">13</span>
+            <div class="skills-big-meta">
+              <strong>个开源工程技能</strong>
+              <span>适配 Claude Code 与 Codex CLI · 零配置即用</span>
+            </div>
+          </div>
+
+          <div class="skills-cloud" aria-label="核心能力标签">
+            <span class="cloud-pill" style="--pill-c:#48aaff"><i></i>需求拷问</span>
+            <span class="cloud-pill" style="--pill-c:#34d399"><i></i>UI/API 红框对齐</span>
+            <span class="cloud-pill" style="--pill-c:#ffc46b"><i></i>根因定位</span>
+            <span class="cloud-pill" style="--pill-c:#48aaff"><i></i>OpenAPI / Knife4j</span>
+            <span class="cloud-pill" style="--pill-c:#34d399"><i></i>测试驱动 TDD</span>
+            <span class="cloud-pill" style="--pill-c:#ff8a4c"><i></i>看图还原真实控件</span>
+            <span class="cloud-pill" style="--pill-c:#34d399"><i></i>实证命令核验</span>
+            <span class="cloud-pill" style="--pill-c:#fb7185"><i></i>提交前 Diff 评审</span>
+            <span class="cloud-pill" style="--pill-c:#ffc46b"><i></i>授权分支交付</span>
+          </div>
+        </div>
+
+        <div class="skills-toolbar reveal" style="--delay: 100ms">
+          <div class="filter-group" role="group" aria-label="按类别筛选技能">
+            <button class="filter-pill" type="button" data-filter="all" aria-pressed="true">全部 13</button>
+            <button class="filter-pill" type="button" data-filter="plan" aria-pressed="false">导航与需求 · 5</button>
+            <button class="filter-pill" type="button" data-filter="build" aria-pressed="false">编码与接口 · 4</button>
+            <button class="filter-pill" type="button" data-filter="ship" aria-pressed="false">验证与交付 · 4</button>
+          </div>
+          <input class="skill-search" id="skill-search" type="search" placeholder="搜索技能名或场景..." aria-label="搜索技能">
+        </div>
+
+        <div class="skills-grid" id="skills-grid">
+          <a class="skill-card reveal" data-cat="plan" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-auto/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-auto</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>智能路由导航</h3>
+            <p>基于当前证据推荐下一步该用哪个技能，只建议不越权执行。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="plan" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-design-context/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-design-context</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>设计上下文沉淀</h3>
+            <p>沉淀视觉语言、组件资产与约束到 .design-context.md，避免 UI 跑偏。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="plan" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-grill-docs/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-grill-docs</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>需求与接口对齐</h3>
+            <p>拷问边界并生成需求文档；UI/API 对接默认交付离线红框 HTML 报告。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="plan" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-spec/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-spec</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>Spec 兼容入口</h3>
+            <p>等价于 dev-grill-docs --spec-only，平滑兼容老提示与已有文档流。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="plan" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-plan/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-plan</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>技术实施方案</h3>
+            <p>复杂或高风险功能先拆解可执行蓝图与回滚边界，再进入编码。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="build" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/swagger-doc-skill/SKILL.md">
+            <div class="skill-top"><code class="skill-code">swagger-doc-skill</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>API 契约查询</h3>
+            <p>直连 Swagger / OpenAPI / Knife4j，提取模块、接口与完整 DTO 类型。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="build" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-image-to-code/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-image-to-code</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>看图实现页面</h3>
+            <p>按设计图还原真实可交互控件（input/tab/select），并在真实浏览器核验。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="build" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-tdd/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-tdd</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>测试驱动实现</h3>
+            <p>行为改动优先用有意义的测试锁住结果，小步实现，不写无意义样板测试。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="build" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-fix/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-fix</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>根因排查修复</h3>
+            <p>先复现、追到 root cause，再给最小范围修复与回归测试，拒绝表面打补丁。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="ship" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-verify/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-verify</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>交付前实证验证</h3>
+            <p>宣称完成前必跑实证检查，展示真实输出并如实声明验证盲区。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="ship" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-code-review/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-code-review</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>Diff 风险评审</h3>
+            <p>提交前只读审查 Git Diff，拦截逻辑缺陷、回归隐患与误混调试文件。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="ship" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-commit-writer/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-commit-writer</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>提交说明生成</h3>
+            <p>根据当前 Diff 生成清晰规范的 Commit Message，只起草不擅自提交。</p>
+          </a>
+          <a class="skill-card reveal" data-cat="ship" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-finish/SKILL.md">
+            <div class="skill-top"><code class="skill-code">dev-finish</code><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+            <h3>分支收尾交付</h3>
+            <p>核验通过后，严格按用户授权完成本地 commit、merge、push 或 PR。</p>
+          </a>
+        </div>
+        <div class="skill-empty" id="skill-empty" hidden>没有匹配的技能，试试搜索 <code>fix</code>、<code>swagger</code> 或 <code>review</code>。</div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 04: SAFETY & PERMISSION BOUNDARIES ==================== -->
+    <section class="hl-section" id="architecture" aria-labelledby="arch-title">
+      <div class="hl-wrap">
+        <div class="reveal">
+          <p class="hl-kicker"><span class="hl-kicker-hex" aria-hidden="true"></span><span>安全与操作边界</span></p>
+          <h2 class="hl-h2" id="arch-title">
+            <span>哪些能直接做，</span>
+            <span class="hl-h2-dim">哪些必须等你拍板。</span>
+          </h2>
+          <p class="hl-body">
+            把 AI 的操作按风险划成三档：只读查询绝不改业务代码，受控开发落盘留痕，提交与推送必须先评审、经你授权才放行。点击左侧任意一档，看右侧实时动作。
+          </p>
+        </div>
+
+        <div class="perm-grid reveal" style="--delay: 80ms">
+          <button class="layer-card" type="button" role="tab" aria-selected="false" data-bound="readonly">
+            <div class="layer-head">
+              <h3>只读与零侵入</h3>
+              <span class="layer-tag layer-tag--ok">0 代码改动</span>
+            </div>
+            <div class="layer-code">dev-auto · swagger · review</div>
+            <p>查状态、查 OpenAPI、审 Diff 时严格只读；安装与升级绝不覆盖你原有的 <code>CLAUDE.md</code>，Token 仅当次生效不落盘。</p>
+            <div class="layer-pills">
+              <span>保留 CLAUDE.md</span>
+              <span>Token 不落盘</span>
+            </div>
+          </button>
+
+          <button class="layer-card" type="button" role="tab" aria-selected="false" data-bound="scoped">
+            <div class="layer-head">
+              <h3>受控开发与留痕</h3>
+              <span class="layer-tag">默认边界</span>
+            </div>
+            <div class="layer-code">grill · plan · tdd · fix</div>
+            <p>范围清楚的小改动直接做并自测；遇到业务歧义或接口缺口先停下来问。需求与方案落盘到 <code>.claude/artifacts/</code> 跨阶段复用。</p>
+            <div class="layer-pills">
+              <span>最小范围改动</span>
+              <span>.claude/artifacts/</span>
+            </div>
+          </button>
+
+          <button class="layer-card" type="button" role="tab" aria-selected="true" data-bound="gated">
+            <div class="layer-head">
+              <h3>提交与高风险拦截</h3>
+              <span class="layer-tag layer-tag--warn">必须授权</span>
+            </div>
+            <div class="layer-code">verify · review · finish</div>
+            <p><code>git commit</code>、<code>push</code>、合并分支或不可逆操作绝不静默执行。先过实证与 Diff 评审，拦下 P1 风险与调试文件交回人决定。</p>
+            <div class="layer-pills">
+              <span>先评审后提交</span>
+              <span>禁止静默 push</span>
+            </div>
+          </button>
+
+          <!-- Interactive Safety Gate Card (Synced with 3 tiers) -->
+          <div class="gate-card" id="safety-gate-card" data-tone="warn" role="tabpanel" aria-live="polite">
+            <div class="gate-card-kicker">
+              <span id="safety-kicker">DEV-CODE-REVIEW · 提交前拦截</span>
+              <span id="safety-badge">待你拍板</span>
+            </div>
+            <h3 id="safety-title">提交前检测到 2 项风险，已暂停 commit</h3>
+            <div class="gate-code-strip" id="safety-lines">
+              <div class="p1">[P1] order.ts:88 空数组导出未判空会抛异常</div>
+              <div class="p2">[P2] 暂存区混入未跟踪调试文件 debug.json</div>
+            </div>
+            <div class="gate-actions">
+              <button class="gate-btn-primary" id="safety-fix-btn" type="button">先修风险再提</button>
+              <button class="gate-btn-ghost" id="safety-reset-btn" type="button">重置示意</button>
+            </div>
+            <p class="gate-footnote" id="safety-footnote">未获明确授权前，不会执行 git commit 或 push。</p>
+          </div>
+        </div>
+
+        <p class="flagship-label reveal" style="--delay: 110ms">两项高频专项交付</p>
+
+        <!-- Two Flagship Callouts -->
+        <div class="flagship-row reveal" style="--delay: 120ms">
+          <div class="flagship-card">
+            <div>
+              <span class="wb-badge wb-badge--ok">UI / API 联调</span>
+              <h3>红框对齐离线报告</h3>
+              <p><code>dev-grill-docs</code> 产出可离线转发的单文件 <code>*-integration.html</code>，红框对照页面控件与后端接口缺口，发给后端一眼对清。</p>
+            </div>
+            <a class="flagship-link" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-grill-docs/references/ui-api-alignment.md">
+              <span>对接规范</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+          </div>
+
+          <div class="flagship-card" id="swagger">
+            <div>
+              <span class="wb-badge wb-badge--blue">独立旁路</span>
+              <h3>Swagger / OpenAPI 契约直出</h3>
+              <p><code>swagger-doc-skill</code> 不进编码流，多文档源先确认不静默猜、鉴权不落盘；已验证 petstore3（<code>3 Modules · 19 Endpoints · 6 Types</code>）。</p>
+            </div>
+            <a class="flagship-link" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/swagger-doc-skill/SKILL.md">
+              <span>2 分钟试用</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 05: 5-HEX LIFECYCLE + 3 TILES ==================== -->
+    <section class="hl-section" id="gates" aria-labelledby="gates-title">
+      <div class="hl-wrap">
+        <div class="reveal">
+          <p class="hl-kicker"><span class="hl-kicker-hex" aria-hidden="true"></span><span>状态 · 证据 · 校准</span></p>
+          <h2 class="hl-h2" id="gates-title">
+            <span>每个阶段都说得清。</span>
+            <span class="hl-h2-dim">缺什么、改了哪、验没验，一眼看见。</span>
+          </h2>
+        </div>
+
+        <div class="hex-track reveal" id="hex-track" role="tablist" aria-label="五步质量门禁" style="--delay: 70ms">
+          <button class="hex-step is-passed" type="button" role="tab" aria-selected="false" data-hex="0">
+            <span class="hex-node"><span>01</span></span>
+            <div>
+              <h3>对齐 · 写清边界</h3>
+              <p>有关键缺口才提问，需求与接口契约先拍板。</p>
+            </div>
+          </button>
+          <button class="hex-step" type="button" role="tab" aria-selected="true" data-hex="1">
+            <span class="hex-node"><span>02</span></span>
+            <div>
+              <h3>方案 · 控住范围</h3>
+              <p>复杂任务拆出可执行步骤与影响面清单。</p>
+            </div>
+          </button>
+          <button class="hex-step" type="button" role="tab" aria-selected="false" data-hex="2">
+            <span class="hex-node"><span>03</span></span>
+            <div>
+              <h3>实现 · 测试或根因</h3>
+              <p>新功能用测试护航，修 Bug 必先定位根因。</p>
+            </div>
+          </button>
+          <button class="hex-step" type="button" role="tab" aria-selected="false" data-hex="3">
+            <span class="hex-node"><span>04</span></span>
+            <div>
+              <h3>实证 · 真实输出</h3>
+              <p>跑命令看结果，未测到的盲区必须直说。</p>
+            </div>
+          </button>
+          <button class="hex-step" type="button" role="tab" aria-selected="false" data-hex="4">
+            <span class="hex-node"><span>05</span></span>
+            <div>
+              <h3>评审 · 授权交付</h3>
+              <p>Diff 风险评审通过后，按授权 commit / PR。</p>
+            </div>
+          </button>
+        </div>
+
+        <div class="hl-tiles reveal" style="--delay: 120ms">
+          <article class="hl-tile">
+            <div class="hl-tile-kicker">SPEC-ANCHORED</div>
+            <h3>产物跨阶段复用</h3>
+            <p>已确认的需求、方案与授权沿用到底，不在每个阶段反复追问同一件事，跨会话交接也有据可依。</p>
+          </article>
+          <article class="hl-tile">
+            <div class="hl-tile-kicker">RISK-PROPORTIONAL</div>
+            <h3>按风险缩放流程</h3>
+            <p>不是繁琐教条：范围清晰的小改动直接实现并检查，涉及权限、数据或不可逆操作才拉起完整门禁。</p>
+          </article>
+          <article class="hl-tile">
+            <div class="hl-tile-kicker">MODEL-AGNOSTIC</div>
+            <h3>不绑模型，可校准</h3>
+            <p>不锁定特定模型版本；切换或升级底层模型后，可用仓库内置的校准用例检验实际决策质量。</p>
+          </article>
+        </div>
+
+        <a class="hl-inline-link" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/references/calibration-cases.md">
+          <span>查看模型行为校准用例</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-right"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 06: INSTALL ==================== -->
+    <section class="hl-section" id="install" aria-labelledby="install-title">
+      <div class="hl-wrap">
+        <div class="reveal">
+          <p class="hl-kicker"><span class="hl-kicker-hex" aria-hidden="true"></span><span>安装与升级</span></p>
+          <h2 class="hl-h2" id="install-title">
+            <span>装一次，</span>
+            <span class="hl-h2-dim">就能开工。</span>
+          </h2>
+          <p class="hl-body">
+            30 秒接入现有工作流。支持 Claude Code 插件市场、Codex 脚本同步与 <code>npx skills</code> 三种方式，安全升级不会覆盖你的 <code>CLAUDE.md</code> / <code>AGENTS.md</code>。
+          </p>
+        </div>
+
+        <div class="install-controls reveal" style="--delay: 70ms">
+          <div class="install-tabs" role="tablist" aria-label="选择客户端">
+            <button class="install-tab" id="install-claude" type="button" role="tab" aria-selected="true" data-install-mode="claude">Claude Code</button>
+            <button class="install-tab" id="install-codex" type="button" role="tab" aria-selected="false" data-install-mode="codex">Codex CLI</button>
+            <button class="install-tab" id="install-npx" type="button" role="tab" aria-selected="false" data-install-mode="npx">npx skills</button>
+          </div>
+
+          <div class="install-right-ctrls">
+            <div class="scope-fieldset" id="npx-scope" hidden>
+              <span>范围</span>
+              <label><input type="radio" name="scope" value="project" checked>当前项目</label>
+              <label><input type="radio" name="scope" value="global">全局</label>
+            </div>
+            <div class="install-tabs" role="tablist" aria-label="首次安装或升级">
+              <button class="install-tab" id="action-install" type="button" role="tab" aria-selected="true" data-install-action="install">首次安装</button>
+              <button class="install-tab" id="action-upgrade" type="button" role="tab" aria-selected="false" data-install-action="upgrade">安全升级</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hl-steps reveal" style="--delay: 110ms">
+          <div class="hl-step">
+            <span class="hl-step-num">第一步</span>
+            <h3 id="install-step-title">安装插件</h3>
+            <div class="hl-cmd-box">
+              <pre><code id="install-command">/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills
+/plugin install dev-skills</code></pre>
+              <button class="hl-copy-mini" id="copy-install" type="button" aria-label="复制安装命令">
+                <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+                <span id="copy-install-label">复制</span>
+              </button>
+            </div>
+            <p class="hl-step-hint" id="install-context">在 Claude Code 对话中执行即可接入全部 13 个工程技能。</p>
+          </div>
+
+          <div class="hl-step">
+            <span class="hl-step-num">第二步</span>
+            <h3>直接在项目对话开工</h3>
+            <div class="hl-cmd-box">
+              <pre><code id="start-command">用 dev-auto 看看下一步该做什么</code></pre>
+              <button class="hl-copy-mini" id="copy-start" type="button" aria-label="复制启动提示词">
+                <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+                <span id="copy-start-label">复制</span>
+              </button>
+            </div>
+            <p class="hl-step-hint">装好即留在原项目中使用。修 Bug 说 <code>dev-fix</code>，对接口说 <code>dev-grill-docs</code>，提交前说 <code>dev-code-review</code>。</p>
+          </div>
+        </div>
+
+        <a class="hl-inline-link" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/docs/onboarding.md">
+          <span>查看完整安装与团队接入指南</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-right"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 07: EDITORIAL ARTICLES ==================== -->
+    <section class="hl-section" id="articles" aria-labelledby="articles-title">
+      <div class="hl-wrap">
+        <div class="articles-head reveal">
+          <div>
+            <p class="hl-kicker"><span class="hl-kicker-hex" aria-hidden="true"></span><span>延伸阅读 · 工程实践专栏</span></p>
+            <h2 class="hl-h2" id="articles-title">
+              <span>把踩过的坑，</span>
+              <span class="hl-h2-dim">写进每一道门禁。</span>
+            </h2>
+          </div>
+          <a class="hl-inline-link" style="margin-top:0" href="https://blog.csdn.net/weixin_39085822/category_13177255.html?spm=1001.2014.3001.5482" target="_blank" rel="noopener">
+            <span>全部 CSDN 专栏文章</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+        </div>
+
+        <div class="articles-grid">
+          <a class="article-card reveal" style="--delay: 0ms" href="https://blog.csdn.net/weixin_39085822/article/details/161932215" target="_blank" rel="noopener">
+            <div class="article-plate"><img src="./assets/landing/article-sdd.webp" alt="AI 写代码越快，越要先给它装上刹车" width="640" height="360" loading="lazy" decoding="async"></div>
+            <div class="article-info">
+              <h3>AI 写代码越快，越要先给它装上刹车</h3>
+              <div class="article-foot"><time datetime="2026-06-12">2026-06-12</time><span class="article-more">阅读全文<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+            </div>
+          </a>
+          <a class="article-card reveal" style="--delay: 45ms" href="https://blog.csdn.net/weixin_39085822/article/details/161881057" target="_blank" rel="noopener">
+            <div class="article-plate"><img src="./assets/landing/article-review.webp" alt="为什么 AI 写完代码后，不能直接 commit" width="640" height="360" loading="lazy" decoding="async"></div>
+            <div class="article-info">
+              <h3>为什么 AI 写完代码后，不能直接 commit</h3>
+              <div class="article-foot"><time datetime="2026-06-11">2026-06-11</time><span class="article-more">阅读全文<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+            </div>
+          </a>
+          <a class="article-card reveal" style="--delay: 90ms" href="https://blog.csdn.net/weixin_39085822/article/details/161851302" target="_blank" rel="noopener">
+            <div class="article-plate"><img src="./assets/landing/article-fix.webp" alt="别被已修复骗了：AI 修 bug 最该追问这一句" width="640" height="360" loading="lazy" decoding="async"></div>
+            <div class="article-info">
+              <h3>别被“已修复”骗了：AI 修 bug 最该追问这一句</h3>
+              <div class="article-foot"><time datetime="2026-06-10">2026-06-10</time><span class="article-more">阅读全文<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+            </div>
+          </a>
+          <a class="article-card reveal" style="--delay: 135ms" href="https://blog.csdn.net/weixin_39085822/article/details/161822966" target="_blank" rel="noopener">
+            <div class="article-plate"><img src="./assets/landing/article-workflow.webp" alt="从需求到 commit：一套更稳的 AI 编程工作流" width="640" height="360" loading="lazy" decoding="async"></div>
+            <div class="article-info">
+              <h3>从需求到 commit：一套更稳的 AI 编程工作流</h3>
+              <div class="article-foot"><time datetime="2026-06-09">2026-06-09</time><span class="article-more">阅读全文<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+            </div>
+          </a>
+          <a class="article-card reveal" style="--delay: 180ms" href="https://blog.csdn.net/weixin_39085822/article/details/161792237" target="_blank" rel="noopener">
+            <div class="article-plate"><img src="./assets/landing/article-gates.webp" alt="AI 越会写代码，越不能让它直接写到 commit" width="640" height="360" loading="lazy" decoding="async"></div>
+            <div class="article-info">
+              <h3>AI 越会写代码，越不能让它直接写到 commit</h3>
+              <div class="article-foot"><time datetime="2026-06-08">2026-06-08</time><span class="article-more">阅读全文<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+            </div>
+          </a>
+          <a class="article-card reveal" style="--delay: 225ms" href="https://blog.csdn.net/weixin_39085822/article/details/161752082" target="_blank" rel="noopener">
+            <div class="article-plate"><img src="./assets/landing/article-intake.webp" alt="AI 编程最危险的瞬间：它还没听懂，就已经开始写了" width="640" height="360" loading="lazy" decoding="async"></div>
+            <div class="article-info">
+              <h3>AI 编程最危险的瞬间：它还没听懂，就已经开始写了</h3>
+              <div class="article-foot"><time datetime="2026-06-06">2026-06-06</time><span class="article-more">阅读全文<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 08: OPEN SOURCE COMMUNITY & DOCS INDEX ==================== -->
+    <section class="hl-section hl-community" id="community" aria-labelledby="community-title">
+      <div class="hl-wrap">
+        <div class="reveal">
+          <p class="hl-kicker"><span class="hl-kicker-hex" aria-hidden="true"></span><span>开源社区</span></p>
+          <h2 class="hl-h2" id="community-title">
+            <span>开源，</span>
+            <span class="hl-h2-dim">欢迎一起来打磨。</span>
+          </h2>
+          <p class="hl-body">
+            所有技能规则、校准用例与迭代记录都在 GitHub 公开维护。这套技能本身，也在用 dev-skills 自己的工作流持续演进。
+          </p>
+        </div>
+
+        <div class="comm-grid reveal" style="--delay: 80ms">
+          <a class="comm-card comm-card--primary" href="https://github.com/Jason-chen-coder/dev-skills">
+            <div class="comm-top">
+              <svg class="icon" style="width:20px;height:20px;color:var(--hl-text)" aria-hidden="true"><use href="#i-github"/></svg>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </div>
+            <span class="comm-kicker">GITHUB</span>
+            <h3>Jason-chen-coder/dev-skills</h3>
+            <p>完整源码、模板与版本变更记录。</p>
+          </a>
+          <a class="comm-card" href="https://github.com/Jason-chen-coder/dev-skills/tree/master/skills">
+            <div class="comm-top">
+              <span class="comm-kicker">SKILLS · 13</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </div>
+            <h3>全部技能源码</h3>
+            <p>逐个阅读每个 SKILL.md 的触发条件与门禁规则。</p>
+          </a>
+          <a class="comm-card" href="https://github.com/Jason-chen-coder/dev-skills/blob/master/references/calibration-cases.md">
+            <div class="comm-top">
+              <span class="comm-kicker">CALIBRATION</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </div>
+            <h3>行为校准用例</h3>
+            <p>更换或升级模型时验证决策边界是否稳定。</p>
+          </a>
+          <a class="comm-card" href="https://github.com/Jason-chen-coder/dev-skills/issues">
+            <div class="comm-top">
+              <span class="comm-kicker">ISSUES</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </div>
+            <h3>问题与场景反馈</h3>
+            <p>报 Bug、提新工作流建议或分享你的实战案例。</p>
+          </a>
+        </div>
+
+        <div class="docs-index reveal" style="--delay: 120ms">
+          <p class="docs-index-label">从文档开始</p>
+          <div class="docs-list">
+            <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/docs/onboarding.md">
+              <span class="docs-num">01</span>
+              <span class="docs-cat">第一次使用</span>
+              <span class="docs-title">安装接入与团队落地指南</span>
+              <svg class="icon docs-arrow" aria-hidden="true"><use href="#i-right"/></svg>
+            </a>
+            <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/docs/sdd-workflow.md">
+              <span class="docs-num">02</span>
+              <span class="docs-cat">SDD 契约流</span>
+              <span class="docs-title">如何把需求、方案、验证与评审串成闭环</span>
+              <svg class="icon docs-arrow" aria-hidden="true"><use href="#i-right"/></svg>
+            </a>
+            <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/dev-grill-docs/references/ui-api-alignment.md">
+              <span class="docs-num">03</span>
+              <span class="docs-cat">UI / API 对接</span>
+              <span class="docs-title">红框截图对比与离线单文件报告规范</span>
+              <svg class="icon docs-arrow" aria-hidden="true"><use href="#i-right"/></svg>
+            </a>
+            <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/swagger-doc-skill/SKILL.md">
+              <span class="docs-num">04</span>
+              <span class="docs-cat">Swagger 旁路</span>
+              <span class="docs-title">2 分钟查清 OpenAPI 模块、接口与完整 Type 定义</span>
+              <svg class="icon docs-arrow" aria-hidden="true"><use href="#i-right"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hl-footer">
+    <div class="hl-wrap hl-footer-inner">
+      <div class="hl-footer-links">
+        <a href="https://github.com/Jason-chen-coder/dev-skills">GitHub 仓库</a>
+        <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/README.md">README</a>
+        <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/docs/onboarding.md">安装文档</a>
+        <a href="https://github.com/Jason-chen-coder/dev-skills/issues">问题反馈</a>
+        <a href="https://github.com/Jason-chen-coder/dev-skills/blob/master/LICENSE">MIT 许可证</a>
+      </div>
+      <span>dev-skills · 给 AI 编程装上工程门禁</span>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+      const $ = (s, ctx = document) => ctx.querySelector(s);
+      const $$ = (s, ctx = document) => [...ctx.querySelectorAll(s)];
+      const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* ==================== THEME TOGGLE ==================== */
+      const themeBtn = $("#theme-toggle");
+      const themeIcon = $("#theme-icon use");
+      const themeLabel = $("#theme-label");
+      function syncThemeUI(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        const isLight = theme === "light";
+        themeIcon.setAttribute("href", isLight ? "#i-sun" : "#i-moon");
+        themeLabel.textContent = isLight ? "浅色" : "深色";
+      }
+      syncThemeUI(document.documentElement.getAttribute("data-theme") || "dark");
+      themeBtn.addEventListener("click", () => {
+        const next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+        syncThemeUI(next);
+        try { localStorage.setItem("dev-skills-theme", next); } catch (_) {}
+      });
+
+      /* ==================== CLIPBOARD HELPER ==================== */
+      function fallbackCopy(text) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;left:-9999px;opacity:0";
+        document.body.append(ta);
+        ta.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } finally { ta.remove(); }
+        return ok;
+      }
+      function bindCopy(btn, getText, labelEl, idle) {
+        let timer;
+        btn.addEventListener("click", async () => {
+          clearTimeout(timer);
+          const text = getText();
+          let ok = false;
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(text);
+              ok = true;
+            } else {
+              ok = fallbackCopy(text);
+            }
+          } catch (_) {
+            ok = fallbackCopy(text);
+          }
+          btn.classList.toggle("is-copied", ok);
+          if (labelEl) labelEl.textContent = ok ? "已复制" : "失败";
+          timer = setTimeout(() => {
+            btn.classList.remove("is-copied");
+            if (labelEl) labelEl.textContent = idle;
+          }, 2000);
+        });
+      }
+
+      bindCopy($("#copy-hero-cmd"), () => $("#hero-cmd").textContent, $("#hero-copy-label"), "复制");
+      bindCopy($("#copy-install"), () => $("#install-command").textContent, $("#copy-install-label"), "复制");
+      bindCopy($("#copy-start"), () => $("#start-command").textContent, $("#copy-start-label"), "复制");
+
+      /* ==================== HERO 3D SCROLL TILT + RAIL + REVEAL ==================== */
+      const heroWin = $("#hero-window");
+      const statementEl = $("#manifesto");
+      const railLinks = $$("[data-rail]");
+      const trackedSections = railLinks.map((a) => ({ id: a.dataset.rail, link: a, el: document.getElementById(a.dataset.rail) })).filter((x) => x.el);
+
+      function onScrollFrame() {
+        const y = window.scrollY;
+        const vh = window.innerHeight;
+        if (heroWin && !reducedMotion()) {
+          const rect = heroWin.getBoundingClientRect();
+          const p = Math.min(1, Math.max(0, 1 - (rect.top - vh * 0.15) / (vh * 0.65)));
+          heroWin.style.setProperty("--tilt", p.toFixed(3));
+        }
+        if (statementEl && !statementEl.classList.contains("is-lit")) {
+          const r = statementEl.getBoundingClientRect();
+          if (r.top < vh * 0.78) statementEl.classList.add("is-lit");
+        }
+        const showRail = y > vh * 0.48;
+        document.body.classList.toggle("has-rail", showRail);
+        let activeId = trackedSections[0]?.id;
+        for (const item of trackedSections) {
+          if (item.el.getBoundingClientRect().top <= vh * 0.42) activeId = item.id;
+        }
+        railLinks.forEach((a) => a.setAttribute("aria-current", String(a.dataset.rail === activeId)));
+      }
+
+      let ticking = false;
+      window.addEventListener("scroll", () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          onScrollFrame();
+        });
+      }, { passive: true });
+      onScrollFrame();
+
+      if (!reducedMotion() && "IntersectionObserver" in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.06, rootMargin: "0px 0px -24px 0px" });
+        $$(".reveal").forEach((el) => {
+          if (el.getBoundingClientRect().top < window.innerHeight * 0.92) el.classList.add("is-visible");
+          else io.observe(el);
+        });
+      } else {
+        $$(".reveal").forEach((el) => el.classList.add("is-visible"));
+        if (statementEl) statementEl.classList.add("is-lit");
+      }
+
+      /* ==================== INTERACTIVE HERO WORKBENCH ==================== */
+      const wbRooms = {
+        bug: {
+          title: "# fix-login-loading",
+          skill: "dev-fix",
+          prompt: "用 dev-fix 排查：登录接口返回 401 后，按钮一直卡在“登录中”无法重试。",
+          summary: "已复现 401 场景并定位根因：submitLogin 的 catch 分支提前 throw，漏掉 setLoading(false)。",
+          bullets: [
+            "复现用例：POST /api/login 返回 401 后，按钮保持 disabled",
+            "根因定位：<code>src/auth/login.ts:44</code> 未在 finally 恢复状态",
+            "修改范围：仅改动 login.ts 与补 1 条回归测试"
+          ],
+          question: "修复策略确认（点选立即执行验证）",
+          options: [
+            { key: "A", text: "移入 finally 块统一重置，并补 401 回归测试（推荐）", outcome: "✓ 已移入 finally · vitest 14/14 通过 · 401 后可立即重试" },
+            { key: "B", text: "只在 catch 补重置 loading", outcome: "✓ 已补 catch 重置（注意：其他异常路径建议后续移入 finally）" }
+          ],
+          pipe: [
+            { name: "dev-fix", role: "复现与根因定位", state: "active" },
+            { name: "dev-verify", role: "回归测试实证", state: "pending" },
+            { name: "dev-code-review", role: "提交前 Diff 审查", state: "pending" }
+          ],
+          artifactName: "src/auth/login.test.ts",
+          artifactDesc: "401 登录失败回归测试 + 根因记录",
+          artifactBody: `// Skill(dev-fix) · 最小范围回归测试\nit("resets loading state after 401 failure", async () => {\n  mockLogin.mockRejectedValueOnce(new HttpError(401));\n  render(<LoginForm />);\n  await userEvent.click(screen.getByRole("button", { name: "登录" }));\n  expect(await screen.findByRole("button", { name: "登录" })).toBeEnabled();\n});\n\n# Root Cause\n- src/auth/login.ts:44 catch 分支提前 throw 跳过 setLoading(false)\n- 修复：将 setLoading(false) 移入 finally 块`,
+          logBody: `$ pnpm test src/auth/login.test.ts\n ✓ LoginForm > submits valid credentials (18ms)\n ✓ LoginForm > resets loading state after 401 failure (24ms)\n\nTest Files  1 passed (1)\n     Tests  2 passed (2)\n  Coverage  login.ts 100% branch`
+        },
+        align: {
+          title: "# order-api-align",
+          skill: "dev-grill-docs",
+          prompt: "用 dev-grill-docs 核对订单管理页和现有 Swagger，看接口还缺什么，整理给后端确认。",
+          summary: "已完成 UI 控件逐项对照与接口核验，识别出 2 处契约缺口并生成离线红框 HTML 报告。",
+          bullets: [
+            "字段偏差：页面读取 <code>totalCount</code>，接口实际返回 <code>total</code>",
+            "缺失接口：右上角「批量导出」按钮无对应 POST 导出接口",
+            "离线交付：已生成 <code>orders-integration.html</code>（含红框标注）"
+          ],
+          question: "待后端确认项（点击标记决策）",
+          options: [
+            { key: "A", text: "前端适配 total，并向后端提单补 POST /orders/export", outcome: "✓ 决策已写入 .claude/artifacts/designs/orders.md · 可进入 dev-tdd" },
+            { key: "B", text: "本期隐藏批量导出按钮，只对接分页列表", outcome: "✓ 已缩窄本期范围 · 红框报告与设计文档同步更新" }
+          ],
+          pipe: [
+            { name: "dev-grill-docs", role: "UI/API 缺口对齐", state: "active" },
+            { name: "dev-plan", role: "拆分对接步骤", state: "pending" },
+            { name: "dev-tdd", role: "按契约编码", state: "pending" }
+          ],
+          artifactName: ".claude/artifacts/orders-integration.html",
+          artifactDesc: "离线单文件 UI/API 红框对比报告",
+          artifactBody: `<!-- Skill(dev-grill-docs) · UI/API 红框报告摘要 -->\n[红框 #1] 列表总数角标  UI: totalCount  ≠  API: GET /api/orders -> data.total\n[红框 #2] 批量导出按钮  UI: 选中导出    ×  API: 缺失 POST /api/orders/export\n[红框 #3] 状态筛选器    UI: 4 个枚举    ✓  API: status ∈ [PENDING,PAID,DONE,CLOSED]\n\n→ 可直接把 orders-integration.html 发给后端逐条确认。`,
+          logBody: `[grill-docs] 读取页面组件: src/pages/orders/OrderList.tsx\n[grill-docs] 核验 Swagger 源: /v3/api-docs (orders-controller)\n[grill-docs] 渲染红框标注截图: 3 处控件已标注\n[grill-docs] 生成单文件离线报告: .claude/artifacts/orders-integration.html (OK)`
+        },
+        review: {
+          title: "# pre-commit-review",
+          skill: "dev-code-review",
+          prompt: "用 dev-code-review 审查本次 git diff，看看有没有隐藏风险，先不要提交。",
+          summary: "已只读审查暂存区 4 个文件（+94 / -18），发现 1 项 P1 崩溃风险和 1 项误暂存文件，建议拦截。",
+          bullets: [
+            "[P1] <code>src/export/order.ts:88</code> 选中数组为空时直接取 rows[0] 会抛异常",
+            "[P2] 暂存区混入本地调试产物 <code>debug.json</code>",
+            "评审模式为只读，未修改任何文件或执行 commit"
+          ],
+          question: "评审处理动作（点击验证拦截闭环）",
+          options: [
+            { key: "A", text: "修复空数组保护 + 移出 debug.json 并复检", outcome: "✓ 风险清零 · 0 P1 / 0 P2 · 已放行至 dev-commit-writer" },
+            { key: "B", text: "仅生成 Commit Message 草案，暂缓提交", outcome: "✓ 已交由 dev-commit-writer 起草提交说明，工作区保持未提交" }
+          ],
+          pipe: [
+            { name: "dev-verify", role: "单测与类型通过", state: "done" },
+            { name: "dev-code-review", role: "Diff 风险审查", state: "active" },
+            { name: "dev-finish", role: "授权提交/PR", state: "pending" }
+          ],
+          artifactName: "git diff --cached (Review Report)",
+          artifactDesc: "P1/P2 风险定位与行号清单",
+          artifactBody: `## Diff Review Findings\n\n- [P1] src/export/order.ts:88\n  const header = Object.keys(rows[0]); // rows=[] 时触发 TypeError\n  建议：if (!rows.length) return "";\n\n- [P2] debug.json (unintended artifact)\n  建议：git restore --staged debug.json\n\nVerdict: BLOCK_COMMIT until P1 & P2 resolved.`,
+          logBody: `$ git diff --cached --stat\n src/export/order.ts      | 58 ++++++++++++++++++++++++++++++\n src/export/order.test.ts | 36 +++++++++++++++++++\n debug.json               | 142 +++++++++++++++++++++++++++++\n 3 files changed, 236 insertions(+)\n\n[review] 拦截原因：1 个 P1 运行时风险 + 1 个调试文件污染`
+        },
+        ui: {
+          title: "# ui-from-mockup",
+          skill: "dev-image-to-code",
+          prompt: "用 dev-image-to-code 根据这张设计图还原任务管理页面，保留全部真实控件交互。",
+          summary: "已完成页面结构与真实 DOM 控件还原，并在 1440px 与 375px 真实浏览器核验零溢出。",
+          bullets: [
+            "真实控件：搜索 input、状态 tab、筛选 select、操作 button 全部可交互",
+            "视觉核验：Playwright 真实截图对比，布局与层级对齐设计稿",
+            "关键缺口：右上角「归档」按钮未标注是否需要二次确认弹窗"
+          ],
+          question: "交互细节确认",
+          options: [
+            { key: "A", text: "点击归档弹出轻量二次确认，防止误操作", outcome: "✓ 已补归档确认弹层 · 桌面/移动端二次截图核验通过" },
+            { key: "B", text: "直接归档并附带 5 秒撤销 Toast", outcome: "✓ 已实现立即归档 + 撤销 Toast · 真实交互验证通过" }
+          ],
+          pipe: [
+            { name: "dev-image-to-code", role: "真控件还原与截图核验", state: "active" },
+            { name: "dev-verify", role: "响应式零溢出检查", state: "pending" },
+            { name: "dev-code-review", role: "语义与可访问性审查", state: "pending" }
+          ],
+          artifactName: "ui-image-to-code-demo/index.html",
+          artifactDesc: "可运行页面源码 + 真实渲染校验记录",
+          artifactBody: `<!-- Skill(dev-image-to-code) · 控件语义清单 -->\n✓ <input type="search">      实时过滤任务列表\n✓ <div role="tablist">       全部 / 进行中 / 已归档 切换\n✓ <select aria-label="排序"> 按优先级与更新时间重排\n✓ <button>归档</button>      真实状态更新 + 键盘可访问\n\nViewport Check: 1440×900 (0 overflow) · 375×812 (0 overflow)`,
+          logBody: `[image-to-code] 目标画布: 1518×950\n[image-to-code] 交互冒烟测试: 搜索 / Tab / 下拉 / 按钮 4/4 PASS\n[image-to-code] 真实浏览器截图比对完成，无静态假控件`
+        },
+        swagger: {
+          title: "# swagger-petstore",
+          skill: "swagger-doc-skill",
+          prompt: "用 swagger-doc-skill 查看 https://petstore3.swagger.io/api/v3/openapi.json 的模块、接口和完整类型。",
+          summary: "已锁定当前对话唯一 OpenAPI 源，按独立旁路提取完整契约，未进入编码修改流。",
+          bullets: [
+            "文档汇总：<code>3 Modules · 19 Endpoints · 6 Types</code>",
+            "完整 DTO：已展开 <code>Order</code>、<code>Pet</code>、<code>Category</code>、<code>Tag</code> 嵌套字段",
+            "安全约束：Token/Header 仅临时使用，不写进配置或仓库"
+          ],
+          question: "需要导出契约吗？",
+          options: [
+            { key: "A", text: "导出 TypeScript 接口定义与离线 Markdown", outcome: "✓ 已直出 petstore-api.md 与 petstore.types.ts（零侵入业务代码）" },
+            { key: "B", text: "仅在当前对话保留摘要，不写文件", outcome: "✓ 已保留内存契约摘要，工作区保持干净" }
+          ],
+          pipe: [
+            { name: "swagger-doc-skill", role: "确认源并提取完整 Schema", state: "active" },
+            { name: "BYPASS", role: "独立旁路，免进编码流", state: "done" }
+          ],
+          artifactName: "petstore3.openapi.summary.ts",
+          artifactDesc: "3 Modules · 19 Endpoints · 6 Types",
+          artifactBody: `// Source: https://petstore3.swagger.io/api/v3/openapi.json\n// Modules: 3 (pet, store, user) | Endpoints: 19 | Types: 6\n\nexport interface Order {\n  id?: number;\n  petId?: number;\n  quantity?: number;\n  shipDate?: string;\n  status?: "placed" | "approved" | "delivered";\n  complete?: boolean;\n}`,
+          logBody: `[swagger-doc-skill] Source: https://petstore3.swagger.io/api/v3/openapi.json\n[swagger-doc-skill] Modules: 3 | Endpoints: 19 | Types: 6\n[swagger-doc-skill] Mode: current-chat-only, zero repo mutation`
+        }
+      };
+
+      const wbState = { room: "bug", view: "chat", picked: {} };
+      const wbFeed = $("#wb-feed");
+      const wbPipeList = $("#wb-pipe-list");
+
+      function updatePendingBadge() {
+        const keys = ["bug", "align", "review"];
+        let remaining = 0;
+        keys.forEach((k) => {
+          const el = document.getElementById("q-badge-" + k);
+          if (wbState.picked[k] !== undefined) {
+            if (el) {
+              el.className = "wb-badge wb-badge--ok";
+              el.textContent = "已通过";
+            }
+          } else {
+            remaining += 1;
+          }
+        });
+        $("#wb-pending-count").textContent = String(remaining);
+      }
+
+      function renderWorkbench() {
+        const data = wbRooms[wbState.room];
+        const pickedIdx = wbState.picked[wbState.room];
+        $("#wb-win-title").textContent = "dev-skills · " + data.title;
+        $("#wb-room-name").textContent = data.title;
+        $("#wb-active-skill").textContent = "Skill(" + data.skill + ")";
+        $("#wb-skill-doc").href = "https://github.com/Jason-chen-coder/dev-skills/blob/master/skills/" + data.skill + "/SKILL.md";
+        $("#wb-artifact-name").textContent = data.artifactName;
+        $("#wb-artifact-desc").textContent = data.artifactDesc;
+
+        // Sidebar tabs
+        $$("[data-wb-room]").forEach((btn) => btn.setAttribute("aria-selected", String(btn.dataset.wbRoom === wbState.room)));
+        $$("[data-wb-view]").forEach((btn) => btn.setAttribute("aria-selected", String(btn.dataset.wbView === wbState.view)));
+
+        // Right inspector pipeline
+        let doneCount = 0;
+        wbPipeList.innerHTML = data.pipe.map((step, i) => {
+          let st = step.state;
+          if (pickedIdx !== undefined) {
+            if (i === 0) st = "done";
+            if (i === 1 && st === "pending") st = "done";
+          }
+          if (st === "done") doneCount += 1;
+          const badgeClass = st === "done" ? "wb-badge--ok" : st === "active" ? "wb-badge--blue" : "wb-badge--warn";
+          const badgeText = st === "done" ? "已通过" : st === "active" ? "执行中" : "待触发";
+          return `<div class="wb-pipe-item ${st === "done" ? "is-done" : st === "active" ? "is-active" : ""}">
+            <div><strong>${step.name}</strong><small>${step.role}</small></div>
+            <span class="wb-badge ${badgeClass}">${badgeText}</span>
+          </div>`;
+        }).join("");
+        $("#wb-gate-progress").textContent = `${doneCount}/${data.pipe.length}`;
+
+        // Center content
+        if (wbState.view === "artifact") {
+          wbFeed.innerHTML = `
+            <div class="wb-artifact-path"><span>${data.artifactName}</span><span>${data.artifactDesc}</span></div>
+            <pre class="wb-artifact-view">${data.artifactBody.replace(/</g, "&lt;")}</pre>
+          `;
+          return;
+        }
+        if (wbState.view === "log") {
+          wbFeed.innerHTML = `
+            <div class="wb-artifact-path"><span>实证执行输出</span><span>${data.skill}</span></div>
+            <pre class="wb-artifact-view">${data.logBody.replace(/</g, "&lt;")}</pre>
+          `;
+          return;
+        }
+
+        const optHtml = data.options.map((opt, idx) => {
+          const picked = pickedIdx === idx;
+          const beacon = idx === 0 && pickedIdx === undefined && wbState.room === "bug" ? `<span class="wb-beacon" data-beacon="opt"></span>` : "";
+          return `<button class="wb-opt-btn ${picked ? "is-picked" : ""}" type="button" data-wb-opt="${idx}">
+            <span><span class="wb-opt-key">${opt.key}</span>${opt.text}</span>
+            <span class="wb-badge ${picked ? "wb-badge--ok" : "wb-badge--blue"}">${picked ? "已选择" : "点此执行"}</span>
+            ${beacon}
+          </button>`;
+        }).join("");
+
+        const outcomeHtml = pickedIdx !== undefined
+          ? `<div class="wb-outcome-box"><span class="ok-tag">GATE PASSED · 门禁放行</span><span>${data.options[pickedIdx].outcome}</span></div>`
+          : "";
+
+        wbFeed.innerHTML = `
+          <div class="wb-msg-user"><span class="at-skill">@${data.skill}</span> ${data.prompt.replace("用 " + data.skill + " ", "")}</div>
+          <div class="wb-msg-agent">
+            <div class="wb-agent-icon" aria-hidden="true">AI</div>
+            <div class="wb-agent-body">
+              <div class="wb-agent-head"><strong>${data.skill}</strong><span>· 门禁引擎</span></div>
+              <div class="wb-card">
+                <div>${data.summary}</div>
+                <ul class="wb-card-bullets">${data.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>
+                <div class="wb-decision">
+                  <span class="wb-decision-label">${data.question}</span>
+                  ${optHtml}
+                </div>
+              </div>
+              ${outcomeHtml}
+            </div>
+          </div>
+        `;
+
+        $$("[data-wb-opt]", wbFeed).forEach((btn) => {
+          btn.addEventListener("click", () => {
+            wbState.picked[wbState.room] = Number(btn.dataset.wbOpt);
+            updatePendingBadge();
+            renderWorkbench();
+          });
+        });
+      }
+
+      $$("[data-wb-room]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          wbState.room = btn.dataset.wbRoom;
+          wbState.view = "chat";
+          const b = $('[data-beacon="room"]');
+          if (b) b.classList.add("is-seen");
+          renderWorkbench();
+        });
+      });
+
+      $$("[data-jump-room]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          wbState.room = btn.dataset.jumpRoom;
+          wbState.view = "chat";
+          renderWorkbench();
+        });
+      });
+
+      $$("[data-wb-view]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          wbState.view = btn.dataset.wbView;
+          const b = $('[data-beacon="artifact"]');
+          if (b) b.classList.add("is-seen");
+          renderWorkbench();
+        });
+      });
+
+      $("#wb-artifact-jump").addEventListener("click", () => {
+        wbState.view = "artifact";
+        renderWorkbench();
+      });
+
+      bindCopy($("#wb-copy-prompt"), () => wbRooms[wbState.room].prompt, $("#wb-status"), "");
+      renderWorkbench();
+
+      /* ==================== ANIMATED 6-STEP CLOSED-LOOP STAGE ==================== */
+      const loopData = {
+        gated: {
+          barDesc: "6 步可验证闭环，每一步产物跨阶段复用",
+          hubName: "契约交付室 · #order-export",
+          hubSub: "Spec-Anchored · .claude/artifacts/",
+          hubState: "门禁保护中",
+          hubBadge: "wb-badge--ok",
+          steps: [
+            { title: "需求对齐", desc: "先拷问缺口与红框对接口，消除歧义再动代码。", logs: ["[grill-docs] 核验订单导出字段与权限边界", "[grill-docs] 发现 totalCount/total 偏差，输出红框报告"], board: [["orders.md", "已对齐", "wb-badge--ok"], ["orders-integration.html", "已生成", "wb-badge--blue"]], gate: [["边界确认", "已拍板", "wb-badge--ok"], ["返工风险", "低", "wb-badge--ok"]] },
+            { title: "拆解方案", desc: "高风险或跨模块改动先落实施方案与回滚边界。", logs: ["[dev-plan] 拆解 3 步变更：API 适配 → 导出流 → 空态兜底", "[dev-plan] 锁定修改文件清单，不碰无关模块"], board: [["plans/orders.md", "已定稿", "wb-badge--ok"], ["影响面评估", "3 文件", "wb-badge--blue"]], gate: [["范围锁定", "通过", "wb-badge--ok"], ["越界改动", "0 处", "wb-badge--ok"]] },
+            { title: "受控实现", desc: "新行为用 TDD 锁结果，修 Bug 必先追根因。", logs: ["[dev-tdd] 先写空数组与大列表导出失败用例 (RED)", "[dev-tdd] 最小实现使测试转绿 (GREEN)"], board: [["order.ts", "已实现", "wb-badge--ok"], ["order.test.ts", "+4 用例", "wb-badge--ok"]], gate: [["回归测试", "覆盖核心路径", "wb-badge--ok"], ["最小改动", "已遵守", "wb-badge--blue"]] },
+            { title: "实证验证", desc: "跑真实测试、类型检查或浏览器截图，直说盲区。", logs: ["[dev-verify] pnpm test && pnpm typecheck -> 全部通过", "[dev-verify] 盲区声明：大文件超时需在预发压测确认"], board: [["Test Log", "18/18 PASS", "wb-badge--ok"], ["盲区声明", "已透明标注", "wb-badge--blue"]], gate: [["无实证不宣称完成", "满足", "wb-badge--ok"], ["命令证据", "已附带", "wb-badge--ok"]] },
+            { title: "Diff 评审", desc: "提交前只读审查 Git Diff，挡住隐藏缺陷与垃圾文件。", logs: ["[dev-code-review] 扫描暂存区：0 个 P1 · 0 个 P2", "[dev-code-review] 确认无临时调试代码混入"], board: [["Diff 审查", "0 阻塞项", "wb-badge--ok"], ["暂存区校验", "干净", "wb-badge--ok"]], gate: [["提交前门禁", "放行", "wb-badge--ok"], ["代码质量", "可合入", "wb-badge--ok"]] },
+            { title: "授权交付", desc: "严格按用户授权执行 commit、merge 或 PR。", logs: ["[dev-commit-writer] 生成规范提交说明", "[dev-finish] 按授权完成本地 commit，分支就绪"], board: [["Commit", "feat(order): export", "wb-badge--ok"], ["未授权 push", "已禁止", "wb-badge--blue"]], gate: [["交付状态", "已完成", "wb-badge--ok"], ["全链可追溯", "100%", "wb-badge--ok"]] }
+          ]
+        },
+        ungated: {
+          barDesc: "无门禁盲写：越快越容易进入返工死循环",
+          hubName: "无门禁裸写 · #order-export",
+          hubSub: "无契约 · 无验证 · 凭记忆猜代码",
+          hubState: "高返工风险",
+          hubBadge: "wb-badge--err",
+          steps: [
+            { title: "模糊开工", desc: "需求还没听懂、字段也没核对，直接开始写文件。", logs: ["[AI] 收到，我马上帮你把订单导出写完！", "[隐患] 没查 Swagger，默认猜接口叫 /exportOrders"], board: [["需求文档", "缺失", "wb-badge--err"], ["接口核对", "跳过", "wb-badge--err"]], gate: [["契约对齐", "未执行", "wb-badge--err"], ["返工概率", "极高", "wb-badge--err"]] },
+            { title: "猜着改代码", desc: "顺手重构了 7 个不相关文件，范围彻底失控。", logs: ["[AI] 顺便优化了订单表和全局请求拦截器...", "[隐患] 改动扩散到支付模块，无方案无边界"], board: [["改动文件", "11 个", "wb-badge--warn"], ["回滚方案", "无", "wb-badge--err"]], gate: [["范围控制", "失控", "wb-badge--err"], ["回归风险", "高", "wb-badge--err"]] },
+            { title: "只改表面", desc: "遇到报错就加 try/catch 吞异常，根因被藏起来。", logs: ["[AI] 修复了空数组报错（加了个空 catch 块）", "[隐患] 真正的数据截断问题被静默掩盖"], board: [["根因排查", "跳过", "wb-badge--err"], ["回归测试", "0 条", "wb-badge--err"]], gate: [["问题复现", "未做", "wb-badge--err"], ["隐藏 Bug", "+2", "wb-badge--err"]] },
+            { title: "口头已完成", desc: "没跑单测、没看浏览器，直接自信回复“已全部完成”。", logs: ["[AI] 所有功能已经实现并验证通过，可以直接上线！", "[隐患] 实际 typecheck 报错 3 处未运行"], board: [["真实测试输出", "无", "wb-badge--err"], ["浏览器核验", "无", "wb-badge--err"]], gate: [["实证检查", "造假/缺失", "wb-badge--err"], ["交付可信度", "极低", "wb-badge--err"]] },
+            { title: "盲目提交", desc: "把 console.log、debug.json 和坏测试一起 commit。", logs: ["$ git add . && git commit -m 'fix'", "[隐患] 调试密钥与坏构建一并推上远端分支"], board: [["Diff 评审", "跳过", "wb-badge--err"], ["debug.json", "误提交", "wb-badge--err"]], gate: [["提交拦截", "无", "wb-badge--err"], ["CI 状态", "红灯", "wb-badge--err"]] },
+            { title: "返工重来", desc: "联调崩溃、线上报警，只能回滚并从头排查。", logs: ["[线上] 导出接口 404 + 空列表白屏", "[循环] 重新解释需求，回到第 1 步返工..."], board: [["实际耗时", "×3 倍", "wb-badge--err"], ["交付结果", "回滚", "wb-badge--err"]], gate: [["闭环状态", "返工死循环", "wb-badge--err"], ["需要", "dev-skills", "wb-badge--warn"]] }
+          ]
+        }
+      };
+
+      const cmFrame = $("#cm-frame");
+      const cmStepsEl = $("#cm-steps");
+      const cmLogEl = $("#cm-hub-log");
+      const cmBoardEl = $("#cm-board-rows");
+      const cmGateEl = $("#cm-gate-rows");
+      const cmNodes = $$("[data-cm-node]");
+      let loopMode = "gated";
+      let loopStep = 0;
+      let loopPlaying = !reducedMotion();
+      let loopTimer = null;
+
+      function renderLoop() {
+        const cfg = loopData[loopMode];
+        const cur = cfg.steps[loopStep];
+        cmFrame.classList.toggle("is-ungated", loopMode === "ungated");
+        $("#cm-bar-desc").textContent = cfg.barDesc;
+        $("#cm-hub-name").textContent = cfg.hubName;
+        $("#cm-hub-sub").textContent = cfg.hubSub;
+        const stBadge = $("#cm-hub-state");
+        stBadge.textContent = cfg.hubState;
+        stBadge.className = "wb-badge " + cfg.hubBadge;
+
+        $$("[data-loop-mode]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.loopMode === loopMode)));
+
+        cmNodes.forEach((node, idx) => {
+          node.classList.remove("is-active", "is-done", "is-err");
+          if (idx === loopStep) node.classList.add(loopMode === "ungated" ? "is-err" : "is-active");
+          else if (idx < loopStep && loopMode === "gated") node.classList.add("is-done");
+        });
+
+        cmLogEl.innerHTML = cur.logs.map((l, i) => `<div class="cm-log-line ${i === cur.logs.length - 1 ? "is-lit" : ""}">${l}</div>`).join("");
+        cmBoardEl.innerHTML = cur.board.map(([k, v, cls]) => `<div class="cm-subbox-row"><span>${k}</span><span class="wb-badge ${cls}">${v}</span></div>`).join("");
+        cmGateEl.innerHTML = cur.gate.map(([k, v, cls]) => `<div class="cm-subbox-row"><span>${k}</span><span class="wb-badge ${cls}">${v}</span></div>`).join("");
+
+        cmStepsEl.innerHTML = cfg.steps.map((s, idx) => `
+          <button class="cm-step-btn" type="button" role="tab" aria-selected="${idx === loopStep}" data-cm-step="${idx}">
+            <span class="cm-step-num">${idx + 1}</span>
+            <span class="cm-step-title">${s.title}</span>
+            <span class="cm-step-desc">${s.desc}</span>
+          </button>
+        `).join("");
+
+        $$("[data-cm-step]", cmStepsEl).forEach((btn) => {
+          btn.addEventListener("click", () => {
+            loopStep = Number(btn.dataset.cmStep);
+            renderLoop();
+            if (loopPlaying) restartLoopTimer();
+          });
+        });
+      }
+
+      function restartLoopTimer() {
+        clearInterval(loopTimer);
+        if (!loopPlaying) return;
+        loopTimer = setInterval(() => {
+          loopStep = (loopStep + 1) % 6;
+          renderLoop();
+        }, 3600);
+      }
+
+      $$("[data-loop-mode]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          loopMode = btn.dataset.loopMode;
+          loopStep = 0;
+          renderLoop();
+          if (loopPlaying) restartLoopTimer();
+        });
+      });
+
+      const playBtn = $("#cm-toggle-play");
+      function syncPlayBtn() {
+        playBtn.setAttribute("aria-pressed", String(!loopPlaying));
+        $("#cm-play-icon use").setAttribute("href", loopPlaying ? "#i-pause" : "#i-play");
+        $("#cm-play-text").textContent = loopPlaying ? "暂停" : "播放";
+      }
+      playBtn.addEventListener("click", () => {
+        loopPlaying = !loopPlaying;
+        syncPlayBtn();
+        if (loopPlaying) restartLoopTimer();
+        else clearInterval(loopTimer);
+      });
+      syncPlayBtn();
+      renderLoop();
+      restartLoopTimer();
+
+      /* ==================== ROUTING STAGE TABS ==================== */
+      const stageMeta = {
+        all: { label: "全景", artifact: ".claude/artifacts/designs/ · plans/ · <feature>-integration.html", gate: "跨阶段复用已有产物，不重复确认" },
+        align: { label: "需求与接口", artifact: ".claude/artifacts/designs/<feature>.md · <feature>-integration.html", gate: "先对齐边界再写代码；Swagger 走独立旁路" },
+        build: { label: "编码与修复", artifact: "最小范围代码变更 + 回归测试 / 真实浏览器核验", gate: "新功能走 TDD，修 Bug 先定位根因" },
+        verify: { label: "实证验证", artifact: "真实命令输出 · 验证盲区声明", gate: "无实证不宣称已完成" },
+        ship: { label: "评审与交付", artifact: "Diff 风险报告 · Commit Message · 授权 PR", gate: "先评审，按用户授权提交" }
+      };
+      const svgGroups = $$(".svg-stage-group");
+      $$("[data-stage]").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const key = tab.dataset.stage;
+          $$("[data-stage]").forEach((t) => {
+            const sel = t === tab;
+            t.setAttribute("aria-selected", String(sel));
+            t.tabIndex = sel ? 0 : -1;
+          });
+          const m = stageMeta[key];
+          $("#stage-label").textContent = m.label;
+          $("#stage-artifact").textContent = m.artifact;
+          $("#stage-gate").textContent = m.gate;
+          svgGroups.forEach((g) => {
+            const hit = key === "all" || g.dataset.svgStage === key || (key === "align" && g.dataset.svgStage === "plan");
+            g.classList.toggle("is-dim", !hit);
+            g.classList.toggle("is-focus", key !== "all" && hit);
+          });
+        });
+      });
+
+      /* ==================== 13 SKILLS FILTER & SEARCH ==================== */
+      let activeCat = "all";
+      const skillsGrid = $("#skills-grid");
+      const skillCards = $$(".skill-card");
+      const skillSearch = $("#skill-search");
+      const skillEmpty = $("#skill-empty");
+
+      function filterSkills() {
+        const q = skillSearch.value.trim().toLowerCase();
+        skillsGrid.classList.toggle("is-filtered", activeCat !== "all" || Boolean(q));
+        let shown = 0;
+        skillCards.forEach((card) => {
+          const okCat = activeCat === "all" || card.dataset.cat === activeCat;
+          const okText = !q || card.textContent.toLowerCase().includes(q);
+          const vis = okCat && okText;
+          card.hidden = !vis;
+          if (vis) shown += 1;
+        });
+        skillEmpty.hidden = shown > 0;
+      }
+
+      $$("[data-filter]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeCat = btn.dataset.filter;
+          $$("[data-filter]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+          filterSkills();
+        });
+      });
+      skillSearch.addEventListener("input", filterSkills);
+
+      /* ==================== SAFETY BOUNDARY INTERACTIVE DEMO ==================== */
+      const boundaryScenarios = {
+        readonly: {
+          tone: "ok",
+          kicker: "SWAGGER-DOC-SKILL · 只读旁路",
+          badge: "只读安全",
+          title: "已提取完整接口契约，工作区 0 改动",
+          lines: [
+            `<div class="ok">✓ Source: petstore3 (3 Modules · 19 Endpoints · 6 Types)</div>`,
+            `<div class="info">✓ git status: clean · CLAUDE.md / AGENTS.md 未改动</div>`
+          ],
+          primaryText: "导出 TS 类型",
+          doneBadge: "已导出只读产物",
+          doneFoot: "✓ 已直出 petstore.types.ts，未修改任何业务代码或共享配置。",
+          idleFoot: "临时 Token / Cookie 仅当次请求生效，绝不写入配置或日志。"
+        },
+        scoped: {
+          tone: "blue",
+          kicker: "DEV-GRILL-DOCS · 缺口确认",
+          badge: "等你拍板",
+          title: "写代码前发现 1 处字段偏差，已落盘产物",
+          lines: [
+            `<div class="info">› 页面读 totalCount，后端接口实际返回 total</div>`,
+            `<div class="ok">› 产物已落盘：.claude/artifacts/orders-integration.html</div>`
+          ],
+          primaryText: "按 total 对齐继续",
+          doneBadge: "契约已锁定",
+          doneFoot: "✓ 决策已写入 designs/orders.md，后续 dev-tdd 与 review 自动沿用。",
+          idleFoot: "范围清晰的小改直接推进；有业务歧义或接口缺口才会停下来问你。"
+        },
+        gated: {
+          tone: "warn",
+          kicker: "DEV-CODE-REVIEW · 提交前拦截",
+          badge: "待你拍板",
+          title: "提交前检测到 2 项风险，已暂停 commit",
+          lines: [
+            `<div class="p1">[P1] order.ts:88 空数组导出未判空会抛异常</div>`,
+            `<div class="p2">[P2] 暂存区混入未跟踪调试文件 debug.json</div>`
+          ],
+          primaryText: "先修风险再提",
+          doneBadge: "已清零放行",
+          doneFoot: "✓ 空数组保护已补齐，debug.json 已移出暂存区，可按授权安全 commit。",
+          idleFoot: "未获明确授权前，不会执行 git commit 或 push。"
+        }
+      };
+
+      let activeBound = "gated";
+      const gateCard = $("#safety-gate-card");
+      const safetyKicker = $("#safety-kicker");
+      const safetyBadge = $("#safety-badge");
+      const safetyTitle = $("#safety-title");
+      const safetyLines = $("#safety-lines");
+      const safetyFootnote = $("#safety-footnote");
+      const safetyFixBtn = $("#safety-fix-btn");
+
+      function renderBoundary(key) {
+        activeBound = key;
+        const cfg = boundaryScenarios[key];
+        $$("[data-bound]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.bound === key)));
+        gateCard.setAttribute("data-tone", cfg.tone);
+        safetyKicker.textContent = cfg.kicker;
+        safetyBadge.textContent = cfg.badge;
+        safetyBadge.style.color = "";
+        safetyTitle.textContent = cfg.title;
+        safetyLines.innerHTML = cfg.lines.join("");
+        safetyFixBtn.textContent = cfg.primaryText;
+        safetyFootnote.textContent = cfg.idleFoot;
+        safetyFootnote.style.color = "";
+      }
+
+      $$("[data-bound]").forEach((btn) => {
+        btn.addEventListener("click", () => renderBoundary(btn.dataset.bound));
+      });
+      safetyFixBtn.addEventListener("click", () => {
+        const cfg = boundaryScenarios[activeBound];
+        safetyBadge.textContent = cfg.doneBadge;
+        safetyBadge.style.color = "var(--hl-ok)";
+        safetyFootnote.textContent = cfg.doneFoot;
+        safetyFootnote.style.color = "var(--hl-ok)";
+      });
+      $("#safety-reset-btn").addEventListener("click", () => renderBoundary(activeBound));
+
+      /* ==================== 5-HEX LIFECYCLE STEPPER ==================== */
+      const hexSteps = $$("[data-hex]");
+      hexSteps.forEach((btn, idx) => {
+        btn.addEventListener("click", () => {
+          hexSteps.forEach((el, i) => {
+            el.setAttribute("aria-selected", String(i === idx));
+            el.classList.toggle("is-passed", i < idx);
+          });
+        });
+      });
+
+      /* ==================== INSTALL MATRIX ==================== */
+      let installMode = "claude";
+      let installAction = "install";
+      let installScope = "project";
+
+      function updateInstall() {
+        const up = installAction === "upgrade";
+        const gl = installScope === "global";
+        const cmds = {
+          claude: up
+            ? "/plugin update dev-skills"
+            : "/plugin marketplace add https://github.com/Jason-chen-coder/dev-skills\n/plugin install dev-skills",
+          codex: up
+            ? "bash scripts/install-codex-skills.sh --upgrade"
+            : "git clone https://github.com/Jason-chen-coder/dev-skills.git\ncd dev-skills\nbash scripts/install-codex-skills.sh",
+          npx: up
+            ? "npx skills update"
+            : "npx skills add Jason-chen-coder/dev-skills" + (gl ? " --global" : "")
+        };
+        const notes = {
+          claude: up ? "在 Claude Code 对话中执行，安全拉取最新技能规则。" : "在 Claude Code 对话中执行即可接入全部 13 个工程技能。",
+          codex: up ? "在已克隆的 dev-skills 目录执行，自动同步且不覆盖 AGENTS.md。" : "在终端执行，自动同步全部 13 个技能到 CODEX_HOME。",
+          npx: up ? "在终端执行，更新已安装的 dev-skills。" : (gl ? "在终端执行，安装为全局可用技能。" : "在当前项目根目录执行，仅接入当前仓库。")
+        };
+        $("#install-step-title").textContent = up ? "安全升级" : "安装接入";
+        $("#install-command").textContent = cmds[installMode];
+        $("#install-context").textContent = notes[installMode];
+        $("#npx-scope").hidden = installMode !== "npx" || up;
+      }
+
+      $$("[data-install-mode]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          installMode = btn.dataset.installMode;
+          $$("[data-install-mode]").forEach((b) => b.setAttribute("aria-selected", String(b === btn)));
+          updateInstall();
+        });
+      });
+      $$("[data-install-action]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          installAction = btn.dataset.installAction;
+          $$("[data-install-action]").forEach((b) => b.setAttribute("aria-selected", String(b === btn)));
+          updateInstall();
+        });
+      });
+      $$('input[name="scope"]').forEach((r) => {
+        r.addEventListener("change", () => {
+          installScope = r.value;
+          updateInstall();
+        });
+      });
+
+      /* ==================== MOBILE NAV ==================== */
+      const menuBtn = $("#menu-toggle");
+      const navEl = $("#primary-nav");
+      function closeMenu() {
+        navEl.classList.remove("is-open");
+        menuBtn.setAttribute("aria-expanded", "false");
+        menuBtn.querySelector("use").setAttribute("href", "#i-menu");
+      }
+      menuBtn.addEventListener("click", () => {
+        const open = navEl.classList.toggle("is-open");
+        menuBtn.setAttribute("aria-expanded", String(open));
+        menuBtn.querySelector("use").setAttribute("href", open ? "#i-close" : "#i-menu");
+      });
+      $$("a", navEl).forEach((a) => a.addEventListener("click", closeMenu));
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+    })();
+  </script>
+</body>
+</html>
