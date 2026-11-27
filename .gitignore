@@ -18,6 +18,9 @@
 # Brainstorming visual companion local drafts
 .superpowers/
 
+# no-mistakes local runtime artifacts
+.no-mistakes/
+
 # Node (in case skills repo ever gains tooling)
 node_modules/
 *.log
